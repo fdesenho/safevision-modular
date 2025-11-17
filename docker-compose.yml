@@ -1,0 +1,83 @@
+services:
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: safevision
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: pass
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - safevision-net
+
+  eureka-server:
+    build: ./eureka-server
+    ports:
+      - "8761:8761"
+    networks:
+      - safevision-net
+
+  auth-service:
+    build: ./auth-service
+    ports:
+      - "8081:8080"
+    environment:
+      SPRING_APPLICATION_NAME: auth-service
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka/
+	  - JWT_SECRET_BASE64=${JWT_SECRET_BASE64}
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/safevision
+      SPRING_DATASOURCE_USERNAME: user
+      SPRING_DATASOURCE_PASSWORD: pass
+    depends_on:
+      - postgres
+      - eureka-server
+    networks:
+      - safevision-net
+
+  alert-service:
+    build: ./alert-service
+    ports:
+      - "8082:8080"
+    environment:
+      SPRING_APPLICATION_NAME: alert-service
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka/
+	  - JWT_SECRET_BASE64=${JWT_SECRET_BASE64}
+    depends_on:
+      - eureka-server
+    networks:
+      - safevision-net
+
+  recognition-service:
+    build: ./recognition-service
+    ports:
+      - "8083:8080"
+    environment:
+      SPRING_APPLICATION_NAME: recognition-service
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka/
+	  - JWT_SECRET_BASE64=${JWT_SECRET_BASE64}
+    depends_on:
+      - eureka-server
+    networks:
+      - safevision-net
+
+  gateway-service:
+    build: ./gateway-service
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_APPLICATION_NAME: gateway-service
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka/
+	  - JWT_SECRET_BASE64=${JWT_SECRET_BASE64}
+    depends_on:
+      - eureka-server
+    networks:
+      - safevision-net
+
+volumes:
+  postgres_data:
+
+networks:
+  safevision-net:
+    driver: bridge

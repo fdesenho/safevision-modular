@@ -1,0 +1,78 @@
+# application.yml para o gateway-service
+
+spring:
+  application:
+    name: gateway-service
+
+  cloud:
+    eureka:
+      client:
+        serviceUrl:
+          defaultZone: http://eureka-server:8761/eureka/
+        enabled: true
+
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+          lowerCaseServiceId: true
+
+      # Configurações do Circuit Breaker com Resilience4j
+      circuitbreaker:
+        # Configurações padrão para todos os circuit breakers,
+        # a menos que sobrescritas por configurações específicas.
+        configs:
+          default:
+            slidingWindowType: COUNT_BASED # Tipo de janela deslizante: COUNT_BASED ou TIME_BASED
+            slidingWindowSize: 10 # Número de chamadas para o COUNT_BASED
+            failureRateThreshold: 50 # Limite da taxa de falha (em %) para abrir o circuito
+            waitDurationInOpenState: 5s # Quanto tempo o circuito fica aberto antes de ir para HALF_OPEN
+            permittedNumberOfCallsInHalfOpenState: 3 # Nº de chamadas no HALF_OPEN antes de fechar
+            recordExceptions: # Exceções que devem ser consideradas falhas
+              - org.springframework.web.client.ResourceAccessException
+              - java.io.IOException
+              # Adicione outras exceções relevantes para seus serviços, se necessário
+
+        # Configurações específicas para cada Circuit Breaker, usando os IDs da sua classe GatewayConstants
+        resilience4j:
+          circuitBreakers:
+            # Exemplo para authServiceCircuitBreaker
+            authServiceCircuitBreaker:
+              baseConfig: default # Usa a configuração 'default' como base
+              failureRateThreshold: 60 # Sobrescreve a taxa de falha para este CB específico
+              waitDurationInOpenState: 10s # Sobrescreve o tempo de espera
+
+            # Configurações para os outros Circuit Breakers do seu Routes.java
+            authServiceSwaggerCircuitBreaker:
+              baseConfig: default # Pode usar a base ou definir suas próprias propriedades
+            alertServiceCircuitBreaker:
+              baseConfig: default
+            alertServiceSwaggerCircuitBreaker:
+              baseConfig: default
+            recognitionServiceCircuitBreaker:
+              baseConfig: default
+            recognitionServiceSwaggerCircuitBreaker:
+              baseConfig: default
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*" # Para Actuator, inclui endpoints de health, metrics, circuitbreakers etc.
+
+  # Configurações de métricas para o Resilience4j (opcional, requer micrometer-registry-prometheus)
+  metrics:
+    tags:
+      application: ${spring.application.name} # Adiciona tag 'application' a todas as métricas
+
+server:
+  port: 8080
+
+safevision:
+  services:
+    auth: lb://AUTH-SERVICE
+    alert: lb://ALERT-SERVICE
+    recognition: lb://RECOGNITION-SERVICE
+
+jwt:
+  secret-base64: ${JWT_SECRET_BASE64}
