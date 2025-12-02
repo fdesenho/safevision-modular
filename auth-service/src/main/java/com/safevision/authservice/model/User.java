@@ -14,7 +14,7 @@ import java.util.Set;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder // Facilita a criação de objetos no Service
+@Builder
 public class User {
 
     @Id
@@ -28,16 +28,31 @@ public class User {
     @Column(nullable = false)
     private String password;
 
-    // --- NOVOS CAMPOS ---
+    
+    
+    @Column(unique = true) 
+    private String email;
 
-    // Cria uma tabela auxiliar (users_roles) automaticamente para guardar a lista de Strings
+    @Column(name = "phone_number") 
+    private String phoneNumber;
+
+        
+    
+    @Column(name = "camera_connection_url")
+    private String cameraConnectionUrl;
+
+    
+    @Column(name = "device_name")
+    private String deviceName;
+
+    
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"))
     @Column(name = "role")
-    @Builder.Default // Garante que o builder inicie vazio se não informado
+    @Builder.Default
     private Set<String> roles = new HashSet<>();
 
-    @CreationTimestamp // O Hibernate preenche a data atual no insert
-    @Column(updatable = false) // A data de criação nunca muda
+    @CreationTimestamp
+    @Column(updatable = false)
     private LocalDateTime createdAt;
 }

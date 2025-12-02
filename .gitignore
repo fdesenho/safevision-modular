@@ -1,3 +1,17 @@
+target/
+!.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+*.class
+.classpath
+.project
+.settings/
+.idea/
+*.iml
+.DS_Store
+
+# --- ARQUIVOS DE SEGURANÇA ---
+.env
+/logs
 /login.json
 /event.json
 /admin_user.json

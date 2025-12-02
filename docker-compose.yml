@@ -1,19 +1,11 @@
-# 1. DEFINIÇÃO DA CHAVE COMPARTILHADA (Âncora)
+version: '3.8'
+
+# 1. ÂNCORA DE JWT (Lê do arquivo .env)
 x-jwt-config: &jwt-config
-  SAFEVISION_JWT_SECRET: "404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970"
+  SAFEVISION_JWT_SECRET: "${JWT_SECRET}"
 
 services:
   # --- INFRAESTRUTURA ---
-  
-  # NOVO: ZIPKIN (Rastreamento Distribuído)
-  zipkin:
-    image: openzipkin/zipkin
-    container_name: zipkin
-    ports:
-      - "9411:9411" # Porta da Interface Web
-    networks:
-      - safevision-net
-
   rabbitmq:
     image: rabbitmq:3-management
     container_name: rabbitmq
@@ -21,8 +13,8 @@ services:
       - "5672:5672"
       - "15672:15672"
     environment:
-      RABBITMQ_DEFAULT_USER: user
-      RABBITMQ_DEFAULT_PASS: password
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASS}
       RABBITMQ_SERVER_ADDITIONAL_ERL_ARGS: "-rabbit log_levels [{connection,debug},{channel,debug}]"
     networks:
       - safevision-net
@@ -33,9 +25,9 @@ services:
     ports:
       - "5432:5432"
     environment:
-      POSTGRES_DB: safevision
-      POSTGRES_USER: user
-      POSTGRES_PASSWORD: pass
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASS}
     volumes:
       - postgres_data:/var/lib/postgresql/data
     networks:
@@ -50,27 +42,24 @@ services:
       - ./logs:/var/logs
     networks:
       - safevision-net
-  # ----------------------------------------------------
 
-  # --- NOVO: AGENTE DE VISÃO (PYTHON) ---
+  # --- AGENTE DE VISÃO (PYTHON) ---
   vision-agent:
     build: ./vision-agent
     container_name: vision-agent
     ports:
       - "5000:5000"
-    volumes:
-      - ./vision-agent/movement.mp4:/app/movement.mp4
     environment:
       RABBITMQ_HOST: rabbitmq
-      RABBITMQ_USERNAME: user
-      RABBITMQ_PASSWORD: password
-      VISION_QUEUE_NAME: vision.raw.tracking
-      CAMERA_URL: http://192.168.0.132:4747/video
+      RABBITMQ_USERNAME: ${RABBITMQ_USER}
+      RABBITMQ_PASSWORD: ${RABBITMQ_PASS}
+      VISION_QUEUE_NAME: ${QUEUE_RAW}
+	  QUEUE_VISION_CONFIGURATION ${QUEUE_VISION_CONFIGURATION}
+      CAMERA_URL: ${CAMERA_URL}
     depends_on:
       - rabbitmq
     networks:
       - safevision-net
-  # ----------------------------------------------------
 
   # --- MICROSSERVIÇOS JAVA ---
   auth-service:
@@ -84,13 +73,17 @@ services:
       SPRING_APPLICATION_NAME: auth-service
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka/
       <<: *jwt-config
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/safevision
-      SPRING_DATASOURCE_USERNAME: user
-      SPRING_DATASOURCE_PASSWORD: pass
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/${DB_NAME}
+      SPRING_DATASOURCE_USERNAME: ${DB_USER}
+      SPRING_DATASOURCE_PASSWORD: ${DB_PASS}
+      # RabbitMQ para envio de config
+      RABBITMQ_HOST: rabbitmq
+      RABBITMQ_USERNAME: ${RABBITMQ_USER}
+      RABBITMQ_PASSWORD: ${RABBITMQ_PASS}
     depends_on:
       - postgres
       - eureka-server
-      - zipkin # <--- NOVO
+      - rabbitmq
     networks:
       - safevision-net
 
@@ -105,22 +98,26 @@ services:
       SPRING_APPLICATION_NAME: alert-service
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka/
       <<: *jwt-config
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/safevision
-      SPRING_DATASOURCE_USERNAME: user
-      SPRING_DATASOURCE_PASSWORD: pass
+      
+      # Banco e RabbitMQ
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/${DB_NAME}
+      SPRING_DATASOURCE_USERNAME: ${DB_USER}
+      SPRING_DATASOURCE_PASSWORD: ${DB_PASS}
       RABBITMQ_HOST: rabbitmq
-      RABBITMQ_USERNAME: user
-      RABBITMQ_PASSWORD: password
-      ALERTS_QUEUE_NAME: safevision.alerts.queue 
-      TELEPHONY_ACCOUNT_SID: AC1413a48f50e96cd480199bc7452351f71 
-      TELEPHONY_AUTH_TOKEN: 634a9fa310610cb29d0765775926cf6e1
-      TELEPHONY_FROM_NUMBER: +138521228141
-      ALERT_PHONE_NUMBER: +55489993522621
+      RABBITMQ_USERNAME: ${RABBITMQ_USER}
+      RABBITMQ_PASSWORD: ${RABBITMQ_PASS}
+      ALERTS_QUEUE_NAME: ${QUEUE_ALERTS}
+
+      # Telefonia (Lê do .env)
+      TELEPHONY_ACCOUNT_SID: ${TWILIO_SID}
+      TELEPHONY_AUTH_TOKEN: ${TWILIO_TOKEN}
+      TELEPHONY_FROM_NUMBER: ${TWILIO_FROM_NUMBER}
+      ALERT_PHONE_NUMBER: ${MY_PHONE_NUMBER}
+      
     depends_on:
       - eureka-server
       - postgres
       - rabbitmq
-      - zipkin # <--- NOVO
     networks:
       - safevision-net
 
@@ -136,14 +133,14 @@ services:
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka/
       <<: *jwt-config
       RABBITMQ_HOST: rabbitmq
-      RABBITMQ_USERNAME: user
-      RABBITMQ_PASSWORD: password
-      VISION_QUEUE_NAME: vision.raw.tracking 
-      ALERTS_QUEUE_NAME: safevision.alerts.queue 
+      RABBITMQ_USERNAME: ${RABBITMQ_USER}
+      RABBITMQ_PASSWORD: ${RABBITMQ_PASS}
+      VISION_QUEUE_NAME: ${QUEUE_RAW}
+      ALERTS_QUEUE_NAME: ${QUEUE_ALERTS}
+      
     depends_on:
       - eureka-server
       - rabbitmq
-      - zipkin # <--- NOVO
     networks:
       - safevision-net
 
@@ -161,12 +158,12 @@ services:
       SAFEVISION_SERVICES_AUTH: lb://auth-service
       SAFEVISION_SERVICES_ALERT: lb://alert-service
       SAFEVISION_SERVICES_RECOGNITION: lb://recognition-service
+      
     depends_on:
       - eureka-server
       - auth-service
       - alert-service
       - recognition-service
-      - zipkin # <--- NOVO
     networks:
       - safevision-net
 

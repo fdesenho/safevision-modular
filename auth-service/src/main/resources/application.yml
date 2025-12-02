@@ -18,6 +18,15 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
+		
+		
+rabbitmq:
+  host: ${RABBITMQ_HOST:localhost}
+  port: 5672
+  username: ${RABBITMQ_USERNAME:user}
+  password: ${RABBITMQ_PASSWORD:password}
+  queues:
+    vision-configuration: ${VISION_QUEUE_NAME:safevision.vision.configuration.queue}
 
 # --- CONFIGURAÇÃO ZIPKIN E METRICAS ---
 management:

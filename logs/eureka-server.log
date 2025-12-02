@@ -32,4 +32,295 @@
 2025-12-02T06:08:52.182Z  INFO 1 --- [eureka-server] [Thread-9] [                                                 ] o.s.c.n.e.server.EurekaServerBootstrap   : Initialized server context
 2025-12-02T06:08:52.184Z  INFO 1 --- [eureka-server] [Thread-9] [                                                 ] c.n.e.r.PeerAwareInstanceRegistryImpl    : Got 1 instances from neighboring DS node
 2025-12-02T06:08:52.188Z  INFO 1 --- [eureka-server] [Thread-9] [                                                 ] c.n.e.r.PeerAwareInstanceRegistryImpl    : Renew threshold is: 1
-2025-12-02T06:08:52.196Z  INFO 1 --- [eureka-server] [Thread-9] [                                                 ] c.n.e.r.PeerAwareInstanceRegistryImpl    : Changing status to 
+2025-12-02T06:08:52.196Z  INFO 1 --- [eureka-server] [Thread-9] [                                                 ] c.n.e.r.PeerAwareInstanceRegistryImpl    : Changing status to UP
+2025-12-02T06:08:52.212Z  INFO 1 --- [eureka-server] [Thread-9] [                                                 ] e.s.EurekaServerInitializerConfiguration : Started Eureka Server
+2025-12-02T06:08:52.283Z  INFO 1 --- [eureka-server] [main] [                                                 ] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8761 (http) with context path '/'
+2025-12-02T06:08:52.292Z  INFO 1 --- [eureka-server] [main] [                                                 ] .s.c.n.e.s.EurekaAutoServiceRegistration : Updating port to 8761
+2025-12-02T06:08:52.442Z  INFO 1 --- [eureka-server] [main] [                                                 ] c.s.e.EurekaServerApplication            : Started EurekaServerApplication in 69.753 seconds (process running for 92.718)
+2025-12-02T06:08:53.587Z  INFO 1 --- [eureka-server] [http-nio-8761-exec-1] [                                                 ] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-12-02T06:08:53.588Z  INFO 1 --- [eureka-server] [http-nio-8761-exec-1] [                                                 ] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2025-12-02T06:08:53.592Z  INFO 1 --- [eureka-server] [http-nio-8761-exec-1] [                                                 ] o.s.web.servlet.DispatcherServlet        : Completed initialization in 3 ms
+2025-12-02T06:08:56.092Z  INFO 1 --- [eureka-server] [http-nio-8761-exec-2] [692e8276afda90e212277c1dc5b21626-12277c1dc5b21626] c.n.e.registry.AbstractInstanceRegistry  : Registered instance GATEWAY-SERVICE/bd086368f0e6:gateway-service:8080 with status UP (replication=false)
+2025-12-02T06:08:57.783Z  WARN 1 --- [eureka-server] [AsyncReporter{ZipkinRestTemplateSender{http://localhost:9411/api/v2/spans}}] [                                                 ] z.r.i.AsyncReporter$BoundedAsyncReporter : Spans were dropped due to exceptions. All subsequent errors will be logged at FINE level.
+2025-12-02T06:08:57.793Z  WARN 1 --- [eureka-server] [AsyncReporter{ZipkinRestTemplateSender{http://localhost:9411/api/v2/spans}}] [                                                 ] z.r.i.AsyncReporter$BoundedAsyncReporter : Dropped 1 spans due to ResourceAccessException(I/O error on POST request for "http://localhost:9411/api/v2/spans": Connect to http://localhost:9411 [localhost/127.0.0.1, localhost/0:0:0:0:0:0:0:1] failed: Connection refused)
+
+org.springframework.web.client.ResourceAccessException: I/O error on POST request for "http://localhost:9411/api/v2/spans": Connect to http://localhost:9411 [localhost/127.0.0.1, localhost/0:0:0:0:0:0:0:1] failed: Connection refused
+	at org.springframework.web.client.RestTemplate.createResourceAccessException(RestTemplate.java:915) ~[spring-web-6.1.13.jar!/:6.1.13]
+	at org.springframework.web.client.RestTemplate.doExecute(RestTemplate.java:895) ~[spring-web-6.1.13.jar!/:6.1.13]
+	at org.springframework.web.client.RestTemplate.execute(RestTemplate.java:830) ~[spring-web-6.1.13.jar!/:6.1.13]
+	at org.springframework.web.client.RestTemplate.exchange(RestTemplate.java:691) ~[spring-web-6.1.13.jar!/:6.1.13]
+	at org.springframework.boot.actuate.autoconfigure.tracing.zipkin.ZipkinRestTemplateSender.postSpans(ZipkinRestTemplateSender.java:50) ~[spring-boot-actuator-autoconfigure-3.3.4.jar!/:3.3.4]
+	at org.springframework.boot.actuate.autoconfigure.tracing.zipkin.HttpSender.postSpans(HttpSender.java:69) ~[spring-boot-actuator-autoconfigure-3.3.4.jar!/:3.3.4]
+	at org.springframework.boot.actuate.autoconfigure.tracing.zipkin.HttpSender.postSpans(HttpSender.java:41) ~[spring-boot-actuator-autoconfigure-3.3.4.jar!/:3.3.4]
+	at zipkin2.reporter.BaseHttpSender.send(BaseHttpSender.java:123) ~[zipkin-reporter-3.4.2.jar!/:na]
+	at zipkin2.reporter.internal.AsyncReporter$BoundedAsyncReporter.flush(AsyncReporter.java:266) ~[zipkin-reporter-3.4.2.jar!/:na]
+	at zipkin2.reporter.internal.AsyncReporter$Flusher.run(AsyncReporter.java:352) ~[zipkin-reporter-3.4.2.jar!/:na]
+	at java.base/java.lang.Thread.run(Thread.java:1583) ~[na:na]
+Caused by: org.apache.hc.client5.http.HttpHostConnectException: Connect to http://localhost:9411 [localhost/127.0.0.1, localhost/0:0:0:0:0:0:0:1] failed: Connection refused
+	at java.base/sun.nio.ch.Net.pollConnect(Native Method) ~[na:na]
+	at java.base/sun.nio.ch.Net.pollConnectNow(Net.java:682) ~[na:na]
+	at java.base/sun.nio.ch.NioSocketImpl.timedFinishConnect(NioSocketImpl.java:542) ~[na:na]
+	at java.base/sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:592) ~[na:na]
+	at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:327) ~[na:na]
+	at java.base/java.net.Socket.connect(Socket.java:751) ~[na:na]
+	at org.apache.hc.client5.http.socket.PlainConnectionSocketFactory.lambda$connectSocket$0(PlainConnectionSocketFactory.java:91) ~[httpclient5-5.3.1.jar!/:5.3.1]
+	at java.base/java.security.AccessController.doPrivileged(AccessController.java:571) ~[na:na]
+	at org.apache.hc.client5.http.socket.PlainConnectionSocketFactory.connectSocket(PlainConnectionSocketFactory.java:90) ~[httpclient5-5.3.1.jar!/:5.3.1]
+	at org.apache.hc.client5.http.socket.ConnectionSocketFactory.connectSocket(ConnectionSocketFactory.java:123) ~[httpclient5-5.3.1.jar!/:5.3.1]
+	at org.apache.hc.client5.http.impl.io.DefaultHttpClientConnectionOperator.connect(DefaultHttpClientConnectionOperator.java:189) ~[httpclient5-5.3.1.jar!/:5.3.1]
+	at org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManager.connect(PoolingHttpClientConnectionManager.java:450) ~[httpclient5-5.3.1.jar!/:5.3.1]
+	at org.apache.hc.client5.http.impl.classic.InternalExecRuntime.connectEndpoint(InternalExecRuntime.java:162) ~[httpclient5-5.3.1.jar!/:5.3.1]
+	at org.apache.hc.client5.http.impl.classic.InternalExecRuntime.connectEndpoint(InternalExecRuntime.java:172) ~[httpclient5-5.3.1.jar!/:5.3.1]
+	at org.apache.hc.client5.http.impl.classic.ConnectExec.execute(ConnectExec.java:142) ~[httpclient5-5.3.1.jar!/:5.3.1]
+	at org.apache.hc.client5.http.impl.classic.ExecChainElement.execute(ExecChainElement.java:51) ~[httpclient5-5.3.1.jar!/:5.3.1]
+	at org.apache.hc.client5.http.impl.classic.ProtocolExec.execute(ProtocolExec.java:192) ~[httpclient5-5.3.1.jar!/:5.3.1]
+	at org.apache.hc.client5.http.impl.classic.ExecChainElement.execute(ExecChainElement.java:51) ~[httpclient5-5.3.1.jar!/:5.3.1]
+	at org.apache.hc.client5.http.impl.classic.HttpRequestRetryExec.execute(HttpRequestRetryExec.java:113) ~[httpclient5-5.3.1.jar!/:5.3.1]
+	at org.apache.hc.client5.http.impl.classic.ExecChainElement.execute(ExecChainElement.java:51) ~[httpclient5-5.3.1.jar!/:5.3.1]
+	at org.apache.hc.client5.http.impl.classic.ContentCompressionExec.execute(ContentCompressionExec.java:152) ~[httpclient5-5.3.1.jar!/:5.3.1]
+	at org.apache.hc.client5.http.impl.classic.ExecChainElement.execute(ExecChainElement.java:51) ~[httpclient5-5.3.1.jar!/:5.3.1]
+	at org.apache.hc.client5.http.impl.classic.RedirectExec.execute(RedirectExec.java:116) ~[httpclient5-5.3.1.jar!/:5.3.1]
+	at org.apache.hc.client5.http.impl.classic.ExecChainElement.execute(ExecChainElement.java:51) ~[httpclient5-5.3.1.jar!/:5.3.1]
+	at org.apache.hc.client5.http.impl.classic.InternalHttpClient.doExecute(InternalHttpClient.java:170) ~[httpclient5-5.3.1.jar!/:5.3.1]
+	at org.apache.hc.client5.http.impl.classic.CloseableHttpClient.execute(CloseableHttpClient.java:87) ~[httpclient5-5.3.1.jar!/:5.3.1]
+	at org.apache.hc.client5.http.impl.classic.CloseableHttpClient.execute(CloseableHttpClient.java:55) ~[httpclient5-5.3.1.jar!/:5.3.1]
+	at org.apache.hc.client5.http.classic.HttpClient.executeOpen(HttpClient.java:183) ~[httpclient5-5.3.1.jar!/:5.3.1]
+	at org.springframework.http.client.HttpComponentsClientHttpRequest.executeInternal(HttpComponentsClientHttpRequest.java:99) ~[spring-web-6.1.13.jar!/:6.1.13]
+	at org.springframework.http.client.AbstractStreamingClientHttpRequest.executeInternal(AbstractStreamingClientHttpRequest.java:70) ~[spring-web-6.1.13.jar!/:6.1.13]
+	at org.springframework.http.client.AbstractClientHttpRequest.execute(AbstractClientHttpRequest.java:66) ~[spring-web-6.1.13.jar!/:6.1.13]
+	at org.springframework.web.client.RestTemplate.doExecute(RestTemplate.java:889) ~[spring-web-6.1.13.jar!/:6.1.13]
+	... 9 common frames omitted
+
+2025-12-02T06:08:57.940Z  INFO 1 --- [eureka-server] [http-nio-8761-exec-3] [692e827986c1e331b0c5a0f7bef5e92c-b0c5a0f7bef5e92c] c.n.e.registry.AbstractInstanceRegistry  : Registered instance GATEWAY-SERVICE/bd086368f0e6:gateway-service:8080 with status UP (replication=true)
+2025-12-02T06:09:05.234Z  INFO 1 --- [eureka-server] [http-nio-8761-exec-5] [692e8280b737e3e1a95b7bb69192690c-3ccba46384da8a77] c.n.e.registry.AbstractInstanceRegistry  : Registered instance ALERT-SERVICE/b17ee0cc7cf7:alert-service:8080 with status UP (replication=false)
+2025-12-02T06:09:05.782Z  INFO 1 --- [eureka-server] [http-nio-8761-exec-6] [692e8281d287d675ec5380b3e9665077-ec5380b3e9665077] c.n.e.registry.AbstractInstanceRegistry  : Registered instance ALERT-SERVICE/b17ee0cc7cf7:alert-service:8080 with status UP (replication=true)
+2025-12-02T06:09:08.911Z  INFO 1 --- [eureka-server] [http-nio-8761-exec-8] [692e828471e9ce3921945077297ec041-e3e88fad9bbe81d3] c.n.e.registry.AbstractInstanceRegistry  : Registered instance AUTH-SERVICE/3ace3b41e219:auth-service:8080 with status UP (replication=false)
+2025-12-02T06:09:09.436Z  INFO 1 --- [eureka-server] [http-nio-8761-exec-9] [692e8285f1e24f11be3fd54660513278-be3fd54660513278] c.n.e.registry.AbstractInstanceRegistry  : Registered instance AUTH-SERVICE/3ace3b41e219:auth-service:8080 with status UP (replication=true)
+2025-12-02T06:09:18.006Z  WARN 1 --- [eureka-server] [http-nio-8761-exec-1] [692e828dba6160ebcc56aab02e69107e-dee4081232f7065e] c.n.e.registry.AbstractInstanceRegistry  : DS: Registry: lease doesn't exist, registering resource: RECOGNITION-SERVICE - ff90fdc85a26:recognition-service:8080
+2025-12-02T06:09:18.016Z  WARN 1 --- [eureka-server] [http-nio-8761-exec-1] [692e828dba6160ebcc56aab02e69107e-dee4081232f7065e] c.n.eureka.resources.InstanceResource    : Not Found (Renew): RECOGNITION-SERVICE - ff90fdc85a26:recognition-service:8080
+2025-12-02T06:09:18.236Z  INFO 1 --- [eureka-server] [http-nio-8761-exec-2] [692e828e342f4aed0051865d7500257c-6fb655e180c793d8] c.n.e.registry.AbstractInstanceRegistry  : Registered instance RECOGNITION-SERVICE/ff90fdc85a26:recognition-service:8080 with status UP (replication=false)
+2025-12-02T06:09:18.751Z  INFO 1 --- [eureka-server] [http-nio-8761-exec-3] [692e828e99f079d7dfddf5e249eef9a8-dfddf5e249eef9a8] c.n.e.registry.AbstractInstanceRegistry  : Registered instance RECOGNITION-SERVICE/ff90fdc85a26:recognition-service:8080 with status UP (replication=true)
+2025-12-02T06:09:52.202Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 0ms
+2025-12-02T06:10:52.202Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 5ms
+2025-12-02T06:11:52.202Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 4ms
+2025-12-02T06:12:52.202Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 6ms
+2025-12-02T06:13:52.202Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 4ms
+2025-12-02T06:14:52.202Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 5ms
+2025-12-02T06:15:52.202Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 5ms
+2025-12-02T06:16:52.203Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 5ms
+2025-12-02T06:17:52.202Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 5ms
+2025-12-02T06:18:52.203Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 5ms
+2025-12-02T06:19:52.203Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 5ms
+2025-12-02T06:20:52.203Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 4ms
+2025-12-02T06:21:52.204Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 6ms
+2025-12-02T06:22:52.205Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 5ms
+2025-12-02T06:23:51.464Z  INFO 1 --- [eureka-server] [ReplicaAwareInstanceRegistry - RenewalThresholdUpdater] [                                                 ] c.n.e.r.PeerAwareInstanceRegistryImpl    : Current renewal threshold is : 0
+2025-12-02T06:23:52.206Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 5ms
+2025-12-02T06:24:52.207Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 5ms
+2025-12-02T06:25:52.207Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 5ms
+2025-12-02T06:26:52.207Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 5ms
+2025-12-02T06:27:52.207Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 4ms
+2025-12-02T06:28:52.207Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 6ms
+2025-12-02T06:29:52.207Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 4ms
+2025-12-02T06:30:52.208Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 6ms
+2025-12-02T06:31:52.208Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 5ms
+2025-12-02T06:32:52.208Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 5ms
+2025-12-02T06:33:52.208Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 5ms
+2025-12-02T06:34:52.208Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 4ms
+2025-12-02T06:35:52.208Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 5ms
+2025-12-02T06:36:52.209Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 6ms
+2025-12-02T06:37:52.209Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 5ms
+2025-12-02T06:38:51.462Z  INFO 1 --- [eureka-server] [ReplicaAwareInstanceRegistry - RenewalThresholdUpdater] [                                                 ] c.n.e.r.PeerAwareInstanceRegistryImpl    : Current renewal threshold is : 0
+2025-12-02T06:38:52.209Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 5ms
+2025-12-02T06:39:52.209Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 5ms
+2025-12-02T06:40:52.209Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 5ms
+2025-12-02T06:41:52.209Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 4ms
+2025-12-02T06:42:52.210Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 6ms
+2025-12-02T06:43:52.282Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 77ms
+2025-12-02T06:44:21.116Z ERROR 1 --- [eureka-server] [TaskBatchingWorker-target_localhost-17] [                                                 ] c.n.e.cluster.ReplicationTaskProcessor   : It seems to be a socket read timeout exception, it will retry later. if it continues to happen and some eureka node occupied all the cpu time, you should set property 'eureka.server.peer-node-read-timeout-ms' to a bigger value
+
+jakarta.ws.rs.ProcessingException: java.net.SocketTimeoutException: Read timed out
+	at org.glassfish.jersey.apache.connector.ApacheConnector.apply(ApacheConnector.java:534) ~[jersey-apache-connector-3.1.8.jar!/:na]
+	at org.glassfish.jersey.client.ClientRuntime.invoke(ClientRuntime.java:300) ~[jersey-client-3.1.8.jar!/:na]
+	at org.glassfish.jersey.client.JerseyInvocation.lambda$invoke$0(JerseyInvocation.java:674) ~[jersey-client-3.1.8.jar!/:na]
+	at org.glassfish.jersey.client.JerseyInvocation.call(JerseyInvocation.java:709) ~[jersey-client-3.1.8.jar!/:na]
+	at org.glassfish.jersey.client.JerseyInvocation.lambda$runInScope$3(JerseyInvocation.java:703) ~[jersey-client-3.1.8.jar!/:na]
+	at org.glassfish.jersey.internal.Errors.process(Errors.java:292) ~[jersey-common-3.1.8.jar!/:na]
+	at org.glassfish.jersey.internal.Errors.process(Errors.java:274) ~[jersey-common-3.1.8.jar!/:na]
+	at org.glassfish.jersey.internal.Errors.process(Errors.java:205) ~[jersey-common-3.1.8.jar!/:na]
+	at org.glassfish.jersey.process.internal.RequestScope.runInScope(RequestScope.java:391) ~[jersey-common-3.1.8.jar!/:na]
+	at org.glassfish.jersey.client.JerseyInvocation.runInScope(JerseyInvocation.java:703) ~[jersey-client-3.1.8.jar!/:na]
+	at org.glassfish.jersey.client.JerseyInvocation.invoke(JerseyInvocation.java:673) ~[jersey-client-3.1.8.jar!/:na]
+	at org.glassfish.jersey.client.JerseyInvocation$Builder.method(JerseyInvocation.java:439) ~[jersey-client-3.1.8.jar!/:na]
+	at org.glassfish.jersey.client.JerseyInvocation$Builder.post(JerseyInvocation.java:345) ~[jersey-client-3.1.8.jar!/:na]
+	at com.netflix.eureka.transport.Jersey3ReplicationClient.submitBatchUpdates(Jersey3ReplicationClient.java:116) ~[eureka-core-jersey3-2.0.3.jar!/:2.0.3]
+	at com.netflix.eureka.cluster.ReplicationTaskProcessor.process(ReplicationTaskProcessor.java:80) ~[eureka-core-2.0.3.jar!/:2.0.3]
+	at com.netflix.eureka.util.batcher.TaskExecutors$BatchWorkerRunnable.run(TaskExecutors.java:178) ~[eureka-core-2.0.3.jar!/:2.0.3]
+	at java.base/java.lang.Thread.run(Thread.java:1583) ~[na:na]
+Caused by: java.net.SocketTimeoutException: Read timed out
+	at java.base/sun.nio.ch.NioSocketImpl.timedRead(NioSocketImpl.java:278) ~[na:na]
+	at java.base/sun.nio.ch.NioSocketImpl.implRead(NioSocketImpl.java:304) ~[na:na]
+	at java.base/sun.nio.ch.NioSocketImpl.read(NioSocketImpl.java:346) ~[na:na]
+	at java.base/sun.nio.ch.NioSocketImpl$1.read(NioSocketImpl.java:796) ~[na:na]
+	at java.base/java.net.Socket$SocketInputStream.read(Socket.java:1099) ~[na:na]
+	at org.apache.http.impl.io.SessionInputBufferImpl.streamRead(SessionInputBufferImpl.java:137) ~[httpcore-4.4.16.jar!/:4.4.16]
+	at org.apache.http.impl.io.SessionInputBufferImpl.fillBuffer(SessionInputBufferImpl.java:153) ~[httpcore-4.4.16.jar!/:4.4.16]
+	at org.apache.http.impl.io.SessionInputBufferImpl.readLine(SessionInputBufferImpl.java:280) ~[httpcore-4.4.16.jar!/:4.4.16]
+	at org.apache.http.impl.conn.DefaultHttpResponseParser.parseHead(DefaultHttpResponseParser.java:138) ~[httpclient-4.5.3.jar!/:4.5.3]
+	at org.apache.http.impl.conn.DefaultHttpResponseParser.parseHead(DefaultHttpResponseParser.java:56) ~[httpclient-4.5.3.jar!/:4.5.3]
+	at org.apache.http.impl.io.AbstractMessageParser.parse(AbstractMessageParser.java:259) ~[httpcore-4.4.16.jar!/:4.4.16]
+	at org.apache.http.impl.DefaultBHttpClientConnection.receiveResponseHeader(DefaultBHttpClientConnection.java:163) ~[httpcore-4.4.16.jar!/:4.4.16]
+	at org.apache.http.impl.conn.CPoolProxy.receiveResponseHeader(CPoolProxy.java:165) ~[httpclient-4.5.3.jar!/:4.5.3]
+	at org.apache.http.protocol.HttpRequestExecutor.doReceiveResponse(HttpRequestExecutor.java:273) ~[httpcore-4.4.16.jar!/:4.4.16]
+	at org.apache.http.protocol.HttpRequestExecutor.execute(HttpRequestExecutor.java:125) ~[httpcore-4.4.16.jar!/:4.4.16]
+	at org.apache.http.impl.execchain.MainClientExec.execute(MainClientExec.java:272) ~[httpclient-4.5.3.jar!/:4.5.3]
+	at org.apache.http.impl.execchain.ProtocolExec.execute(ProtocolExec.java:185) ~[httpclient-4.5.3.jar!/:4.5.3]
+	at org.apache.http.impl.execchain.RetryExec.execute(RetryExec.java:89) ~[httpclient-4.5.3.jar!/:4.5.3]
+	at org.apache.http.impl.execchain.RedirectExec.execute(RedirectExec.java:111) ~[httpclient-4.5.3.jar!/:4.5.3]
+	at org.apache.http.impl.client.InternalHttpClient.doExecute(InternalHttpClient.java:185) ~[httpclient-4.5.3.jar!/:4.5.3]
+	at org.apache.http.impl.client.CloseableHttpClient.execute(CloseableHttpClient.java:72) ~[httpclient-4.5.3.jar!/:4.5.3]
+	at org.glassfish.jersey.apache.connector.ApacheConnector.apply(ApacheConnector.java:486) ~[jersey-apache-connector-3.1.8.jar!/:na]
+	... 16 common frames omitted
+
+2025-12-02T06:44:52.283Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 5ms
+2025-12-02T06:45:52.284Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 8ms
+2025-12-02T06:46:52.284Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 5ms
+2025-12-02T06:47:52.285Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 5ms
+2025-12-02T06:48:52.285Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 6ms
+2025-12-02T06:49:52.300Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 20ms
+2025-12-02T06:50:52.300Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 5ms
+2025-12-02T06:51:52.301Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 5ms
+2025-12-02T06:52:52.301Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 5ms
+2025-12-02T06:53:51.462Z  INFO 1 --- [eureka-server] [ReplicaAwareInstanceRegistry - RenewalThresholdUpdater] [                                                 ] c.n.e.r.PeerAwareInstanceRegistryImpl    : Current renewal threshold is : 0
+2025-12-02T06:53:52.301Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 5ms
+2025-12-02T06:54:52.302Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 5ms
+2025-12-02T06:55:52.302Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 17ms
+2025-12-02T06:56:52.302Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 8ms
+2025-12-02T06:57:52.302Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 8ms
+2025-12-02T06:58:52.303Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 13ms
+2025-12-02T06:59:52.307Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 15ms
+2025-12-02T07:00:52.307Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 11ms
+2025-12-02T07:01:52.308Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 10ms
+2025-12-02T07:02:52.308Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 10ms
+2025-12-02T07:03:52.310Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 12ms
+2025-12-02T07:04:52.314Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 14ms
+2025-12-02T07:05:52.314Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 10ms
+2025-12-02T07:06:52.314Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 8ms
+2025-12-02T07:07:52.315Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 10ms
+2025-12-02T07:08:51.462Z  INFO 1 --- [eureka-server] [ReplicaAwareInstanceRegistry - RenewalThresholdUpdater] [                                                 ] c.n.e.r.PeerAwareInstanceRegistryImpl    : Current renewal threshold is : 0
+2025-12-02T07:08:52.315Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 8ms
+2025-12-02T07:09:52.315Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 8ms
+2025-12-02T07:10:52.315Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 6ms
+2025-12-02T07:11:52.316Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 7ms
+2025-12-02T07:12:52.316Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 7ms
+2025-12-02T07:13:52.317Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 6ms
+2025-12-02T07:14:52.317Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 7ms
+2025-12-02T07:15:52.317Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 7ms
+2025-12-02T07:16:52.318Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 6ms
+2025-12-02T07:17:52.318Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 7ms
+2025-12-02T07:18:52.319Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 6ms
+2025-12-02T07:19:52.319Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 6ms
+2025-12-02T07:20:52.318Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 5ms
+2025-12-02T07:21:52.318Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 6ms
+2025-12-02T07:22:52.318Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 5ms
+2025-12-02T07:23:51.463Z  INFO 1 --- [eureka-server] [ReplicaAwareInstanceRegistry - RenewalThresholdUpdater] [                                                 ] c.n.e.r.PeerAwareInstanceRegistryImpl    : Current renewal threshold is : 0
+2025-12-02T07:23:52.318Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 5ms
+2025-12-02T07:24:52.318Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 6ms
+2025-12-02T07:25:52.318Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 5ms
+2025-12-02T07:26:52.318Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 5ms
+2025-12-02T07:27:52.318Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 6ms
+2025-12-02T07:28:52.319Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 6ms
+2025-12-02T07:29:52.319Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 6ms
+2025-12-02T07:30:52.319Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 5ms
+2025-12-02T07:31:52.319Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 5ms
+2025-12-02T07:32:52.319Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 6ms
+2025-12-02T07:33:52.319Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 5ms
+2025-12-02T07:34:52.319Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 5ms
+2025-12-02T07:35:52.319Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 5ms
+2025-12-02T07:36:52.320Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 6ms
+2025-12-02T07:37:52.321Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 7ms
+2025-12-02T07:38:51.463Z  INFO 1 --- [eureka-server] [ReplicaAwareInstanceRegistry - RenewalThresholdUpdater] [                                                 ] c.n.e.r.PeerAwareInstanceRegistryImpl    : Current renewal threshold is : 0
+2025-12-02T07:38:52.322Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 6ms
+2025-12-02T07:39:52.321Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 5ms
+2025-12-02T07:40:52.322Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 6ms
+2025-12-02T07:41:52.322Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 5ms
+2025-12-02T07:42:52.322Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 7ms
+2025-12-02T07:43:52.322Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 5ms
+2025-12-02T07:44:52.322Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 5ms
+2025-12-02T07:45:52.323Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 6ms
+2025-12-02T07:46:52.323Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 5ms
+2025-12-02T07:47:52.323Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 5ms
+2025-12-02T07:48:52.324Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 6ms
+2025-12-02T07:49:52.324Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 5ms
+2025-12-02T07:50:52.324Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 5ms
+2025-12-02T13:54:44.321Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 0ms
+2025-12-02T13:55:44.321Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 3ms
+2025-12-02T13:56:43.386Z  INFO 1 --- [eureka-server] [ReplicaAwareInstanceRegistry - RenewalThresholdUpdater] [                                                 ] c.n.e.r.PeerAwareInstanceRegistryImpl    : Current renewal threshold is : 0
+2025-12-02T13:56:44.321Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 3ms
+2025-12-02T13:57:44.322Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 4ms
+2025-12-02T13:58:44.322Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 3ms
+2025-12-02T13:59:44.322Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 3ms
+2025-12-02T14:00:44.323Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 4ms
+2025-12-02T14:01:44.323Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 4ms
+2025-12-02T14:02:44.324Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 3ms
+2025-12-02T14:03:44.324Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 4ms
+2025-12-02T14:04:44.324Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 3ms
+2025-12-02T14:05:44.324Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 3ms
+2025-12-02T14:06:44.325Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 4ms
+2025-12-02T14:07:44.326Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 4ms
+2025-12-02T14:08:44.325Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 3ms
+2025-12-02T14:09:44.326Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 4ms
+2025-12-02T14:10:44.325Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 3ms
+2025-12-02T14:11:43.390Z  INFO 1 --- [eureka-server] [ReplicaAwareInstanceRegistry - RenewalThresholdUpdater] [                                                 ] c.n.e.r.PeerAwareInstanceRegistryImpl    : Current renewal threshold is : 0
+2025-12-02T14:11:44.325Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 3ms
+2025-12-02T14:12:44.325Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 4ms
+2025-12-02T14:13:44.326Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 4ms
+2025-12-02T14:14:44.325Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 3ms
+2025-12-02T14:15:44.326Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 1ms
+2025-12-02T14:16:44.326Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 0ms
+2025-12-02T14:17:44.326Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 2ms
+2025-12-02T14:18:44.326Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 4ms
+2025-12-02T14:19:44.326Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 2ms
+2025-12-02T14:20:44.326Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 4ms
+2025-12-02T14:21:44.326Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 2ms
+2025-12-02T14:22:44.327Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 3ms
+2025-12-02T14:23:44.327Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 4ms
+2025-12-02T14:24:44.327Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 3ms
+2025-12-02T14:25:44.327Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 3ms
+2025-12-02T14:26:43.386Z  INFO 1 --- [eureka-server] [ReplicaAwareInstanceRegistry - RenewalThresholdUpdater] [                                                 ] c.n.e.r.PeerAwareInstanceRegistryImpl    : Current renewal threshold is : 0
+2025-12-02T14:26:44.327Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 3ms
+2025-12-02T14:27:44.327Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 3ms
+2025-12-02T14:28:44.328Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 4ms
+2025-12-02T14:29:44.328Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 3ms
+2025-12-02T14:30:44.328Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 3ms
+2025-12-02T14:31:44.328Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 3ms
+2025-12-02T14:32:44.329Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 4ms
+2025-12-02T14:33:44.330Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 6ms
+2025-12-02T14:34:44.330Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 5ms
+2025-12-02T14:35:44.330Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 4ms
+2025-12-02T14:36:44.330Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 5ms
+2025-12-02T14:37:44.330Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 4ms
+2025-12-02T14:38:44.330Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 5ms
+2025-12-02T14:39:44.330Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 4ms
+2025-12-02T14:40:44.331Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 4ms
+2025-12-02T14:41:43.387Z  INFO 1 --- [eureka-server] [ReplicaAwareInstanceRegistry - RenewalThresholdUpdater] [                                                 ] c.n.e.r.PeerAwareInstanceRegistryImpl    : Current renewal threshold is : 0
+2025-12-02T14:41:44.331Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 4ms
+2025-12-02T14:42:44.331Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 5ms
+2025-12-02T14:43:44.331Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 4ms
+2025-12-02T14:44:44.331Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 4ms
+2025-12-02T14:45:44.332Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 4ms
+2025-12-02T14:46:44.331Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 4ms
+2025-12-02T14:47:44.332Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 4ms
+2025-12-02T14:48:44.333Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 5ms
+2025-12-02T14:49:44.332Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 4ms
+2025-12-02T14:50:44.332Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 5ms
+2025-12-02T14:51:44.333Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 5ms
+2025-12-02T14:52:44.334Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 7ms
+2025-12-02T14:53:44.335Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 6ms
+2025-12-02T14:54:44.335Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 6ms
+2025-12-02T14:55:44.335Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 5ms
+2025-12-02T14:56:43.387Z  INFO 1 --- [eureka-server] [ReplicaAwareInstanceRegistry - RenewalThresholdUpdater] [                                                 ] c.n.e.r.PeerAwareInstanceRegistryImpl    : Current renewal threshold is : 0
+2025-12-02T14:56:44.335Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 6ms
+2025-12-02T14:57:44.335Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 4ms
+2025-12-02T14:58:44.335Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 5ms
+2025-12-02T14:59:44.336Z  INFO 1 --- [eureka-server] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 5ms
