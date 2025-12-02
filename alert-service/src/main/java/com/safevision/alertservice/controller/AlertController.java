@@ -1,102 +1,69 @@
 package com.safevision.alertservice.controller;
 
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Value;
+import com.safevision.alertservice.dto.AlertEventDTO;
+import com.safevision.alertservice.dto.AlertResponse;
+import com.safevision.alertservice.service.AlertService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.*;
 
-import com.safevision.alertservice.model.Alert;
-import com.safevision.alertservice.service.AlertService;
-
-import lombok.RequiredArgsConstructor;
+import java.util.List;
 
 @RestController
-@RequestMapping("/alerts")
+@RequestMapping("/alert") // Singular (Alinhado com GatewayRoutes)
 @RequiredArgsConstructor
 public class AlertController {
 
     private final AlertService alertService;
 
-    // internal token used to accept events from recognition-service
-    @Value("${internal.token}")
-    private String internalToken;
-
     // -------------------------
-    // Internal endpoint used by recognition-service (or other internal services)
-    // Must provide header: X-Internal-Token: <internalToken>
+    // Endpoint para Máquinas (Testes HTTP ou Fallback)
+    // O fluxo principal de produção é via RabbitMQ
     // -------------------------
-    public static record AlertEventRequest(
-            String userId,
-            String alertType,
-            String cameraId,
-            String description,
-            String severity
-    ) {}
-
     @PostMapping("/event")
-    public ResponseEntity<?> receiveEvent(@RequestHeader(value = "X-Internal-Token", required = false) String token,
-                                          @RequestBody AlertEventRequest event) {
-
-        if (token == null || !token.equals(internalToken)) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Forbidden - invalid internal token");
-        }
-
+    public ResponseEntity<Void> receiveEvent(@RequestBody AlertEventDTO event) {
+        
+        // Validações básicas de entrada
         if (event == null || event.userId() == null || event.alertType() == null) {
-            return ResponseEntity.badRequest().body("Missing userId or alertType");
+            return ResponseEntity.badRequest().build();
         }
 
-        Alert alert = alertService.createFromEvent(
-                event.userId(),
-                event.alertType(),
-                event.cameraId(),
-                event.description(),
-                event.severity() == null ? "INFO" : event.severity());
+        // Chama o serviço (que agora sabe lidar com DTO)
+        alertService.createAlert(event);
 
-        // TODO: hook for notifications (email, push, websocket)
-        System.out.println("Created alert: " + alert.getId() + " for user " + alert.getUserId());
-
-        return ResponseEntity.status(HttpStatus.CREATED).body(alert);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     // -------------------------
-    // Endpoints for users - gateway must forward X-User-Id header (from JWT)
+    // Endpoints para Usuários (Frontend)
     // -------------------------
 
     @GetMapping
-    public ResponseEntity<List<Alert>> listForUser(@RequestHeader("X-User-Id") String userId) {
-        var list = alertService.getAlertsForUser(userId);
-        return ResponseEntity.ok(list);
+    public ResponseEntity<List<AlertResponse>> getMyAlerts(
+            Authentication authentication,
+            @RequestParam(defaultValue = "false") boolean unreadOnly) {
+        
+        // Extrai o usuário do Token JWT validado pelo SecurityConfig
+        String userId = authentication.getName();
+        
+        // Busca usando a lógica do Service que já retorna DTOs
+        List<AlertResponse> alerts = alertService.getUserAlerts(userId, unreadOnly);
+        
+        return ResponseEntity.ok(alerts);
     }
 
-    @GetMapping("/unread")
-    public ResponseEntity<List<Alert>> unreadForUser(@RequestHeader("X-User-Id") String userId) {
-        var list = alertService.getUnreadAlertsForUser(userId);
-        return ResponseEntity.ok(list);
-    }
-
-    @PostMapping("/{id}/ack")
-    public ResponseEntity<?> acknowledge(@PathVariable String id, @RequestHeader("X-User-Id") String userId) {
-        var result = alertService.acknowledge(id, userId);
-        if (result.isPresent() && result.get() != null) {
-            return ResponseEntity.ok(result.get());
+    @PatchMapping("/{id}/ack") // Patch é semanticamente correto para atualização parcial
+    public ResponseEntity<Void> acknowledgeAlert(@PathVariable String id, Authentication authentication) {
+        String userId = authentication.getName();
+        
+        boolean success = alertService.acknowledgeAlert(id, userId);
+        
+        if (success) {
+            return ResponseEntity.noContent().build(); // 204 No Content (Sucesso sem corpo)
         } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Alert not found or not permitted");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build(); // 404 (Não achou ou não é dono)
         }
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<?> getAlert(@PathVariable String id, @RequestHeader("X-User-Id") String userId) {
-        return alertService.getAlert(id)
-                .filter(alert -> alert.getUserId().equals(userId))
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).body("Not found or not permitted"));
     }
 }

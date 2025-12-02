@@ -1,14 +1,14 @@
 server:
-  port: 8080
+  port: 8080 
 
 spring:
   application:
     name: auth-service
 
   datasource:
-    url: jdbc:postgresql://postgres:5432/safevision
-    username: user
-    password: pass
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/safevision}
+    username: ${SPRING_DATASOURCE_USERNAME:user}
+    password: ${SPRING_DATASOURCE_PASSWORD:pass}
     driver-class-name: org.postgresql.Driver
 
   jpa:
@@ -19,19 +19,39 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
 
+# --- CONFIGURAÇÃO ZIPKIN E METRICAS ---
 management:
   endpoints:
     web:
       exposure:
-        include: "*"
+        include: "health,info,prometheus"
+  tracing:
+    sampling:
+      probability: 1.0 
+  zipkin:
+    tracing:
+      endpoint: "http://zipkin:9411/api/v2/spans"
 
 eureka:
   client:
     serviceUrl:
-      defaultZone: http://eureka-server:8761/eureka/
+      defaultZone: ${EUREKA_CLIENT_SERVICEURL_DEFAULTZONE:http://localhost:8761/eureka/}
     register-with-eureka: true
     fetch-registry: true
 
-jwt:
-  secret-base64: ${JWT_SECRET_BASE64}
-  expiration-ms: 3600000
+safevision:
+  jwt:
+    secret: ${SAFEVISION_JWT_SECRET:segredo_padrao_apenas_para_desenvolvimento_local_sem_docker}
+    expiration-ms: 86400000
+
+logging:
+  file:
+    name: /var/logs/${spring.application.name}.log 
+  logback:
+    rollingpolicy:
+      max-file-size: 10MB
+      max-history: 7
+  level:
+    root: INFO
+    org.springframework.security: DEBUG
+    com.safevision: DEBUG

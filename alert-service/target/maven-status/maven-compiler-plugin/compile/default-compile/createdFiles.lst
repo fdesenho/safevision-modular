@@ -1,1 +1,12 @@
+com\safevision\alertservice\config\RabbitMQConfig.class
+com\safevision\alertservice\model\Alert$AlertBuilder.class
+com\safevision\alertservice\dto\AlertEventDTO.class
+com\safevision\alertservice\service\TelephonyService.class
+com\safevision\alertservice\controller\AlertController.class
+com\safevision\alertservice\listener\AlertListener.class
+com\safevision\alertservice\service\AlertService.class
+com\safevision\alertservice\config\SecurityConfig.class
 com\safevision\alertservice\AlertServiceApplication.class
+com\safevision\alertservice\model\Alert.class
+com\safevision\alertservice\repository\AlertRepository.class
+com\safevision\alertservice\dto\AlertResponse.class

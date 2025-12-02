@@ -1,78 +1,81 @@
-# application.yml para o gateway-service
+server:
+  port: 8080
 
 spring:
   application:
     name: gateway-service
-
   cloud:
-    eureka:
-      client:
-        serviceUrl:
-          defaultZone: http://eureka-server:8761/eureka/
-        enabled: true
-
     gateway:
       discovery:
         locator:
-          enabled: true
-          lowerCaseServiceId: true
+          enabled: false
+          lower-case-service-id: true
+    circuitbreaker:
+      configs:
+        default:
+          slidingWindowType: COUNT_BASED
+          slidingWindowSize: 10
+          failureRateThreshold: 50
+          waitDurationInOpenState: 5s
+          permittedNumberOfCallsInHalfOpenState: 3
+          recordExceptions:
+            - org.springframework.web.client.ResourceAccessException
+            - java.io.IOException
 
-      # Configurações do Circuit Breaker com Resilience4j
-      circuitbreaker:
-        # Configurações padrão para todos os circuit breakers,
-        # a menos que sobrescritas por configurações específicas.
-        configs:
-          default:
-            slidingWindowType: COUNT_BASED # Tipo de janela deslizante: COUNT_BASED ou TIME_BASED
-            slidingWindowSize: 10 # Número de chamadas para o COUNT_BASED
-            failureRateThreshold: 50 # Limite da taxa de falha (em %) para abrir o circuito
-            waitDurationInOpenState: 5s # Quanto tempo o circuito fica aberto antes de ir para HALF_OPEN
-            permittedNumberOfCallsInHalfOpenState: 3 # Nº de chamadas no HALF_OPEN antes de fechar
-            recordExceptions: # Exceções que devem ser consideradas falhas
-              - org.springframework.web.client.ResourceAccessException
-              - java.io.IOException
-              # Adicione outras exceções relevantes para seus serviços, se necessário
+eureka:
+  client:
+    service-url:
+      defaultZone: ${EUREKA_CLIENT_SERVICEURL_DEFAULTZONE:http://localhost:8761/eureka/}
+    enabled: true
+    register-with-eureka: true
+    fetch-registry: true
 
-        # Configurações específicas para cada Circuit Breaker, usando os IDs da sua classe GatewayConstants
-        resilience4j:
-          circuitBreakers:
-            # Exemplo para authServiceCircuitBreaker
-            authServiceCircuitBreaker:
-              baseConfig: default # Usa a configuração 'default' como base
-              failureRateThreshold: 60 # Sobrescreve a taxa de falha para este CB específico
-              waitDurationInOpenState: 10s # Sobrescreve o tempo de espera
+resilience4j:
+  circuitbreaker:
+    instances:
+      authServiceCircuitBreaker:
+        baseConfig: default
+      alertServiceCircuitBreaker:
+        baseConfig: default
+      recognitionServiceCircuitBreaker:
+        baseConfig: default
+    configs:
+      default:
+        slidingWindowSize: 10
 
-            # Configurações para os outros Circuit Breakers do seu Routes.java
-            authServiceSwaggerCircuitBreaker:
-              baseConfig: default # Pode usar a base ou definir suas próprias propriedades
-            alertServiceCircuitBreaker:
-              baseConfig: default
-            alertServiceSwaggerCircuitBreaker:
-              baseConfig: default
-            recognitionServiceCircuitBreaker:
-              baseConfig: default
-            recognitionServiceSwaggerCircuitBreaker:
-              baseConfig: default
-
+# --- CONFIGURAÇÃO ZIPKIN E METRICAS ---
 management:
   endpoints:
     web:
       exposure:
-        include: "*" # Para Actuator, inclui endpoints de health, metrics, circuitbreakers etc.
+        include: "health,info,prometheus"
+  tracing:
+    sampling:
+      probability: 1.0 # 100% de amostragem para Dev
+  zipkin:
+    tracing:
+      endpoint: "http://zipkin:9411/api/v2/spans"
 
-  # Configurações de métricas para o Resilience4j (opcional, requer micrometer-registry-prometheus)
-  metrics:
+metrics:
     tags:
-      application: ${spring.application.name} # Adiciona tag 'application' a todas as métricas
-
-server:
-  port: 8080
+      application: ${spring.application.name}
 
 safevision:
   services:
-    auth: lb://AUTH-SERVICE
-    alert: lb://ALERT-SERVICE
-    recognition: lb://RECOGNITION-SERVICE
+    auth: ${SAFEVISION_SERVICES_AUTH:lb://AUTH-SERVICE}
+    alert: ${SAFEVISION_SERVICES_ALERT:lb://ALERT-SERVICE}
+    recognition: ${SAFEVISION_SERVICES_RECOGNITION:lb://RECOGNITION-SERVICE}
+  
+  jwt:
+    secret: ${SAFEVISION_JWT_SECRET:segredo_padrao_apenas_para_desenvolvimento_local_sem_docker}
 
-jwt:
-  secret-base64: ${JWT_SECRET_BASE64}
+logging:
+  file:
+    name: /var/logs/${spring.application.name}.log 
+  logback:
+    rollingpolicy:
+      max-file-size: 10MB
+      max-history: 7
+  level:
+    root: INFO
+    com.safevision: DEBUG

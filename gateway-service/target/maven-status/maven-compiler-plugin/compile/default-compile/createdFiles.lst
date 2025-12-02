@@ -1,1 +1,4 @@
+com\safevision\gatewayservice\config\SecurityConfig.class
+com\safevision\gatewayservice\config\CorsGlobalConfig.class
 com\safevision\gatewayservice\GatewayServiceApplication.class
+com\safevision\gatewayservice\routes\GatewayRoutes.class

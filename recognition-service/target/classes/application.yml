@@ -1,19 +1,53 @@
 server:
-  port: 8080
+  port: 8080 
 
 spring:
   application:
     name: recognition-service
 
+  rabbitmq:
+    host: ${RABBITMQ_HOST:localhost}      
+    port: 5672
+    username: ${RABBITMQ_USERNAME:user}
+    password: ${RABBITMQ_PASSWORD:password}
+    queues:
+      raw-tracking: ${VISION_QUEUE_NAME:vision.raw.tracking} 
+      alerts: ${ALERTS_QUEUE_NAME:safevision.alerts.queue}
+
+# --- CONFIGURAÇÃO ZIPKIN E METRICAS ---
 management:
   endpoints:
     web:
       exposure:
-        include: "*"
+        include: "health,info,prometheus"
+  tracing:
+    sampling:
+      probability: 1.0 
+  zipkin:
+    tracing:
+      endpoint: "http://zipkin:9411/api/v2/spans"
 
 eureka:
   client:
     serviceUrl:
-      defaultZone: http://eureka-server:8761/eureka/
+      defaultZone: ${EUREKA_CLIENT_SERVICEURL_DEFAULTZONE:http://localhost:8761/eureka/}
     register-with-eureka: true
     fetch-registry: true
+
+safevision:
+  services:
+    alert: ${SAFEVISION_SERVICES_ALERT:http://alert-service:8080}
+  jwt:
+    secret: ${SAFEVISION_JWT_SECRET:segredo_padrao_apenas_para_desenvolvimento_local_sem_docker}
+
+logging:
+  file:
+    name: /var/logs/${spring.application.name}.log 
+  logback:
+    rollingpolicy:
+      max-file-size: 10MB
+      max-history: 7
+  level:
+    root: INFO
+    com.safevision: DEBUG 
+    org.springframework.amqp: INFO

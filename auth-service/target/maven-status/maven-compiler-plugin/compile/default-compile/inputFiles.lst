@@ -1,7 +1,9 @@
 C:\Users\work\eclipse-workspace\safevision-modular\auth-service\src\main\java\com\safevision\authservice\AuthServiceApplication.java
-C:\Users\work\eclipse-workspace\safevision-modular\auth-service\src\main\java\com\safevision\authservice\config\JwtConfig.java
+C:\Users\work\eclipse-workspace\safevision-modular\auth-service\src\main\java\com\safevision\authservice\config\SecurityConfig.java
 C:\Users\work\eclipse-workspace\safevision-modular\auth-service\src\main\java\com\safevision\authservice\controller\AuthController.java
+C:\Users\work\eclipse-workspace\safevision-modular\auth-service\src\main\java\com\safevision\authservice\dto\RegisterRequest.java
+C:\Users\work\eclipse-workspace\safevision-modular\auth-service\src\main\java\com\safevision\authservice\dto\UserResponse.java
 C:\Users\work\eclipse-workspace\safevision-modular\auth-service\src\main\java\com\safevision\authservice\model\User.java
 C:\Users\work\eclipse-workspace\safevision-modular\auth-service\src\main\java\com\safevision\authservice\repository\UserRepository.java
-C:\Users\work\eclipse-workspace\safevision-modular\auth-service\src\main\java\com\safevision\authservice\security\CustomJwtUtil.java
+C:\Users\work\eclipse-workspace\safevision-modular\auth-service\src\main\java\com\safevision\authservice\service\JwtService.java
 C:\Users\work\eclipse-workspace\safevision-modular\auth-service\src\main\java\com\safevision\authservice\service\UserService.java

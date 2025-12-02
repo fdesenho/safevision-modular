@@ -1,0 +1,12 @@
+com\safevision\authservice\repository\UserRepository.class
+com\safevision\authservice\service\JwtService.class
+com\safevision\authservice\controller\AuthController$TokenResponse.class
+com\safevision\authservice\dto\RegisterRequest.class
+com\safevision\authservice\service\UserService.class
+com\safevision\authservice\config\SecurityConfig.class
+com\safevision\authservice\model\User.class
+com\safevision\authservice\AuthServiceApplication.class
+com\safevision\authservice\controller\AuthController$LoginRequest.class
+com\safevision\authservice\dto\UserResponse.class
+com\safevision\authservice\controller\AuthController.class
+com\safevision\authservice\model\User$UserBuilder.class

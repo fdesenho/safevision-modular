@@ -1,64 +1,82 @@
 package com.safevision.alertservice.service;
 
+import com.safevision.alertservice.dto.AlertEventDTO;
+import com.safevision.alertservice.dto.AlertResponse;
 import com.safevision.alertservice.model.Alert;
 import com.safevision.alertservice.repository.AlertRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.time.Instant;
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class AlertService {
 
     private final AlertRepository repository;
+    private final TelephonyService telephonyService; // NOVO: Serviço de Telefone
+    // ... outros services ...
 
-    public Alert createAlert(Alert alert) {
-        if (alert.getId() == null) {
-            alert.setId(java.util.UUID.randomUUID().toString());
+   
+
+    // Método chamado pelo RabbitMQ ou Controller
+    public void createAlert(AlertEventDTO event) {
+        Alert alert = Alert.builder()
+                .userId(event.userId())
+                .alertType(event.alertType())
+                .description(event.description())
+                .severity(event.severity() != null ? event.severity() : "INFO")
+                .cameraId(event.cameraId())
+                .acknowledged(false)
+                .build();
+
+        repository.save(alert);
+        if ("CRITICAL".equalsIgnoreCase(event.severity())) {
+            telephonyService.sendCriticalSms(event); // Chamada de API de Produção
         }
-        if (alert.getCreatedAt() == null) {
-            alert.setCreatedAt(Instant.now());
+    }
+
+    // Busca alertas e converte para DTO
+    public List<AlertResponse> getUserAlerts(String userId, boolean onlyUnread) {
+        List<Alert> alerts;
+        
+        if (onlyUnread) {
+            alerts = repository.findByUserIdAndAcknowledgedFalseOrderByCreatedAtDesc(userId);
+        } else {
+            alerts = repository.findByUserIdOrderByCreatedAtDesc(userId);
         }
-        alert.setAcknowledged(false);
-        return repository.save(alert);
+
+        // Transforma Entity em DTO
+        return alerts.stream()
+                .map(this::toResponse)
+                .collect(Collectors.toList());
     }
 
-    public Optional<Alert> getAlert(String id) {
-        return repository.findById(id);
-    }
-
-    public List<Alert> getAlertsForUser(String userId) {
-        return repository.findByUserIdOrderByCreatedAtDesc(userId);
-    }
-
-    public List<Alert> getUnreadAlertsForUser(String userId) {
-        return repository.findByUserIdAndAcknowledgedFalseOrderByCreatedAtDesc(userId);
-    }
-
-    public Optional<Alert> acknowledge(String id, String userId) {
-        return repository.findById(id)
+   
+    @Transactional
+    public boolean acknowledgeAlert(String alertId, String userId) {
+        return repository.findById(alertId)
+                .filter(alert -> alert.getUserId().equals(userId)) // Segurança: Verifica dono
                 .map(alert -> {
-                    if (!alert.getUserId().equals(userId)) {
-                        return null; // ownership mismatch
-                    }
                     alert.setAcknowledged(true);
-                    return repository.save(alert);
-                });
+                    repository.save(alert);
+                    return true;
+                })
+                .orElse(false);
     }
 
-    // Additional helper for internal event: create and return alert
-    public Alert createFromEvent(String userId, String alertType, String cameraId, String description, String severity) {
-        Alert a = new Alert();
-        a.setUserId(userId);
-        a.setAlertType(alertType);
-        a.setCameraId(cameraId);
-        a.setDescription(description);
-        a.setSeverity(severity);
-        a.setCreatedAt(Instant.now());
-        a.setAcknowledged(false);
-        return createAlert(a);
+    // Método auxiliar para converter (Mapper)
+    private AlertResponse toResponse(Alert alert) {
+        return new AlertResponse(
+                alert.getId(),
+                alert.getAlertType(),
+                alert.getDescription(),
+                alert.getSeverity(),
+                alert.getCameraId(),
+                alert.isAcknowledged(),
+                alert.getCreatedAt()
+        );
     }
 }
