@@ -8,6 +8,13 @@ import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * JPA Entity representing a Registered User.
+ * <p>
+ * This class maps to the 'users' table and holds authentication credentials,
+ * contact information for alerts, and configuration for external devices (Vision Agent).
+ * </p>
+ */
 @Entity
 @Table(name = "users")
 @Getter
@@ -17,10 +24,18 @@ import java.util.Set;
 @Builder
 public class User {
 
+    // ========================================================================
+    // IDENTITY
+    // ========================================================================
+
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(length = 36)
+    @Column(length = 36, updatable = false, nullable = false)
     private String id;
+
+    // ========================================================================
+    // AUTHENTICATION CREDENTIALS
+    // ========================================================================
 
     @Column(nullable = false, unique = true)
     private String username;
@@ -28,31 +43,55 @@ public class User {
     @Column(nullable = false)
     private String password;
 
-    
-    
-    @Column(unique = true) 
+    // ========================================================================
+    // CONTACT INFORMATION (For Alerts/Notifications)
+    // ========================================================================
+
+    @Column(unique = true)
     private String email;
 
-    @Column(name = "phone_number") 
+    /**
+     * Mobile number formatted for SMS providers (e.g., Twilio E.164 format).
+     */
+    @Column(name = "phone_number")
     private String phoneNumber;
 
-        
-    
+    // ========================================================================
+    // DEVICE CONFIGURATION (Vision Agent)
+    // ========================================================================
+
+    /**
+     * The RTSP or HTTP URL of the camera stream associated with this user.
+     * Used by the Vision Agent to capture video.
+     */
     @Column(name = "camera_connection_url")
     private String cameraConnectionUrl;
 
-    
+    /**
+     * A friendly name for the user's device (e.g., "Body Cam 01").
+     */
     @Column(name = "device_name")
     private String deviceName;
 
-    
+    // ========================================================================
+    // SECURITY & ROLES
+    // ========================================================================
+
+    /**
+     * Roles assigned to the user (e.g., "USER", "ADMIN").
+     * Fetched EAGERly to ensure Spring Security has permissions available during the login context.
+     */
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"))
     @Column(name = "role")
     @Builder.Default
     private Set<String> roles = new HashSet<>();
 
+    // ========================================================================
+    // AUDIT
+    // ========================================================================
+
     @CreationTimestamp
-    @Column(updatable = false)
+    @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 }

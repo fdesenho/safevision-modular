@@ -1,9 +1,17 @@
 server:
-  port: 8080 
+  port: 8080
 
 spring:
   application:
     name: auth-service
+
+  # --- CONFIGURAÇÃO RABBITMQ (MOVIDA PARA DENTRO DO BLOCO SPRING) ---
+  # O bloco 'rabbitmq' deve estar dentro de 'spring', pois a classe RabbitProperties do Spring Boot espera assim.
+  rabbitmq:
+    host: ${RABBITMQ_HOST:localhost}
+    port: 5672
+    username: ${RABBITMQ_USERNAME:user}
+    password: ${RABBITMQ_PASSWORD:password}
 
   datasource:
     url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/safevision}
@@ -18,15 +26,6 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
-		
-		
-rabbitmq:
-  host: ${RABBITMQ_HOST:localhost}
-  port: 5672
-  username: ${RABBITMQ_USERNAME:user}
-  password: ${RABBITMQ_PASSWORD:password}
-  queues:
-    vision-configuration: ${VISION_QUEUE_NAME:safevision.vision.configuration.queue}
 
 # --- CONFIGURAÇÃO ZIPKIN E METRICAS ---
 management:
@@ -36,7 +35,7 @@ management:
         include: "health,info,prometheus"
   tracing:
     sampling:
-      probability: 1.0 
+      probability: 1.0
   zipkin:
     tracing:
       endpoint: "http://zipkin:9411/api/v2/spans"
@@ -48,6 +47,13 @@ eureka:
     register-with-eureka: true
     fetch-registry: true
 
+# --- CONFIGURAÇÃO DE FILAS PERSONALIZADAS ---
+# Este bloco fica na raiz porque a classe RabbitMQConfig deve ler 'rabbitmq.queues'
+# Se o seu @ConfigurationProperties for prefix="rabbitmq.queues", deixe assim.
+rabbitmq:
+  queues:
+    vision-configuration: ${VISION_QUEUE_NAME:safevision.vision.configuration.queue}
+
 safevision:
   jwt:
     secret: ${SAFEVISION_JWT_SECRET:segredo_padrao_apenas_para_desenvolvimento_local_sem_docker}
@@ -55,7 +61,7 @@ safevision:
 
 logging:
   file:
-    name: /var/logs/${spring.application.name}.log 
+    name: /var/logs/${spring.application.name}.log
   logback:
     rollingpolicy:
       max-file-size: 10MB

@@ -1,5 +1,7 @@
 com\safevision\alertservice\config\RabbitMQConfig.class
+com\safevision\alertservice\config\WebSocketConfig.class
 com\safevision\alertservice\model\Alert$AlertBuilder.class
+com\safevision\alertservice\dto\UserContactDTO.class
 com\safevision\alertservice\dto\AlertEventDTO.class
 com\safevision\alertservice\service\TelephonyService.class
 com\safevision\alertservice\controller\AlertController.class

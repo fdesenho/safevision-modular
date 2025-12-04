@@ -4,12 +4,19 @@ import com.safevision.recognitionservice.dto.AlertEventDTO;
 import com.safevision.recognitionservice.dto.RawTrackingEvent;
 import com.safevision.recognitionservice.producer.AlertProducer;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+/**
+ * Core Logic Service (The "Brain").
+ * Analyzes raw tracking events from the Vision Agent and applies security rules
+ * to determine if a critical alert should be triggered.
+ */
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ThreatAnalysisService {
@@ -17,33 +24,39 @@ public class ThreatAnalysisService {
     private final AlertProducer alertProducer;
     private final MovementHistoryService historyService;
 
-    // --- RULE 1 VARIABLES: PERSISTENT STARE ---
+    // --- RULE 1: PERSISTENT STARE ---
+    // Stores stare counters per detection ID
     private final Map<String, Integer> stareCountMap = new ConcurrentHashMap<>();
-    // 20 events at ~0.1s interval = 2 seconds of staring
-    private static final int TIME_MILI_SECONDS_STARE_THRESHOLD = 20;
+    
+    // Threshold: 50 events (~5 seconds at 10fps)
+    private static final int STARE_THRESHOLD = 50; 
 
-    // --- RULE 2 VARIABLES: LOITERING AND APPROACHING ---
-    // Analyze a window of 20 events (approx 2 seconds)
+    // --- RULE 2: LOITERING AND APPROACHING ---
+    // Analyze a window of 20 events (~2 seconds)
     private static final int LOITERING_WINDOW = 20;
-    // If face size increases by 15 units within the window, it's a rapid approach
+    
+    // If depth increases by 15 units within the window, it's a rapid approach
     private static final int PROXIMITY_DIFFERENCE = 15;
 
 
     /**
      * Main entry point for event analysis.
      * Orchestrates the execution of all security rules.
+     *
      * @param event The raw tracking data from the Vision Agent.
      */
     public void analyze(RawTrackingEvent event) {
-        System.out.println("Analyzing event for ID: " + event.detectionId());
+        if (event == null) return;
 
-        // 1. Check for Weapons (Zero Tolerance)
+        log.trace("Analyzing event for ID: {}", event.detectionId());
+
+        // 1. Check for Weapons (Zero Tolerance - Highest Priority)
         analyzeWeaponRule(event);
 
         // 2. Check for Persistent Staring
         analyzeStareRule(event);
 
-        // 3. Check for Loitering and Approaching
+        // 3. Check for Loitering and Approaching (Requires history)
         analyzeLoiteringRule(event);
     }
 
@@ -52,11 +65,14 @@ public class ThreatAnalysisService {
     // ==============================================================
     private void analyzeWeaponRule(RawTrackingEvent event) {
         if (event.hasWeapon()) {
+            log.warn("🔫 WEAPON DETECTED! ID: {}", event.detectionId());
+            
             sendCriticalAlert(
                 event.userId(),
                 event.cameraId(),
                 "WEAPON_DETECTED",
-                "IMMEDIATE DANGER: " + event.weaponType() + " detected at " + event.weaponLocation()
+                "IMMEDIATE DANGER: " + event.weaponType() + " detected at " + event.weaponLocation(),
+                event.snapshotUrl()
             );
         }
     }
@@ -65,20 +81,22 @@ public class ThreatAnalysisService {
     // RULE 1: PERSISTENT STARE
     // ==============================================================
     private void analyzeStareRule(RawTrackingEvent event) {
-        String id = event.detectionId();
+        var id = event.detectionId();
 
         if (event.isFacingCamera()) {
             // Increment counter if facing camera
             int currentCount = stareCountMap.merge(id, 1, Integer::sum);
 
-            if (currentCount >= TIME_MILI_SECONDS_STARE_THRESHOLD) {
-                // Trigger Alert
-                double seconds = TIME_MILI_SECONDS_STARE_THRESHOLD / 10.0; // Assuming ~10 events/sec
+            if (currentCount >= STARE_THRESHOLD) {
+                log.warn("👁️ Persistent Stare Detected! ID: {}", id);
+                
+                double seconds = STARE_THRESHOLD / 10.0; // Assuming ~10 events/sec
                 sendCriticalAlert(
                     event.userId(), 
                     event.cameraId(), 
                     "THREAT_STARE",
-                    "Persistent Stare detected for approx " + seconds + " seconds."
+                    "Persistent Stare detected for approx " + seconds + " seconds.",
+                    event.snapshotUrl()
                 );
 
                 // Reset counter to avoid flooding alerts
@@ -94,8 +112,10 @@ public class ThreatAnalysisService {
     // RULE 2: LOITERING AND APPROACHING
     // ==============================================================
     private void analyzeLoiteringRule(RawTrackingEvent event) {
-    	historyService.recordEvent(event);
-    	String id = event.detectionId();
+        // Record history first
+        historyService.recordEvent(event);
+        
+        var id = event.detectionId();
         List<Integer> depths = historyService.getDepths(id);
 
         // Ensure we have enough history to analyze
@@ -110,11 +130,14 @@ public class ThreatAnalysisService {
         boolean isApproaching = (currentDepth - initialDepth) >= PROXIMITY_DIFFERENCE;
 
         if (isApproaching) {
+            log.warn("🚶 Threat Approaching! ID: {}", id);
+
             sendCriticalAlert(
                 event.userId(), 
                 event.cameraId(), 
                 "LOITERING_AND_APPROACH",
-                "Person loitering and rapidly approaching the camera."
+                "Person loitering and rapidly approaching the camera.",
+                event.snapshotUrl()
             );
 
             // Clear history after triggering to prevent duplicate alerts for the same approach action
@@ -125,14 +148,16 @@ public class ThreatAnalysisService {
     // ==============================================================
     // INTERNAL: UNIFIED SEND METHOD
     // ==============================================================
-    private void sendCriticalAlert(String userId, String cameraId, String type, String description) {
-        AlertEventDTO finalAlert = new AlertEventDTO(
+    private void sendCriticalAlert(String userId, String cameraId, String type, String description, String snapshotUrl) {
+        var finalAlert = new AlertEventDTO(
             userId,
             type,
             description,
             "CRITICAL",
-            cameraId
+            cameraId,
+            snapshotUrl
         );
+        
         // Delegate to producer to send via RabbitMQ
         alertProducer.sendAlert(finalAlert);
     }

@@ -1,58 +1,73 @@
-package com.safevision.recognitionservice.config; 
+package com.safevision.recognitionservice.config;
 
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.amqp.support.converter.MessageConverter;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-
+/**
+ * Infrastructure configuration for RabbitMQ.
+ * Responsible for declaring queues and configuring the JSON message converter.
+ */
+@Slf4j
 @Configuration
+@RequiredArgsConstructor
+@EnableConfigurationProperties(RabbitQueueProperties.class) // Activates the Record
 public class RabbitMQConfig {
-	 
-	 @Value("vision.raw.tracking")
-	 private String rawTracking;
-	 @Value("safevision.alerts.queue")
-	 private String alerts;
-	 
-	 
-	 
-		 
-	 /**
-	  * Exposes the raw tracking queue name as a String Bean for use in @RabbitListener via SpEL.
-	  * O nome do Bean será 'rawTrackingQueueName'.
-	  */
-	 @Bean
-	 public String rawTrackingQueueName() {
-	     return rawTracking;
-	 }
-	 
-	 /**
-	  * Exposes the alerts queue name as a String Bean for direct injection into AlertProducer.
-	  * O nome do Bean será 'alertsQueueName'.
-	  */
-	 @Bean
-	 public String alertsQueueName() {
-	     return alerts;
-	 }
-	 
-	 // ----------------------------------------------------
-	
-	 // 2. Declaração da Fila de Rastreamento (Objeto Queue)
-	 @Bean
-	 public Queue rawTrackingQueue() {
-	     return new Queue(rawTracking, true);
-	 }
-	 
-	 // 3. Declaração da Fila de Alertas (Objeto Queue)
-	 @Bean
-	 public Queue alertsQueue() {
-	     return new Queue(alerts, true);
-	 }
-	
-	
-    // 4. Conversor de Mensagens (JSON)
+
+    private final RabbitQueueProperties queueProperties;
+
+    // -----------------------------------------------------------------------
+    // STRING BEANS (For usage in @RabbitListener via SpEL)
+    // -----------------------------------------------------------------------
+
+    /**
+     * Exposes the raw tracking queue name as a String Bean.
+     * Bean Name: 'rawTrackingQueueName'
+     */
+    @Bean
+    public String rawTrackingQueueName() {
+        return queueProperties.rawTracking();
+    }
+
+    /**
+     * Exposes the alerts queue name as a String Bean.
+     * Bean Name: 'alertsQueueName'
+     */
+    @Bean
+    public String alertsQueueName() {
+        return queueProperties.alerts();
+    }
+
+    // -----------------------------------------------------------------------
+    // INFRASTRUCTURE BEANS (Physical Queues)
+    // -----------------------------------------------------------------------
+
+    /**
+     * Declares the Raw Tracking Queue (Input).
+     */
+    @Bean
+    public Queue rawTrackingQueue() {
+        log.info("Configuring Raw Input Queue: {}", queueProperties.rawTracking());
+        return new Queue(queueProperties.rawTracking(), true);
+    }
+
+    /**
+     * Declares the Alerts Queue (Output).
+     */
+    @Bean
+    public Queue alertsQueue() {
+        log.info("Configuring Alert Output Queue: {}", queueProperties.alerts());
+        return new Queue(queueProperties.alerts(), true);
+    }
+
+    /**
+     * Configures the Jackson converter to serialize/deserialize messages as JSON.
+     */
     @Bean
     public MessageConverter jsonMessageConverter() {
         return new Jackson2JsonMessageConverter();

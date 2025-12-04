@@ -1,49 +1,70 @@
 package com.safevision.authservice.service;
 
-import com.safevision.authservice.model.User; // Importante: Importar seu Model
+import com.safevision.authservice.config.JwtProperties;
+import com.safevision.authservice.model.User;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
-import jakarta.annotation.PostConstruct;
-import org.springframework.beans.factory.annotation.Value;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.stereotype.Service;
 
-import java.security.Key;
+import javax.crypto.SecretKey;
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Service responsible for generating and signing JSON Web Tokens (JWT).
+ * It uses a shared secret key to ensure tokens can be validated by other microservices.
+ */
+@Slf4j
 @Service
+@EnableConfigurationProperties(JwtProperties.class)
 public class JwtService {
 
-    @Value("${safevision.jwt.secret}")
-    private String secretKey;
+    private static final String CLAIM_ID = "id";
+    private static final String CLAIM_ROLES = "roles";
+    
 
-    @Value("${safevision.jwt.expiration-ms:86400000}")
-    private long expirationMs;
+    private final SecretKey key;
+    private final long expirationMs;
 
-    private Key key;
-
-    @PostConstruct
-    public void init() {
-        this.key = Keys.hmacShaKeyFor(secretKey.getBytes());
+    /**
+     * Constructor injection ensures the key is initialized only once and is immutable.
+     *
+     * @param properties The type-safe configuration object.
+     */
+    public JwtService(JwtProperties properties) {
+        this.expirationMs = properties.expirationMs();
+        this.key = Keys.hmacShaKeyFor(properties.secret().getBytes(StandardCharsets.UTF_8));
     }
 
-    // --- MUDANÇA PRINCIPAL AQUI ---
-    // Agora aceita o objeto User completo para extrair ID e Roles
+    /**
+     * Generates a signed JWT for a specific user.
+     * Includes custom claims (ID, Roles) to allow stateless authorization in other services.
+     *
+     * @param user The authenticated user model.
+     * @return The compact JWT string.
+     */
     public String generateToken(User user) {
+        var now = System.currentTimeMillis();
+        var validity = new Date(now + expirationMs);
+
         
-        // Claims são os dados extras que vão dentro do token
-        Map<String, Object> claims = new HashMap<>();
-        claims.put("id", user.getId());       // Adiciona o UUID
-        claims.put("roles", user.getRoles()); // Adiciona a lista ["ADMIN", "USER"]
+        var claims = Map.of(
+            CLAIM_ID, user.getId(),
+            CLAIM_ROLES, user.getRoles()
+            
+        );
+
+        log.debug("Generating JWT for user: {}", user.getUsername());
 
         return Jwts.builder()
-                .setClaims(claims) // Injeta os dados extras
-                .setSubject(user.getUsername()) // O "dono" do token
-                .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + expirationMs))
-                .signWith(key, SignatureAlgorithm.HS256)
+                .claims(claims) 
+                .subject(user.getUsername()) 
+                .issuedAt(new Date(now))
+                .expiration(validity)
+                .signWith(key, Jwts.SIG.HS256) 
                 .compact();
     }
 }

@@ -6,6 +6,17 @@ x-jwt-config: &jwt-config
 
 services:
   # --- INFRAESTRUTURA ---
+  
+  # ZIPKIN (Rastreamento)
+  zipkin:
+    image: openzipkin/zipkin
+    container_name: zipkin
+    ports:
+      - "9411:9411"
+    networks:
+      - safevision-net
+
+  # RABBITMQ (Mensageria)
   rabbitmq:
     image: rabbitmq:3-management
     container_name: rabbitmq
@@ -19,6 +30,7 @@ services:
     networks:
       - safevision-net
 
+  # POSTGRES (Banco de Dados)
   postgres:
     image: postgres:16
     container_name: postgres
@@ -33,6 +45,23 @@ services:
     networks:
       - safevision-net
 
+  # NOVO: MINIO (Object Storage - S3 Compatible)
+  minio:
+    image: minio/minio
+    container_name: minio
+    ports:
+      - "9000:9000" # API S3
+      - "9001:9001" # Console Web
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
+    command: server /data --console-address ":9001"
+    volumes:
+      - minio_data:/data
+    networks:
+      - safevision-net
+
+  # EUREKA (Service Discovery)
   eureka-server:
     build: ./eureka-server
     container_name: eureka-server
@@ -43,6 +72,8 @@ services:
     networks:
       - safevision-net
 
+  # ----------------------------------------------------
+
   # --- AGENTE DE VISÃO (PYTHON) ---
   vision-agent:
     build: ./vision-agent
@@ -50,16 +81,28 @@ services:
     ports:
       - "5000:5000"
     environment:
+      # RabbitMQ
       RABBITMQ_HOST: rabbitmq
       RABBITMQ_USERNAME: ${RABBITMQ_USER}
       RABBITMQ_PASSWORD: ${RABBITMQ_PASS}
       VISION_QUEUE_NAME: ${QUEUE_RAW}
-	  QUEUE_VISION_CONFIGURATION ${QUEUE_VISION_CONFIGURATION}
+      QUEUE_VISION_CONFIGURATION: ${QUEUE_VISION_CONFIGURATION}
       CAMERA_URL: ${CAMERA_URL}
+      
+      # NOVO: Configuração do MinIO (S3)
+      MINIO_ENDPOINT: minio:9000
+      MINIO_ACCESS_KEY: ${MINIO_ROOT_USER}
+      MINIO_SECRET_KEY: ${MINIO_ROOT_PASSWORD}
+      MINIO_BUCKET: ${MINIO_BUCKET_NAME}
+      MINIO_EXTERNAL_PREFIX: ${MINIO_EXTERNAL_URL}
+      
     depends_on:
       - rabbitmq
+      - minio # Aguarda o Storage subir
     networks:
       - safevision-net
+
+  # ----------------------------------------------------
 
   # --- MICROSSERVIÇOS JAVA ---
   auth-service:
@@ -76,7 +119,6 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/${DB_NAME}
       SPRING_DATASOURCE_USERNAME: ${DB_USER}
       SPRING_DATASOURCE_PASSWORD: ${DB_PASS}
-      # RabbitMQ para envio de config
       RABBITMQ_HOST: rabbitmq
       RABBITMQ_USERNAME: ${RABBITMQ_USER}
       RABBITMQ_PASSWORD: ${RABBITMQ_PASS}
@@ -84,6 +126,7 @@ services:
       - postgres
       - eureka-server
       - rabbitmq
+      - zipkin
     networks:
       - safevision-net
 
@@ -98,8 +141,6 @@ services:
       SPRING_APPLICATION_NAME: alert-service
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka/
       <<: *jwt-config
-      
-      # Banco e RabbitMQ
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/${DB_NAME}
       SPRING_DATASOURCE_USERNAME: ${DB_USER}
       SPRING_DATASOURCE_PASSWORD: ${DB_PASS}
@@ -107,17 +148,15 @@ services:
       RABBITMQ_USERNAME: ${RABBITMQ_USER}
       RABBITMQ_PASSWORD: ${RABBITMQ_PASS}
       ALERTS_QUEUE_NAME: ${QUEUE_ALERTS}
-
-      # Telefonia (Lê do .env)
       TELEPHONY_ACCOUNT_SID: ${TWILIO_SID}
       TELEPHONY_AUTH_TOKEN: ${TWILIO_TOKEN}
       TELEPHONY_FROM_NUMBER: ${TWILIO_FROM_NUMBER}
       ALERT_PHONE_NUMBER: ${MY_PHONE_NUMBER}
-      
     depends_on:
       - eureka-server
       - postgres
       - rabbitmq
+      - zipkin
     networks:
       - safevision-net
 
@@ -137,10 +176,10 @@ services:
       RABBITMQ_PASSWORD: ${RABBITMQ_PASS}
       VISION_QUEUE_NAME: ${QUEUE_RAW}
       ALERTS_QUEUE_NAME: ${QUEUE_ALERTS}
-      
     depends_on:
       - eureka-server
       - rabbitmq
+      - zipkin
     networks:
       - safevision-net
 
@@ -158,17 +197,19 @@ services:
       SAFEVISION_SERVICES_AUTH: lb://auth-service
       SAFEVISION_SERVICES_ALERT: lb://alert-service
       SAFEVISION_SERVICES_RECOGNITION: lb://recognition-service
-      
     depends_on:
       - eureka-server
       - auth-service
       - alert-service
       - recognition-service
+      - zipkin
     networks:
       - safevision-net
 
+# VOLUMES
 volumes:
   postgres_data:
+  minio_data: # Novo volume para guardar as fotos
 
 networks:
   safevision-net:

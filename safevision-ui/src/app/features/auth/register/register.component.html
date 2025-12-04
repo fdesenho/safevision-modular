@@ -1,0 +1,53 @@
+<div class="register-wrapper">
+  <div class="register-container">
+    <div class="header">
+      <h2>📝 Criar Conta</h2>
+      <p>Junte-se ao SafeVision</p>
+    </div>
+
+    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+
+      <div class="form-group">
+        <label for="username">Usuário</label>
+        <input id="username" type="text" formControlName="username" placeholder="Seu usuário único">
+      </div>
+
+      <div class="form-group">
+        <label for="password">Senha</label>
+        <input id="password" type="password" formControlName="password" placeholder="Mínimo 6 caracteres">
+      </div>
+
+      <div class="form-group">
+        <label for="email">E-mail</label>
+        <input id="email" type="email" formControlName="email" placeholder="seu@email.com">
+      </div>
+
+      <div class="form-group">
+        <label for="phone">Celular (Com DDD)</label>
+        <input id="phone" type="text" formControlName="phoneNumber" placeholder="+55 11 99999-9999">
+        <small>Usado para alertas SMS críticos</small>
+      </div>
+
+      <div class="form-group">
+        <label for="camera">URL da Câmera (Opcional)</label>
+        <input id="camera" type="text" formControlName="cameraUrl" placeholder="http://192.168.0.15:4747/video">
+      </div>
+
+      <div *ngIf="errorMessage" class="alert error" role="alert">
+        ⚠️ {{ errorMessage }}
+      </div>
+
+      <div *ngIf="successMessage" class="alert success" role="alert">
+        ✅ {{ successMessage }}
+      </div>
+
+      <button type="submit" [disabled]="registerForm.invalid || isLoading">
+        {{ isLoading ? 'Criando...' : 'Registrar' }}
+      </button>
+    </form>
+
+    <div class="footer">
+      <p>Já tem conta? <a routerLink="/login">Faça Login</a></p>
+    </div>
+  </div>
+</div>

@@ -1,9 +1,16 @@
 C:\Users\work\eclipse-workspace\safevision-modular\auth-service\src\main\java\com\safevision\authservice\AuthServiceApplication.java
+C:\Users\work\eclipse-workspace\safevision-modular\auth-service\src\main\java\com\safevision\authservice\config\GlobalExceptionHandler.java
+C:\Users\work\eclipse-workspace\safevision-modular\auth-service\src\main\java\com\safevision\authservice\config\RabbitMQConfig.java
 C:\Users\work\eclipse-workspace\safevision-modular\auth-service\src\main\java\com\safevision\authservice\config\SecurityConfig.java
 C:\Users\work\eclipse-workspace\safevision-modular\auth-service\src\main\java\com\safevision\authservice\controller\AuthController.java
+C:\Users\work\eclipse-workspace\safevision-modular\auth-service\src\main\java\com\safevision\authservice\dto\LoginRequest.java
 C:\Users\work\eclipse-workspace\safevision-modular\auth-service\src\main\java\com\safevision\authservice\dto\RegisterRequest.java
+C:\Users\work\eclipse-workspace\safevision-modular\auth-service\src\main\java\com\safevision\authservice\dto\TokenResponse.java
+C:\Users\work\eclipse-workspace\safevision-modular\auth-service\src\main\java\com\safevision\authservice\dto\UserContactDTO.java
 C:\Users\work\eclipse-workspace\safevision-modular\auth-service\src\main\java\com\safevision\authservice\dto\UserResponse.java
+C:\Users\work\eclipse-workspace\safevision-modular\auth-service\src\main\java\com\safevision\authservice\dto\UserUpdateRequest.java
 C:\Users\work\eclipse-workspace\safevision-modular\auth-service\src\main\java\com\safevision\authservice\model\User.java
 C:\Users\work\eclipse-workspace\safevision-modular\auth-service\src\main\java\com\safevision\authservice\repository\UserRepository.java
+C:\Users\work\eclipse-workspace\safevision-modular\auth-service\src\main\java\com\safevision\authservice\service\AuthenticationService.java
 C:\Users\work\eclipse-workspace\safevision-modular\auth-service\src\main\java\com\safevision\authservice\service\JwtService.java
 C:\Users\work\eclipse-workspace\safevision-modular\auth-service\src\main\java\com\safevision\authservice\service\UserService.java

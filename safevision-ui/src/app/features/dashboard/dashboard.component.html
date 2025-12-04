@@ -1,0 +1,116 @@
+<div class="dashboard-wrapper">
+
+  <header class="dashboard-header">
+    <div class="logo-area">
+      <h1>👁️ SafeVision Monitor</h1>
+    </div>
+
+    <div class="user-info">
+      <span>Olá, <strong>{{ auth.currentUser()?.username }}</strong></span>
+      <button class="btn-logout" (click)="auth.logout()">Sair</button>
+    </div>
+  </header>
+
+  <main class="dashboard-grid">
+
+    <section class="left-panel">
+      <div class="card video-card">
+        <div class="card-header-row">
+          <h3>Monitoramento Ativo</h3>
+        </div>
+
+        <div class="system-control">
+          <div class="status-indicator" [class.active]="isSystemArmed()">
+            Status: <strong>{{ isSystemArmed() ? 'PROTEÇÃO ATIVA' : 'STANDBY' }}</strong>
+          </div>
+          <button
+            class="btn-toggle"
+            [class.active]="isSystemArmed()"
+            (click)="toggleSystem()">
+            {{ isSystemArmed() ? '🛑 DESATIVAR' : '🛡️ ATIVAR PROTEÇÃO' }}
+          </button>
+        </div>
+
+        <div class="video-container">
+
+          <div *ngIf="isVideoLoading() && !isVideoError()" class="video-status loading">
+            <p>⌛ Conectando à câmera...</p>
+          </div>
+
+          <div *ngIf="isVideoError()" class="video-status error">
+            <p>🔴 Câmera Offline ou Vision Agent desligado.</p>
+            <button (click)="retryVideo()">Tentar Novamente</button>
+          </div>
+
+          <img
+            *ngIf="videoSrc()"
+            [src]="videoSrc()"
+            alt="Feed de Vídeo"
+            (load)="onVideoLoad()"
+            (error)="onVideoError()"
+            [style.display]="(isVideoLoading() || isVideoError()) ? 'none' : 'block'"
+          >
+        </div>
+      </div>
+
+      <div class="card config-card">
+        <h4>⚙️ Configurar Agente</h4>
+
+        <form [formGroup]="configForm" (ngSubmit)="saveConfig()">
+          <div class="form-group">
+            <label>Nova URL da Câmera</label>
+            <input formControlName="cameraUrl" placeholder="http://192.168..." />
+          </div>
+          <div class="form-group">
+            <label>Telefone para Alerta</label>
+            <input formControlName="phone" placeholder="+55 11..." />
+          </div>
+
+          <button type="submit" class="btn-save">
+            Salvar e Reiniciar Agente
+          </button>
+        </form>
+      </div>
+    </section>
+
+    <section class="right-panel">
+      <div class="alerts-header">
+        <h3>Últimos Alertas</h3>
+        <button class="btn-refresh" (click)="forceRefresh()" title="Atualizar">🔄</button>
+      </div>
+
+      <div class="alerts-container">
+
+        <div
+          *ngFor="let alert of alerts()"
+          class="alert-card"
+          [class.critical]="alert.severity === 'CRITICAL'"
+          [class.warning]="alert.severity === 'WARNING'"
+        >
+          <div class="alert-header">
+            <strong class="alert-type">{{ alert.alertType }}</strong>
+            <span class="badge" [ngClass]="alert.severity">{{ alert.severity }}</span>
+          </div>
+
+          <p class="alert-desc">{{ alert.description }}</p>
+
+          <div *ngIf="alert.snapshotUrl" class="evidence-box">
+            <img [src]="alert.snapshotUrl" alt="Foto da Ameaça" class="evidence-img">
+          </div>
+          <div class="alert-footer">
+            <small>{{ alert.createdAt | date:'short' }}</small>
+            <button *ngIf="!alert.acknowledged" (click)="ack(alert.id)" class="btn-ack">
+              Marcar como Lido
+            </button>
+            <span *ngIf="alert.acknowledged" class="read-status">✅ Lido</span>
+          </div>
+        </div>
+
+        <div *ngIf="alerts().length === 0" class="empty-state">
+          Nenhum alerta registrado.
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>

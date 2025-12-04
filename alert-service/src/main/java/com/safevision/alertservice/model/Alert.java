@@ -17,43 +17,84 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/**
+ * JPA Entity representing a Security Alert.
+ * <p>
+ * This entity stores the details of a threat detected by the Recognition Service.
+ * It includes metadata about the user, camera, threat type, and visual evidence (snapshot).
+ * </p>
+ */
 @Entity
 @Table(name = "alerts", indexes = {
-    // CRUCIAL: Cria um índice para deixar a busca por usuário rápida
+    // Performance: Index to optimize queries by 'userId' (e.g., fetching alert history)
     @Index(name = "idx_alert_user_id", columnList = "userId") 
 })
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder // Permite usar Alert.builder()... no Service
+@Builder
 public class Alert {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID) // Otimizado para Postgres/Hibernate 6
+    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(length = 36)
     private String id;
 
-    @Column(nullable = false)
-    private String userId;          // owner / affected user
+    // --- CORE DATA ---
 
+    /**
+     * The ID of the user who owns the camera/alert.
+     */
     @Column(nullable = false)
-    private String alertType;       // e.g., PERSON_DETECTED, MOTION, WEAPON
+    private String userId;
+
+    /**
+     * The classification of the event (e.g., WEAPON_DETECTED, THREAT_STARE).
+     */
+    @Column(nullable = false)
+    private String alertType;
+
+    /**
+     * The risk level: INFO, WARNING, or CRITICAL.
+     */
+    @Column
+    private String severity;
+
+    /**
+     * A human-readable description of the event.
+     * Uses TEXT type in Postgres to support long descriptions.
+     */
+    @Column(columnDefinition = "TEXT")
+    private String description;
+
+    // --- METADATA & EVIDENCE ---
 
     @Column
     private String cameraId;
 
-    @Column(columnDefinition = "TEXT") // TEXT no Postgres é melhor que varchar(255) para descrições
-    private String description;
+    /**
+     * Public URL pointing to the evidence image stored in MinIO.
+     * Length set to 1024 to accommodate long signed URLs or deep paths.
+     */
+    @Column(length = 1024)
+    private String snapshotUrl;
 
-    @CreationTimestamp // O Hibernate preenche isso automaticamente no save
-    @Column(nullable = false, updatable = false) // updatable=false impede alterar a data de criação
-    private LocalDateTime createdAt;
+    // --- STATUS & AUDIT ---
 
-    @Builder.Default // Garante que o Builder respeite esse padrão false
+    /**
+     * Flag indicating if the user has seen/acknowledged this alert.
+     * Defaults to false.
+     */
+    @Builder.Default
     @Column(nullable = false)
     private boolean acknowledged = false;
 
-    @Column
-    private String severity;        // INFO, WARNING, CRITICAL
+    /**
+     * The exact timestamp when the alert was persisted.
+     * Managed automatically by Hibernate.
+     */
+    @CreationTimestamp
+    @Column(nullable = false, updatable = false)
+    private LocalDateTime createdAt;
 }

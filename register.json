@@ -1,0 +1,8 @@
+{
+  "username": "admin_fabiolo",
+  "password": "123",
+  "email": "teste.login@gmail.com",
+  "phoneNumber": "+5548999999999",
+  "cameraUrl": "http://192.168.0.132:4747/video",
+  "roles": ["ADMIN", "USER"]
+}

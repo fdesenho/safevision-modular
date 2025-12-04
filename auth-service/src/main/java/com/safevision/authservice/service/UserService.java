@@ -1,10 +1,10 @@
 package com.safevision.authservice.service;
 
-import java.util.Map; // Import para o Map
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
-import org.springframework.amqp.rabbit.core.RabbitTemplate; // Import RabbitTemplate
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -16,24 +16,39 @@ import com.safevision.authservice.model.User;
 import com.safevision.authservice.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+/**
+ * Core service for User Management.
+ * Implements Spring Security's UserDetailsService for authentication.
+ * Handles CRUD operations and triggers configuration updates via RabbitMQ.
+ */
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class UserService implements UserDetailsService {
 
     private final UserRepository repository;
     private final PasswordEncoder passwordEncoder;
-    private final RabbitTemplate rabbitTemplate; // Injeta o carteiro do RabbitMQ
-    private final String visionConfigurationQueueName;
+    private final RabbitTemplate rabbitTemplate;
+    private final String visionConfigQueue;
+
+    
+
+    /**
+     * Creates a new user after validating uniqueness.
+     */
     public User createUser(RegisterRequest request) {
+        log.debug("Attempting to create user: {}", request.username());
+
         if (repository.existsByUsername(request.username())) {
-            throw new RuntimeException("Erro: Usuário já existe.");
+            throw new RuntimeException("Username already exists.");
         }
         if (request.email() != null && repository.existsByEmail(request.email())) {
-            throw new RuntimeException("Erro: E-mail já cadastrado.");
+            throw new RuntimeException("Email already registered.");
         }
 
-        User user = User.builder()
+        var user = User.builder()
                 .username(request.username())
                 .password(passwordEncoder.encode(request.password()))
                 .email(request.email())
@@ -45,9 +60,14 @@ public class UserService implements UserDetailsService {
         return repository.save(user);
     }
 
+    /**
+     * Loads user by username (Spring Security contract).
+     */
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = getUserByUsername(username);
+        var user = getUserByUsername(username);
+        
+        // Convert Set<String> roles to String[] for Spring Security
         String[] roles = user.getRoles().toArray(new String[0]);
 
         return org.springframework.security.core.userdetails.User
@@ -59,62 +79,68 @@ public class UserService implements UserDetailsService {
 
     public User getUserByUsername(String username) {
         return repository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado: " + username));
+                .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
     }
 
     public Optional<User> getUser(String id) {
         return repository.findById(id);
     }
 
-    public User updateUser(User dadosAtualizados) {
-        User usuarioExistente = repository.findById(dadosAtualizados.getId())
-                .orElseThrow(() -> new RuntimeException("Usuário não encontrado para atualização"));
+    /**
+     * Updates an existing user profile.
+     * Triggers a RabbitMQ event if the camera URL changes.
+     */
+    public User updateUser(User updatedData) {
+        var existingUser = repository.findById(updatedData.getId())
+                .orElseThrow(() -> new RuntimeException("User not found for update"));
 
         boolean cameraChanged = false;
 
-        if (dadosAtualizados.getUsername() != null) usuarioExistente.setUsername(dadosAtualizados.getUsername());
-        if (dadosAtualizados.getEmail() != null) usuarioExistente.setEmail(dadosAtualizados.getEmail());
-        if (dadosAtualizados.getPhoneNumber() != null) usuarioExistente.setPhoneNumber(dadosAtualizados.getPhoneNumber());
-        
-        // Lógica de detecção de mudança de câmera
-        if (dadosAtualizados.getCameraConnectionUrl() != null) {
-            // Verifica se realmente mudou para não enviar mensagem à toa
-            if (!dadosAtualizados.getCameraConnectionUrl().equals(usuarioExistente.getCameraConnectionUrl())) {
-                usuarioExistente.setCameraConnectionUrl(dadosAtualizados.getCameraConnectionUrl());
+        // Partial Update Logic
+        if (updatedData.getUsername() != null) existingUser.setUsername(updatedData.getUsername());
+        if (updatedData.getEmail() != null) existingUser.setEmail(updatedData.getEmail());
+        if (updatedData.getPhoneNumber() != null) existingUser.setPhoneNumber(updatedData.getPhoneNumber());
+
+        // Check for Camera URL change
+        if (updatedData.getCameraConnectionUrl() != null) {
+            String oldUrl = existingUser.getCameraConnectionUrl();
+            String newUrl = updatedData.getCameraConnectionUrl();
+            
+            if (!newUrl.equals(oldUrl)) {
+                existingUser.setCameraConnectionUrl(newUrl);
                 cameraChanged = true;
             }
         }
-        
-        if (dadosAtualizados.getPassword() != null && !dadosAtualizados.getPassword().isEmpty()) {
-            usuarioExistente.setPassword(passwordEncoder.encode(dadosAtualizados.getPassword()));
+
+        // Update password if provided
+        if (updatedData.getPassword() != null && !updatedData.getPassword().isEmpty()) {
+            existingUser.setPassword(passwordEncoder.encode(updatedData.getPassword()));
         }
 
-        User salvo = repository.save(usuarioExistente);
+        var savedUser = repository.save(existingUser);
 
-        // --- GATILHO DE CONFIGURAÇÃO ---
-        // Se a URL mudou, avisa o Python para reiniciar a captura
+        // Notify Vision Agent if camera changed
         if (cameraChanged) {
-            sendCameraConfigToVisionAgent(salvo.getCameraConnectionUrl());
+            sendCameraConfigToVisionAgent(savedUser.getCameraConnectionUrl());
         }
 
-        return salvo;
+        return savedUser;
     }
 
     public void deleteUser(String id) {
         repository.deleteById(id);
     }
 
-    // Método privado para enviar a mensagem
+    /**
+     * Sends the new camera URL to the Vision Agent via RabbitMQ.
+     */
     private void sendCameraConfigToVisionAgent(String newUrl) {
         try {
-            // O Python espera um JSON: {"cameraUrl": "http://..."}
-            Map<String, String> message = Map.of("cameraUrl", newUrl);
-            
-            rabbitTemplate.convertAndSend(visionConfigurationQueueName, message);
-            
-            System.out.println("📡 Configuração de câmera enviada para o Vision Agent: " + newUrl);
+            var message = Map.of("cameraUrl", newUrl);
+            rabbitTemplate.convertAndSend(visionConfigQueue, message);
+            log.info("📡 Camera configuration sent to Vision Agent: {}", newUrl);
         } catch (Exception e) {
-            System.err.println("❌ Erro ao enviar config para RabbitMQ: " + e.getMessage());
+            log.error("❌ Failed to send config to RabbitMQ: {}", e.getMessage());
         }
     }
 }

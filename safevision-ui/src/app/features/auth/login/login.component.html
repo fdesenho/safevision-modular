@@ -1,0 +1,30 @@
+<div class="login-wrapper">
+  <div class="login-container">
+    <h2>🔐 SafeVision</h2>
+
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+      <div class="form-group">
+        <label>Usuário</label>
+        <input type="text" formControlName="username" placeholder="Ex: admin">
+        <small *ngIf="loginForm.controls.username.touched && loginForm.controls.username.invalid">
+          Campo obrigatório
+        </small>
+      </div>
+
+      <div class="form-group">
+        <label>Senha</label>
+        <input type="password" formControlName="password">
+      </div>
+
+      <div *ngIf="errorMessage()" class="alert error">
+        {{ errorMessage() }}
+      </div>
+
+      <button type="submit" [disabled]="loginForm.invalid || isLoading()">
+        {{ isLoading() ? 'Entrando...' : 'Entrar' }}
+      </button>
+    </form>
+
+    <p class="footer">Não tem conta? <a routerLink="/register">Registre-se</a></p>
+  </div>
+</div>

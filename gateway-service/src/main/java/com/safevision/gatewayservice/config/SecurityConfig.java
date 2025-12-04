@@ -3,7 +3,9 @@ package com.safevision.gatewayservice.config;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
-import org.springframework.beans.factory.annotation.Value;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
@@ -13,48 +15,72 @@ import org.springframework.security.oauth2.jwt.NimbusReactiveJwtDecoder;
 import org.springframework.security.oauth2.jwt.ReactiveJwtDecoder;
 import org.springframework.security.web.server.SecurityWebFilterChain;
 
+/**
+ * Security Configuration for the API Gateway (Reactive).
+ * <p>
+ * This class acts as the first line of defense. It validates JWT tokens
+ * for all incoming requests before routing them to microservices.
+ * </p>
+ */
+@Slf4j
 @Configuration
 @EnableWebFluxSecurity
+@RequiredArgsConstructor
+@EnableConfigurationProperties(JwtProperties.class)
 public class SecurityConfig {
 
+    private final JwtProperties jwtProperties;
+
+    // List of public endpoints (Whitelist)
     private static final String[] PUBLIC_ENDPOINTS = {
-            "/swagger-ui.html",
-            "/swagger-ui/**",
-            "/v3/api-docs/**",
-            "/swagger-resources/**",
-            "/actuator/prometheus",
-            "/auth/login",
-            "/auth/register",
-            "/alert/event"
+        "/swagger-ui.html",
+        "/swagger-ui/**",
+        "/v3/api-docs/**",
+        "/swagger-resources/**",
+        "/actuator/prometheus",
+        "/auth/login",
+        "/auth/register",
+        "/alert/event", // Allow internal/machine event push
+        "/alert/ws/**"  // Allow WebSocket Handshake (no auth header supported by browsers here)
     };
-    // 1. Injeta a Chave Universal do application.properties
-    @Value("${safevision.jwt.secret}")
-    private String secretKey;
-    
-    
+
+    /**
+     * Configures the Reactive Security Filter Chain.
+     */
     @Bean
     public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http) {
-        return http
-        	.cors(Customizer.withDefaults())
-            .csrf(csrf -> csrf.disable())
+        log.info("Initializing Reactive Security Filter Chain for Gateway...");
+
+        http
+            // Enable CORS (Cross-Origin Resource Sharing) using global config
+            .cors(Customizer.withDefaults())
+            
+            // Disable CSRF (Stateful protection not needed for stateless REST APIs)
+            .csrf(ServerHttpSecurity.CsrfSpec::disable)
+            
             .authorizeExchange(exchanges -> exchanges
-                
+                // 1. Allow whitelisted endpoints
                 .pathMatchers(PUBLIC_ENDPOINTS).permitAll()
                 
+                // 2. Require authentication for everything else
                 .anyExchange().authenticated()
             )
             
-            .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()))
-            .build();
-    }
-    
-    
-    @Bean
-    public ReactiveJwtDecoder jwtDecoder() {
-        byte[] keyBytes = secretKey.getBytes();
-        SecretKey originalKey = new SecretKeySpec(keyBytes, 0, keyBytes.length, "HmacSHA256");
-        return NimbusReactiveJwtDecoder.withSecretKey(originalKey).build();
+            // Validate JWT Tokens (Resource Server)
+            .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()));
+
+        return http.build();
     }
 
-     
+    /**
+     * Configures the Reactive JWT Decoder.
+     * Uses the shared secret key to verify the HMAC signature of incoming tokens.
+     */
+    @Bean
+    public ReactiveJwtDecoder jwtDecoder() {
+        byte[] keyBytes = jwtProperties.secret().getBytes();
+        SecretKey originalKey = new SecretKeySpec(keyBytes, 0, keyBytes.length, "HmacSHA256");
+        
+        return NimbusReactiveJwtDecoder.withSecretKey(originalKey).build();
+    }
 }

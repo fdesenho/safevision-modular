@@ -3,7 +3,9 @@ package com.safevision.authservice.config;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
-import org.springframework.beans.factory.annotation.Value;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -14,6 +16,7 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -22,50 +25,78 @@ import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.web.SecurityFilterChain;
 
+/**
+ * Security configuration class for the Auth Service.
+ * Configures authentication mechanisms, password encoding, and JWT validation.
+ */
+@Slf4j
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
+@RequiredArgsConstructor
+@EnableConfigurationProperties(JwtProperties.class)
 public class SecurityConfig {
 
-    @Value("${safevision.jwt.secret}")
-    private String secretKey;
+    private final JwtProperties jwtProperties;
 
-    // 1. O Filtro de Segurança Principal
+    // List of endpoints that do not require authentication
+    private static final String[] PUBLIC_ENDPOINTS = {
+        "/auth/login",
+        "/auth/register",
+        "/v3/api-docs/**",
+        "/swagger-ui/**",
+        "/swagger-ui.html"
+    };
+
+    /**
+     * Configures the HTTP security filter chain.
+     */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        log.info("Initializing Security Filter Chain for Auth Service...");
+
         http
-            .csrf(csrf -> csrf.disable()) // Desabilita CSRF (necessário para APIs Stateless)
+            // Disable CSRF as we use stateless JWTs
+            .csrf(AbstractHttpConfigurer::disable)
+            
             .authorizeHttpRequests(auth -> auth
-                // Permite acesso público ao Login e Registro
-                .requestMatchers("/auth/login", "/auth/register").permitAll()
-                .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
-                // Todo o resto (ex: GET /auth/{id}) exige Token Válido
+                // 1. Allow public endpoints (Login, Register, Docs)
+                .requestMatchers(PUBLIC_ENDPOINTS).permitAll()
+                
+                // 2. Block everything else
                 .anyRequest().authenticated()
             )
-            // Define que não haverá sessão no servidor (Stateless)
+            
+            // Ensure stateless session management (no JSESSIONID)
             .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             
-            // Configura para validar o Token JWT recebido (Resource Server)
+            // Configure Resource Server to accept JWTs
             .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()));
 
         return http.build();
     }
 
-    // 2. Decodificador de Token (Para validar a assinatura com a Chave Compartilhada)
+    /**
+     * Configures the JWT Decoder using the shared secret key.
+     */
     @Bean
     public JwtDecoder jwtDecoder() {
-        byte[] keyBytes = secretKey.getBytes();
+        byte[] keyBytes = jwtProperties.secret().getBytes();
         SecretKey originalKey = new SecretKeySpec(keyBytes, 0, keyBytes.length, "HmacSHA256");
         return NimbusJwtDecoder.withSecretKey(originalKey).build();
     }
 
-    // 3. Gerenciador de Autenticação (CRUCIAL para o AuthController funcionar)
+    /**
+     * Exposes the AuthenticationManager bean, required by the AuthController.
+     */
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
     }
 
-    // 4. Provedor de Autenticação (Conecta o UserDetailsService com o PasswordEncoder)
+    /**
+     * Configures the AuthenticationProvider with UserDetailsService and PasswordEncoder.
+     */
     @Bean
     public AuthenticationProvider authenticationProvider(UserDetailsService userDetailsService, PasswordEncoder passwordEncoder) {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
@@ -74,7 +105,9 @@ public class SecurityConfig {
         return provider;
     }
 
-    // 5. Encriptador de Senhas (BCrypt)
+    /**
+     * Configures the PasswordEncoder (BCrypt).
+     */
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
