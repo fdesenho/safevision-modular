@@ -18,7 +18,7 @@ class WeaponDetector:
         
         # 43: Knife, 67: Cell phone, 76: Scissors
         self.WEAPON_CLASSES = [43, 67, 76]
-        self.WEAPON_MAPPING = {43: "FACA", 67: "ARMA (SIMULADA)", 76: "TESOURA"}
+        self.WEAPON_MAPPING = {43: "FACA", 67: "ARMA", 76: "TESOURA"}
 
     def process(self, frame, rgb_frame):
         img_h, img_w, _ = frame.shape

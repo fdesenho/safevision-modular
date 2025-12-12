@@ -8,5 +8,5 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  *
  * @param alerts The name of the alerts queue.
  */
-@ConfigurationProperties(prefix = "rabbitmq.queues")
+@ConfigurationProperties(prefix = "spring.rabbitmq.queues")
 public record RabbitQueueProperties(String alerts) {}

@@ -2,8 +2,14 @@ package com.safevision.authservice.controller;
 
 import com.safevision.authservice.dto.*;
 import com.safevision.authservice.service.AuthenticationService;
+import com.safevision.common.enums.AlertType;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.List;
+import java.util.Map;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -18,7 +24,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class AuthController {
 
-    private final AuthenticationService authService;
+    private final AuthenticationService authenticationService;
 
     /**
      * Registers a new user in the system.
@@ -29,7 +35,7 @@ public class AuthController {
     @PostMapping("/register")
     public ResponseEntity<UserResponse> register(@RequestBody RegisterRequest request) {
         log.info("Registering new user: {}", request.username());
-        return ResponseEntity.ok(authService.register(request));
+        return ResponseEntity.ok(authenticationService.register(request));
     }
 
     /**
@@ -41,7 +47,7 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<TokenResponse> login(@RequestBody LoginRequest request) {
         log.debug("Login attempt for user: {}", request.username());
-        return ResponseEntity.ok(authService.login(request));
+        return ResponseEntity.ok(authenticationService.login(request));
     }
     
     /**
@@ -52,7 +58,7 @@ public class AuthController {
      */
     @GetMapping("/contact/{username}")
     public ResponseEntity<UserContactDTO> getUserContact(@PathVariable String username) {
-        return ResponseEntity.ok(authService.getUserContact(username));
+        return ResponseEntity.ok(authenticationService.getUserContact(username));
     }
 
     /**
@@ -71,7 +77,7 @@ public class AuthController {
         log.info("Updating profile for user: {}", currentUsername);
         
         return ResponseEntity.ok(
-            authService.updateUser(currentUsername, request)
+            authenticationService.updateUser(currentUsername, request)
         );
     }
 
@@ -81,5 +87,22 @@ public class AuthController {
     @GetMapping("/validate")
     public ResponseEntity<String> validateToken() {
         return ResponseEntity.ok("Token is valid");
+    }
+    @GetMapping("/camera-url")
+    public ResponseEntity<Map<String, String>> getCameraUrl(Authentication authentication) {
+        // O Spring injeta o usuário logado automaticamente no objeto 'authentication'
+        String username = authentication.getName();
+        
+        String url = authenticationService.getUserCameraUrl(username);
+        
+        // Retorna um JSON simples: { "cameraUrl": "http://..." }
+        return ResponseEntity.ok(Map.of("cameraUrl", url != null ? url : ""));
+    }
+ // ... Imports existentes
+
+ 
+    @GetMapping("/{username}/alert-preferences")
+    public ResponseEntity<List<AlertType>> getPreferences(@PathVariable String username) {
+        return ResponseEntity.ok(authenticationService.getAlertPreferences(username));
     }
 }

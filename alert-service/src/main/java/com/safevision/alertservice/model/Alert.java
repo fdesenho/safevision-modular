@@ -26,8 +26,11 @@ import lombok.Setter;
  */
 @Entity
 @Table(name = "alerts", indexes = {
-    // Performance: Index to optimize queries by 'userId' (e.g., fetching alert history)
-    @Index(name = "idx_alert_user_id", columnList = "userId") 
+    // 1. Índice simples para contagens ou buscas sem ordem
+    @Index(name = "idx_alert_user_id", columnList = "userId"),
+    
+   
+    @Index(name = "idx_alert_user_date", columnList = "userId, createdAt DESC")
 })
 @Getter
 @Setter

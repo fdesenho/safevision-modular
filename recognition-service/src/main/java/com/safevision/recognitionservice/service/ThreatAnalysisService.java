@@ -24,20 +24,20 @@ public class ThreatAnalysisService {
     private final AlertProducer alertProducer;
     private final MovementHistoryService historyService;
 
-    // --- RULE 1: PERSISTENT STARE ---
-    // Stores stare counters per detection ID
+    // --- VARIÁVEIS DE ESTADO ---
+    
+    // Regra 1: Contador de Olhar
     private final Map<String, Integer> stareCountMap = new ConcurrentHashMap<>();
-    
-    // Threshold: 50 events (~5 seconds at 10fps)
-    private static final int STARE_THRESHOLD = 50; 
+    private static final int STARE_THRESHOLD = 20; 
 
-    // --- RULE 2: LOITERING AND APPROACHING ---
-    // Analyze a window of 20 events (~2 seconds)
+    // Regra 2: Configurações
     private static final int LOITERING_WINDOW = 20;
-    
-    // If depth increases by 15 units within the window, it's a rapid approach
     private static final int PROXIMITY_DIFFERENCE = 15;
 
+    // --- NOVO: CACHE DE EVIDÊNCIAS (MEMÓRIA VISUAL) ---
+    // Armazena a última URL de foto válida recebida para cada ID de detecção.
+    // Isso resolve o problema de alertas disparados em frames sem foto.
+    private final Map<String, String> evidenceCache = new ConcurrentHashMap<>();
 
     /**
      * Main entry point for event analysis.
@@ -47,118 +47,130 @@ public class ThreatAnalysisService {
      */
     public void analyze(RawTrackingEvent event) {
         if (event == null) return;
-
+        
+        String id = event.detectionId();
         log.trace("Analyzing event for ID: {}", event.detectionId());
+        // 1. ATUALIZAR CACHE DE EVIDÊNCIA
+        // Se este pacote trouxe uma foto, salvamos ela como a "melhor foto até agora" para este ID.
+        if (event.snapshotUrl() != null && !event.snapshotUrl().isEmpty()) {
+            evidenceCache.put(id, event.snapshotUrl());
+            log.debug("📸 Evidence cached for ID: {}", id);
+        }
 
-        // 1. Check for Weapons (Zero Tolerance - Highest Priority)
+        // 2. Regra de Arma (Prioridade Máxima)
         analyzeWeaponRule(event);
 
-        // 2. Check for Persistent Staring
+        // 3. Regra de Olhar
         analyzeStareRule(event);
 
-        // 3. Check for Loitering and Approaching (Requires history)
+        // 4. Regra de Rondar
         analyzeLoiteringRule(event);
+        
+        // Nota: A limpeza do evidenceCache deve ocorrer quando o objeto sai de cena.
+        // Como não temos um evento "saiu de cena" explícito do Python, 
+        // podemos limpar quando o contador de Stare é resetado ou manter até expirar (via TTL), 
+        // mas para este MVP, vamos limpar apenas ao disparar o alerta ou no reset do stare.
     }
 
     // ==============================================================
-    // RULE 0: WEAPON DETECTED
+    // RULE 0: WEAPON
     // ==============================================================
     private void analyzeWeaponRule(RawTrackingEvent event) {
         if (event.hasWeapon()) {
             log.warn("🔫 WEAPON DETECTED! ID: {}", event.detectionId());
-            
             sendCriticalAlert(
-                event.userId(),
-                event.cameraId(),
-                "WEAPON_DETECTED",
-                "IMMEDIATE DANGER: " + event.weaponType() + " detected at " + event.weaponLocation(),
-                event.snapshotUrl()
+                event,
+                event.weaponType() +"_DETECTADA",
+                event.weaponType() + " foi localizada na " + event.weaponLocation()
             );
         }
     }
 
     // ==============================================================
-    // RULE 1: PERSISTENT STARE
+    // RULE 1: STARE
     // ==============================================================
     private void analyzeStareRule(RawTrackingEvent event) {
-        var id = event.detectionId();
+        String id = event.detectionId();
 
         if (event.isFacingCamera()) {
-            // Increment counter if facing camera
             int currentCount = stareCountMap.merge(id, 1, Integer::sum);
 
             if (currentCount >= STARE_THRESHOLD) {
                 log.warn("👁️ Persistent Stare Detected! ID: {}", id);
                 
-                double seconds = STARE_THRESHOLD / 10.0; // Assuming ~10 events/sec
+                double seconds = STARE_THRESHOLD / 10.0; 
                 sendCriticalAlert(
-                    event.userId(), 
-                    event.cameraId(), 
-                    "THREAT_STARE",
-                    "Persistent Stare detected for approx " + seconds + " seconds.",
-                    event.snapshotUrl()
+                    event,
+                    "OBSERVACAO_DETECTADA",
+                    "Pessoa te observou por " + seconds + " seconds."
                 );
 
-                // Reset counter to avoid flooding alerts
+                // Reset e Limpeza
                 stareCountMap.remove(id);
+                evidenceCache.remove(id); // Limpa a foto usada
             }
         } else {
-            // Reset counter if the person looks away
+            // Se parou de olhar, reseta o contador
             stareCountMap.remove(id);
+            // Opcional: Limpar a foto também se quiser que a "sessão de foto" seja vinculada ao olhar
+            // evidenceCache.remove(id); 
         }
     }
 
     // ==============================================================
-    // RULE 2: LOITERING AND APPROACHING
+    // RULE 2: LOITERING
     // ==============================================================
     private void analyzeLoiteringRule(RawTrackingEvent event) {
-        // Record history first
         historyService.recordEvent(event);
         
-        var id = event.detectionId();
+        String id = event.detectionId();
         List<Integer> depths = historyService.getDepths(id);
 
-        // Ensure we have enough history to analyze
-        if (depths.size() < LOITERING_WINDOW) {
-            return;
-        }
+        if (depths.size() < LOITERING_WINDOW) return;
 
-        int currentDepth = depths.get(0); // Most recent depth
-        int initialDepth = depths.get(LOITERING_WINDOW - 1); // Oldest depth in window
-
-        // CRITERIA: Has depth increased significantly (approaching)?
+        int currentDepth = depths.get(0); 
+        int initialDepth = depths.get(LOITERING_WINDOW - 1); 
         boolean isApproaching = (currentDepth - initialDepth) >= PROXIMITY_DIFFERENCE;
 
         if (isApproaching) {
             log.warn("🚶 Threat Approaching! ID: {}", id);
 
             sendCriticalAlert(
-                event.userId(), 
-                event.cameraId(), 
+                event,
                 "LOITERING_AND_APPROACH",
-                "Person loitering and rapidly approaching the camera.",
-                event.snapshotUrl()
+                "Person loitering and rapidly approaching the camera."
             );
 
-            // Clear history after triggering to prevent duplicate alerts for the same approach action
             historyService.clearHistory(id);
+            evidenceCache.remove(id); // Limpa a foto usada
         }
     }
 
     // ==============================================================
-    // INTERNAL: UNIFIED SEND METHOD
+    // MÉTODO UNIFICADO DE ENVIO (COM LÓGICA DE RECUPERAÇÃO DE FOTO)
     // ==============================================================
-    private void sendCriticalAlert(String userId, String cameraId, String type, String description, String snapshotUrl) {
-        var finalAlert = new AlertEventDTO(
-            userId,
+    private void sendCriticalAlert(RawTrackingEvent event, String type, String description) {
+        
+        // 1. Tenta pegar a URL que veio neste evento específico
+        String finalSnapshotUrl = event.snapshotUrl();
+
+        // 2. Se veio nula, tenta pegar do CACHE (a melhor foto recente)
+        if (finalSnapshotUrl == null || finalSnapshotUrl.isEmpty()) {
+            finalSnapshotUrl = evidenceCache.get(event.detectionId());
+            if (finalSnapshotUrl != null) {
+                log.info("📎 Attached cached evidence to alert: {}", finalSnapshotUrl);
+            }
+        }
+
+        AlertEventDTO finalAlert = new AlertEventDTO(
+            event.userId(),
             type,
             description,
             "CRITICAL",
-            cameraId,
-            snapshotUrl
+            event.cameraId(),
+            finalSnapshotUrl // Envia a melhor URL encontrada
         );
         
-        // Delegate to producer to send via RabbitMQ
         alertProducer.sendAlert(finalAlert);
     }
 }

@@ -1,157 +1,190 @@
-import { Component, inject, OnInit, DestroyRef, signal } from '@angular/core';
+import { Component, inject, OnInit, DestroyRef, signal, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
+import { HttpClient } from '@angular/common/http'; // <--- IMPORTANTE
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { timer } from 'rxjs';
+import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
+import { switchMap, of, throwError } from 'rxjs'; // <--- IMPORTANTE PARA O FLUXO
 
+// --- SERVIÇOS ---
 import { AlertService } from '../../core/services/alert.service';
 import { AuthService } from '../../core/services/auth.service';
 import { VisionService } from '../../core/services/vision.service';
-import { WebSocketService } from '../../core/services/websocket.service'; // <--- IMPORTANTE
+import { WebSocketService } from '../../core/services/websocket.service';
+import { NotificationService } from '../../core/services/notification.service';
 import { Alert } from '../../core/models/app.models';
+import { environment } from '../../../environments/environment';
+
+// --- MATERIAL UI ---
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatCardModule } from '@angular/material/card';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatChipsModule } from '@angular/material/chips';
+import { error } from 'console';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [
+    CommonModule,
+    MatToolbarModule,
+    MatButtonModule,
+    MatIconModule,
+    MatCardModule,
+    MatProgressSpinnerModule,
+    MatChipsModule
+  ],
+  providers: [WebSocketService],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss'
 })
 export class DashboardComponent implements OnInit {
-  // Injeções
-  public auth = inject(AuthService);
+
+  // Injeção de Dependências
+  public auth = inject(AuthService); // Public para usar no HTML
   private alertService = inject(AlertService);
   private visionService = inject(VisionService);
-  private webSocketService = inject(WebSocketService); // <--- INJEÇÃO DO WS
-  private fb = inject(FormBuilder);
+  private webSocketService = inject(WebSocketService);
+  private notifier = inject(NotificationService);
+  private sanitizer = inject(DomSanitizer);
   private destroyRef = inject(DestroyRef);
+  private http = inject(HttpClient); // <--- INJEÇÃO NECESSÁRIA
 
-  // Signals para Estado
+  // --- SIGNALS (ESTADO) ---
   alerts = signal<Alert[]>([]);
-  isSystemArmed = signal(false);
 
-  // Estado do Vídeo
-  videoSrc = signal<string | null>(null);
-  isVideoLoading = signal(true);
-  isVideoError = signal(false);
+  // Controle de UI
+  isLoading = signal(false);      // Trava os botões
+  isCameraActive = signal(false); // Indica se o monitoramento está ON/OFF
 
-  // Formulário de Configuração
-  configForm = this.fb.group({
-    cameraUrl: [''],
-    phone: ['']
-  });
+  // Vídeo
+  videoStreamUrl = signal<SafeUrl | null>(null);
 
   ngOnInit() {
-    // 1. Carga Inicial (HTTP GET) - Pega o histórico ao abrir a tela
     this.loadAlerts();
-
-    // 2. Inscrição no WebSocket (PUSH) - Substitui o Polling
-    // Fica ouvindo novos alertas em tempo real
-    this.webSocketService.watchAlerts()
-      .pipe(takeUntilDestroyed(this.destroyRef)) // Garante que desconecta ao sair
-      .subscribe((newAlert) => {
-        console.log('🔔 Alerta WebSocket Recebido:', newAlert);
-
-        // Atualiza a lista adicionando o novo item no topo
-        this.alerts.update(currentList => [newAlert, ...currentList]);
-      });
-
-    // 3. Inicia vídeo com delay
-    setTimeout(() => {
-      this.videoSrc.set('http://localhost:5000/video_feed');
-    }, 500);
+    this.initWebSocket();
   }
 
-  // --- AÇÕES ---
+  // --- WEBSOCKET ---
+  private initWebSocket() {
+    const user = this.auth.currentUser();
 
-  // Busca o histórico completo (usado no init e no botão de refresh manual)
-  loadAlerts() {
-    this.alertService.getAlerts().subscribe({
-      next: (data) => this.alerts.set(data),
-      error: (err) => console.error('Erro ao carregar histórico:', err)
-    });
-  }
-
-  // Método público para o botão de recarregar no HTML
-  forceRefresh() {
-    this.loadAlerts();
-  }
-
-  ack(id: string) {
-    // Ao marcar como lido, atualizamos a lista visualmente ou recarregamos
-    this.alertService.acknowledge(id).subscribe(() => {
-        // Opção A: Recarregar tudo do backend
-        //this.loadAlerts();
-
-        // Opção B (Mais rápida): Atualizar localmente sem ir ao backend
-
-        this.alerts.update(list => list.map(a =>
-            a.id === id ? { ...a, acknowledged: true } : a
-        ));
-
-    });
-  }
-
-  toggleSystem() {
-    const user = this.auth.currentUser()?.username;
-
-    if (this.isSystemArmed()) {
-      this.visionService.deactivateProtection().subscribe({
-        next: () => this.isSystemArmed.set(false),
-        error: () => alert('Erro ao desativar.')
-      });
-    } else {
-      if (user) {
-        this.visionService.activateProtection(user).subscribe({
-          next: () => this.isSystemArmed.set(true),
-          error: () => alert('Erro ao ativar.')
-        });
-      }
+    if (!user?.username) {
+      console.warn('Usuário não logado, WebSocket não iniciado.');
+      return;
     }
+
+    // Tópico corrigido para o plural (baseado nos logs anteriores)
+    const userTopic = `/topic/alert/${user.username}`;
+    console.log(`🔌 Conectando WebSocket no tópico: ${userTopic}`);
+
+    this.webSocketService.watchAlerts(userTopic)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (newAlert: Alert) => {
+          console.log('🔔 Alerta Recebido:', newAlert);
+          this.alerts.update(list => [newAlert, ...list]);
+          this.notifier.showError(`Ameaça Detectada: ${newAlert.alertType}`);
+        },
+        error: (err: any) => console.error('Erro no WebSocket:', err)
+      });
   }
 
-  saveConfig() {
-    const { cameraUrl, phone } = this.configForm.value;
-    if (!cameraUrl && !phone) return;
+  // --- AÇÕES DO SISTEMA (Ligar/Desligar) ---
 
-    this.auth.updateUser({
-      cameraConnectionUrl: cameraUrl || undefined,
-      phoneNumber: phone || undefined
-    }).subscribe({
+  toggleSystem(turnOn: boolean) {
+    const user = this.auth.currentUser();
+    if (!user?.username) return;
+
+    // 1. Trava a UI
+    this.isLoading.set(true);
+
+    let request$;
+
+    if (turnOn) {
+      // --- FLUXO DE ATIVAR (Busca URL -> Ativa Python) ---
+      request$ = this.http.get<{ cameraUrl: string }>(`${environment.apiUrl}/auth/camera-url`).pipe(
+        switchMap(res => {
+          if (!res.cameraUrl) {
+            return throwError(() => new Error('NO_CAMERA_URL'));
+          }
+          // Agora passamos a URL correta para o serviço de visão
+          return this.visionService.startDetection(user.username, res.cameraUrl);
+        })
+      );
+    } else {
+      // --- FLUXO DE DESATIVAR (Direto no Python) ---
+      request$ = this.visionService.stopDetection(user.username);
+    }
+
+    // Executa a requisição preparada acima
+    request$.subscribe({
       next: () => {
-        alert('Salvo! Reiniciando vídeo...');
-        this.reloadVideo();
-        this.configForm.reset();
+        this.isLoading.set(false);
+        this.isCameraActive.set(turnOn);
+
+        if (turnOn) {
+          this.generateVideoUrl(user.username);
+          this.notifier.showSuccess('Monitoramento Ativado');
+        } else {
+          this.videoStreamUrl.set(null);
+         
+        }
       },
-      error: () => alert('Erro ao salvar.')
+      error: (err) => {
+        this.isLoading.set(false);
+        if (turnOn) this.isCameraActive.set(false);
+
+        console.error('Erro ao alternar sistema:', err);
+
+        // Tratamento de erro específico
+        if (err.message === 'NO_CAMERA_URL') {
+          this.notifier.showError('Você não tem uma câmera configurada!');
+        } else {
+          this.notifier.showError('Falha ao comunicar com a câmera.');
+        }
+      }
     });
   }
 
-  // --- CONTROLE DE VÍDEO ---
+  // --- VÍDEO ---
 
-  onVideoLoad() {
-    this.isVideoLoading.set(false);
-    this.isVideoError.set(false);
+  private generateVideoUrl(username: string) {
+    // Adiciona timestamp para evitar cache do navegador
+    const rawUrl = `${environment.visionAgentUrl}/video_feed/${username}?t=${Date.now()}`;
+    this.videoStreamUrl.set(this.sanitizer.bypassSecurityTrustUrl(rawUrl));
   }
 
   onVideoError() {
-    this.isVideoLoading.set(false);
-    if (this.videoSrc()) {
-      this.isVideoError.set(true);
+    if (this.isCameraActive()) {
+      // Opcional: Desligar a UI se o vídeo cair
+      this.isCameraActive.set(false);
+      this.notifier.showError('Sinal de vídeo perdido.');
     }
   }
 
-  reloadVideo() {
-    this.isVideoError.set(false);
-    this.isVideoLoading.set(true);
-    this.videoSrc.set(null);
+  // --- ALERTAS ---
 
-    timer(200).pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => {
-      this.videoSrc.set(`http://localhost:5000/video_feed?t=${Date.now()}`);
-    });
+  loadAlerts() {
+    const user = this.auth.currentUser();
+    if (user?.username) {
+      this.alertService.getRecentAlerts(user.username).subscribe({
+        next: (data) => this.alerts.set(data),
+        error: (err) => {
+          this.notifier.showError('Erro ao carregar histórico de alertas.');
+          console.error('Erro ao carregar histórico de alertas:', err);
+        }
+      });
+    }
   }
 
-  retryVideo() {
-    this.reloadVideo();
+  ack(id: string) {
+    this.alertService.acknowledge(id).subscribe(() => {
+      this.alerts.update(list => list.map(a =>
+        a.id === id ? { ...a, acknowledged: true } : a
+      ));
+    });
   }
 }

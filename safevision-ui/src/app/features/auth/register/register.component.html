@@ -1,53 +1,150 @@
 <div class="register-wrapper">
-  <div class="register-container">
-    <div class="header">
-      <h2>📝 Criar Conta</h2>
-      <p>Junte-se ao SafeVision</p>
-    </div>
+  <mat-card class="register-card">
+    
+    <mat-card-header>
+      <mat-card-title>
+        @if (isRegisterSuccess()) {
+          Tudo pronto! 🎉
+        } @else {
+          📝 Criar Conta
+        }
+      </mat-card-title>
+      
+      @if (!isRegisterSuccess()) {
+        <mat-card-subtitle><br /> Junte-se ao SafeVision</mat-card-subtitle>
+      }
+    </mat-card-header>
 
-    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+    <mat-card-content>
+      
+      @if (isRegisterSuccess()) {
+        <div class="success-state">
+          <div class="icon-circle">
+            <mat-icon>check_circle</mat-icon>
+          </div>
+          
+          <h3>Cadastro Realizado!</h3>
+          <p>Sua conta foi criada com sucesso.</p>
+          <p class="sub-text">Agora você já pode acessar o sistema.</p>
 
-      <div class="form-group">
-        <label for="username">Usuário</label>
-        <input id="username" type="text" formControlName="username" placeholder="Seu usuário único">
-      </div>
+          <button mat-flat-button color="primary" class="login-btn" (click)="goToLogin()">
+            IR PARA O LOGIN
+          </button>
+        </div>
+      } 
+      
+      @else {
+        <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
 
-      <div class="form-group">
-        <label for="password">Senha</label>
-        <input id="password" type="password" formControlName="password" placeholder="Mínimo 6 caracteres">
-      </div>
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Usuário</mat-label>
+            <input matInput formControlName="username" placeholder="Seu usuário único" />
+            <mat-icon matSuffix>person</mat-icon>
+            @if (registerForm.get('username')?.hasError('required')) {
+              <mat-error>Usuário é obrigatório</mat-error>
+            }
+          </mat-form-field>
 
-      <div class="form-group">
-        <label for="email">E-mail</label>
-        <input id="email" type="email" formControlName="email" placeholder="seu@email.com">
-      </div>
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Senha</mat-label>
+            <input matInput type="password" formControlName="password" placeholder="Mínimo 6 caracteres" />
+            <mat-icon matSuffix>lock</mat-icon>
+            @if (registerForm.get('password')?.hasError('required')) {
+              <mat-error>Senha é obrigatória</mat-error>
+            }
+            @if (registerForm.get('password')?.hasError('minlength')) {
+              <mat-error>Mínimo de 6 caracteres</mat-error>
+            }
+          </mat-form-field>
 
-      <div class="form-group">
-        <label for="phone">Celular (Com DDD)</label>
-        <input id="phone" type="text" formControlName="phoneNumber" placeholder="+55 11 99999-9999">
-        <small>Usado para alertas SMS críticos</small>
-      </div>
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Confirmar Senha</mat-label>
+            <input matInput type="password" formControlName="confirmPassword" placeholder="Repita a senha" />
+            <mat-icon matSuffix>lock</mat-icon>
+          </mat-form-field>
 
-      <div class="form-group">
-        <label for="camera">URL da Câmera (Opcional)</label>
-        <input id="camera" type="text" formControlName="cameraUrl" placeholder="http://192.168.0.15:4747/video">
-      </div>
+          @if (registerForm.hasError('mismatch') && registerForm.get('confirmPassword')?.touched) {
+            <div class="password-error">
+              <mat-icon>error_outline</mat-icon>
+              As senhas não coincidem
+            </div>
+          }
 
-      <div *ngIf="errorMessage" class="alert error" role="alert">
-        ⚠️ {{ errorMessage }}
-      </div>
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>E-mail</mat-label>
+            <input matInput type="email" formControlName="email" placeholder="seu@email.com" />
+            <mat-icon matSuffix>email</mat-icon>
+            @if (registerForm.get('email')?.hasError('email')) {
+              <mat-error>E-mail inválido</mat-error>
+            }
+            @if (registerForm.get('email')?.hasError('required')) {
+              <mat-error>E-mail é obrigatório</mat-error>
+            }
+          </mat-form-field>
 
-      <div *ngIf="successMessage" class="alert success" role="alert">
-        ✅ {{ successMessage }}
-      </div>
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Celular (com DDI e DDD)</mat-label>
+            <input matInput formControlName="phoneNumber" placeholder="+55 11 99999-9999" />
+            <mat-icon matSuffix>smartphone</mat-icon>
+            <mat-hint>Para alertas SMS críticos</mat-hint>
+            @if (registerForm.get('phoneNumber')?.hasError('required')) {
+              <mat-error>Telefone é obrigatório</mat-error>
+            }
+          </mat-form-field>
 
-      <button type="submit" [disabled]="registerForm.invalid || isLoading">
-        {{ isLoading ? 'Criando...' : 'Registrar' }}
-      </button>
-    </form>
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>URL da Câmera</mat-label>
+            <input matInput formControlName="cameraUrl" placeholder="http://192.168.0.15:4747/video" />
+            <mat-icon matSuffix>videocam</mat-icon>
+            @if (registerForm.get('cameraUrl')?.hasError('required')) {
+              <mat-error>URL é obrigatório</mat-error>
+            }
+          </mat-form-field>
 
-    <div class="footer">
-      <p>Já tem conta? <a routerLink="/login">Faça Login</a></p>
-    </div>
-  </div>
+          <div class="alert-selection-container">
+            <label class="mat-subtitle-2 label-header">Canais de Notificação</label>
+
+            <mat-chip-listbox aria-label="Seleção de Alertas" multiple>
+              @for (opt of alertOptions; track opt.value) {
+                <mat-chip-option
+                  color="accent"
+                  [selected]="alertTypesArray.value.includes(opt.value)"
+                  (selectionChange)="toggleAlert(opt.value, $event.selected)">
+                  <mat-icon matChipAvatar>
+                    {{ opt.value === 'TELEGRAM' ? 'send' : (opt.value === 'EMAIL' ? 'email' : 'sms') }}
+                  </mat-icon>
+                  {{ opt.label }}
+                </mat-chip-option>
+              }
+            </mat-chip-listbox>
+
+            @if (registerForm.get('alertTypes')?.touched && registerForm.get('alertTypes')?.hasError('required')) {
+              <mat-error class="chip-error">
+                <mat-icon style="font-size: 12px; height: 12px; width: 12px;">error</mat-icon>
+                Escolha pelo menos um canal
+              </mat-error>
+            }
+          </div>
+
+          <div class="actions">
+            <button mat-raised-button color="primary" type="submit" [disabled]="registerForm.invalid || isLoading()">
+              @if (isLoading()) {
+                <mat-spinner diameter="20"></mat-spinner>
+              } @else {
+                <span>Registrar</span>
+              }
+            </button>
+          </div>
+
+        </form>
+      }
+
+    </mat-card-content>
+
+    @if (!isRegisterSuccess()) {
+      <mat-card-footer>
+        <p>Já tem conta? <a mat-button color="accent" routerLink="/login">Faça Login</a></p>
+      </mat-card-footer>
+    }
+  </mat-card>
 </div>

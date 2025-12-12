@@ -29,7 +29,6 @@ public class TelephonyService {
                             TelephonyProperties props) {
         this.twilioClient = restTemplate;
         this.props = props;
-        // Configura o cliente interno uma única vez
         this.authServiceClient = restClientBuilder.baseUrl("http://auth-service:8080").build();
     }
 
@@ -37,15 +36,15 @@ public class TelephonyService {
      * Orchestrates the sending of a critical SMS.
      * Steps: Validate -> Fetch Contact -> Build Request -> Send.
      */
-    public void sendCriticalSms(AlertEventDTO event) {
-        if (!"CRITICAL".equalsIgnoreCase(event.severity())) {
+    public void sendCriticalSms(AlertEventDTO alert) {
+        if (!"CRITICAL".equalsIgnoreCase(alert.severity())) {
             return;
         }
 
-        log.info("🚨 Initiating Critical SMS sequence for event: {}", event.alertType());
+        log.info("🚨 Initiating Critical SMS sequence for event: {}", alert.alertType());
 
         // 1. Determine Target Phone Number
-        String targetPhone = resolveUserPhoneNumber(event.userId());
+        String targetPhone = resolveUserPhoneNumber(alert.userId());
         
         // 2. Build Message
         String messageBody = """
@@ -54,13 +53,14 @@ public class TelephonyService {
             Descrição: %s
             Câmera: %s
             AÇÃO IMEDIATA NECESSÁRIA!
-            """.formatted(event.alertType(), event.description(), event.cameraId());
+            """.formatted(alert.alertType(), alert.description(), alert.cameraId());
 
         // Debug Log (Mock)
         logMockMessage(targetPhone, messageBody);
 
         // 3. Send Real SMS (Twilio)
         //executeTwilioRequest(targetPhone, messageBody);
+        //sendSmsWithImage(targetPhone, messageBody, alert.snapshotUrl());
     }
 
     /**
@@ -128,6 +128,47 @@ public class TelephonyService {
         map.add("Body", body);
         return map;
     }
+    /**
+     * Sends an SMS/MMS with an image attachment (MediaUrl).
+     * Twilio automatically converts to MMS when MediaUrl is provided.
+     */
+    public void sendSmsWithImage(String userId, String message, String imageUrl) {
+
+        log.info("📸 Sending image MMS to user {} with image: {}", userId, imageUrl);
+
+        // 1. Resolve phone number
+        String targetPhone = resolveUserPhoneNumber(userId);
+
+        // 2. Build Twilio message
+        try {
+            var headers = createTwilioHeaders();
+
+            var payload = new LinkedMultiValueMap<String, String>();
+            payload.add("To", targetPhone);
+            payload.add("From", props.fromNumber());
+            payload.add("Body", message);
+            payload.add("MediaUrl", imageUrl); // <-- AQUI adiciona a foto
+
+            var request = new HttpEntity<>(payload, headers);
+
+            var response = twilioClient.exchange(
+                    props.baseUrl(),
+                    HttpMethod.POST,
+                    request,
+                    String.class
+            );
+
+            if (response.getStatusCode().is2xxSuccessful()) {
+                log.info("✅ MMS sent successfully to {}", targetPhone);
+            } else {
+                log.error("❌ Twilio returned error: {}", response.getStatusCode());
+            }
+
+        } catch (Exception e) {
+            log.error("❌ Error sending MMS: {}", e.getMessage());
+        }
+    }
+
 
     private void logMockMessage(String phone, String message) {
         log.debug("\n=== [SMS MOCK] ===\nTo: {}\nMsg: {}\n==================", phone, message);

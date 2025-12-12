@@ -24,11 +24,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-/**
- * Security configuration class for the Auth Service.
- * Configures authentication mechanisms, password encoding, and JWT validation.
- */
 @Slf4j
 @Configuration
 @EnableWebSecurity
@@ -39,7 +36,8 @@ public class SecurityConfig {
 
     private final JwtProperties jwtProperties;
 
-    // List of endpoints that do not require authentication
+    // Removemos a linha 'private final SecretKey key;' pois ela não era um Bean.
+
     private static final String[] PUBLIC_ENDPOINTS = {
         "/auth/login",
         "/auth/register",
@@ -48,55 +46,42 @@ public class SecurityConfig {
         "/swagger-ui.html"
     };
 
-    /**
-     * Configures the HTTP security filter chain.
-     */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         log.info("Initializing Security Filter Chain for Auth Service...");
 
         http
-            // Disable CSRF as we use stateless JWTs
             .csrf(AbstractHttpConfigurer::disable)
-            
             .authorizeHttpRequests(auth -> auth
-                // 1. Allow public endpoints (Login, Register, Docs)
                 .requestMatchers(PUBLIC_ENDPOINTS).permitAll()
-                
-                // 2. Block everything else
                 .anyRequest().authenticated()
             )
-            
-            // Ensure stateless session management (no JSESSIONID)
             .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()))
             
-            // Configure Resource Server to accept JWTs
-            .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()));
+            // 🔥 CORREÇÃO: Usamos jwtProperties.secret() diretamente
+            // Isso passa a String "404E63..." para o filtro comparar
+            .addFilterBefore(
+                new InternalKeyFilter(jwtProperties.secret()), 
+                UsernamePasswordAuthenticationFilter.class
+            );
 
         return http.build();
     }
 
-    /**
-     * Configures the JWT Decoder using the shared secret key.
-     */
     @Bean
     public JwtDecoder jwtDecoder() {
+        // Aqui criamos a chave manualmente apenas para o Decoder, sem precisar injetar de fora
         byte[] keyBytes = jwtProperties.secret().getBytes();
         SecretKey originalKey = new SecretKeySpec(keyBytes, 0, keyBytes.length, "HmacSHA256");
         return NimbusJwtDecoder.withSecretKey(originalKey).build();
     }
 
-    /**
-     * Exposes the AuthenticationManager bean, required by the AuthController.
-     */
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
     }
 
-    /**
-     * Configures the AuthenticationProvider with UserDetailsService and PasswordEncoder.
-     */
     @Bean
     public AuthenticationProvider authenticationProvider(UserDetailsService userDetailsService, PasswordEncoder passwordEncoder) {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
@@ -105,11 +90,8 @@ public class SecurityConfig {
         return provider;
     }
 
-    /**
-     * Configures the PasswordEncoder (BCrypt).
-     */
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
+        return new BCryptPasswordEncoder(4);
     }
 }

@@ -17,7 +17,7 @@ class GazeDetector:
         
         data = {
             "facing": False,
-            "direction": "UNKNOWN",
+            "direction": "",
             "depth_score": 0
         }
 
@@ -62,7 +62,7 @@ class GazeDetector:
                 elif x_angle < -10: data["direction"] = "BAIXO"
                 elif x_angle > 10: data["direction"] = "CIMA"
                 else: 
-                    data["direction"] = "CENTER"
+                    data["direction"] = "FRENTE"
                     data["facing"] = True
 
                 # Desenha caixa simples no rosto

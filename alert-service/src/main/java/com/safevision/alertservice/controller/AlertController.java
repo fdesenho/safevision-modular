@@ -54,7 +54,7 @@ public class AlertController {
      * @param unreadOnly     Query param to filter only unread alerts.
      * @return List of alerts.
      */
-    @GetMapping
+    @GetMapping("/user/{username}")
     public ResponseEntity<List<AlertResponse>> getMyAlerts(
             Authentication authentication,
             @RequestParam(defaultValue = "false") boolean unreadOnly) {

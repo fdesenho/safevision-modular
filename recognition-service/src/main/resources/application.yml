@@ -11,8 +11,8 @@ spring:
     username: ${RABBITMQ_USERNAME:user}
     password: ${RABBITMQ_PASSWORD:password}
     queues:
-      raw-tracking: ${VISION_QUEUE_NAME:vision.raw.tracking} 
-      alerts: ${ALERTS_QUEUE_NAME:safevision.alerts.queue}
+      raw-tracking: ${VISION_QUEUE_NAME:safevision.vision.raw.tracking} 
+      alerts: ${ALERTS_QUEUE_NAME:safevision.alerts}
 
 # --- CONFIGURAÇÃO ZIPKIN E METRICAS ---
 management:

@@ -1,310 +1,413 @@
-// Variáveis de Cores
-$primary-color: #007bff;
-$danger-color: #dc3545;
-$warning-color: #ffc107;
-$success-color: #28a745;
-$bg-color: #f4f6f9;
-$card-bg: #ffffff;
+/* ============================================================
+   SAFE VISION — Dashboard (Premium UI)
+   Padronizado com Login + Register
+   ============================================================ */
+@use "sass:color";
 
-.dashboard-wrapper {
-  min-height: 100vh;
-  background-color: $bg-color;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-}
+/* ------------------------------------------------------------
+   DESIGN SYSTEM (shared)
+   ------------------------------------------------------------ */
+$primary: #d63384;
+$primary-hover: color.adjust($primary, $lightness: -10%);
+$warn: #f44336;
+$success: #2e7d32;
 
-.dashboard-header {
+$glass-bg: rgba(255, 255, 255, 0.08);
+$glass-border: rgba(255, 255, 255, 0.18);
+$glass-blur: 12px;
+
+$shadow-soft: 0 12px 28px rgba(0, 0, 0, 0.35);
+$shadow-hard: 0 18px 45px rgba(0, 0, 0, 0.55);
+
+/* ============================================================
+   TOOLBAR
+   ============================================================ */
+.dashboard-toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: rgba(0, 0, 0, 0.6) !important; // Fundo escuro leve para leitura
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  padding: 1rem 2rem;
-  background-color: $card-bg;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 
-  h1 { margin: 0; font-size: 1.5rem; color: #333; }
+  .spacer {
+    flex: 1 1 auto;
+  }
 
-  .user-info {
-    display: flex;
-    gap: 1rem;
-    align-items: center;
+  .username {
+    margin-right: 12px;
+    font-size: 0.95rem;
+    color: #fff;
+    font-weight: 600;
+  }
 
-    span { font-size: 0.9rem; color: #555; }
-
-    .btn-logout {
-      padding: 0.5rem 1rem;
-      background-color: transparent;
-      border: 1px solid $danger-color;
-      color: $danger-color;
-      border-radius: 4px;
-      cursor: pointer;
-      transition: all 0.2s;
-      &:hover { background-color: $danger-color; color: white; }
-    }
+  mat-icon {
+    color: #fff;
   }
 }
 
-.dashboard-grid {
+/* ============================================================
+   DASHBOARD CONTENT LAYOUT
+   ============================================================ */
+.dashboard-content {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 2rem;
-  padding: 2rem;
-  max-width: 1400px;
+  grid-template-columns: 2fr 1fr; // Vídeo maior (2/3) e Alertas menor (1/3)
+  gap: 24px;
+  padding: 24px;
+  max-width: 1600px;
   margin: 0 auto;
+  height: calc(100vh - 64px); // Altura total menos toolbar
 
   @media (max-width: 900px) {
-    grid-template-columns: 1fr; // Coluna única em telas menores
+    grid-template-columns: 1fr;
+    height: auto;
   }
 }
 
-// Estilos Gerais de Cards
-.card {
-  background: $card-bg;
-  padding: 1.5rem;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-  margin-bottom: 1.5rem;
-
-  h3, h4 { margin-top: 0; margin-bottom: 1rem; color: #444; }
-}
-
-// --- CONTROLO DO SISTEMA (ATIVAR/DESATIVAR) ---
-.system-control {
+/* ============================================================
+   VIDEO CARD (Painel Esquerdo)
+   ============================================================ */
+.video-card {
+  /* Glass base para o card inteiro */
+  background: rgba(255, 255, 255, 0.05) !important;
+  backdrop-filter: blur(16px) !important;
+  border: 1px solid $glass-border !important;
+  border-radius: 16px;
+  box-shadow: $shadow-hard !important;
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background: #f8f9fa;
-  padding: 12px;
-  border-radius: 8px;
-  margin-bottom: 15px;
-  border: 1px solid #e9ecef;
-
-  .status-indicator {
-    font-weight: bold;
-    color: #666;
-    &.active { color: $success-color; }
-  }
-
-  .btn-toggle {
-    padding: 8px 16px;
-    border-radius: 20px;
-    border: none;
-    cursor: pointer;
-    font-weight: bold;
-    font-size: 0.85rem;
-    transition: all 0.3s;
-    color: white;
-
-    // Estado: Desativado (Botão Verde para Ligar)
-    background-color: $success-color;
-    &:hover { background-color: darken($success-color, 10%); }
-
-    // Estado: Ativo (Botão Vermelho para Desligar)
-    &.active {
-      background-color: $danger-color;
-      &:hover { background-color: darken($danger-color, 10%); }
-      animation: pulse 2s infinite;
-    }
-  }
-}
-
-// Feed de Vídeo
-.video-container {
-  width: 100%;
-  min-height: 300px;
-  background: #000;
-  border-radius: 4px;
+  flex-direction: column;
+  height: 100%;
   overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
 
-  img { width: 100%; height: auto; display: block; }
-
-  .video-placeholder {
-    color: #bbb;
-    text-align: center;
-    p { margin: 0; font-size: 0.9rem; }
-  }
-}
-
-// Formulários
-.form-group {
-  margin-bottom: 1rem;
-  label { display: block; font-size: 0.85rem; margin-bottom: 0.3rem; color: #666; }
-  input {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    box-sizing: border-box; // Impede que padding estoure largura
-    font-size: 0.9rem;
-
-    &:focus {
-      outline: none;
-      border-color: $primary-color;
-      box-shadow: 0 0 0 2px rgba($primary-color, 0.2);
+  mat-card-header {
+    padding: 16px 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    
+    mat-card-title {
+      color: #fff;
+      font-size: 1.2rem;
+      letter-spacing: 0.5px;
     }
+
+    // Badge de Status (Online/Offline)
+	.status-badge {
+	  margin-left: auto;
+	  display: flex;
+	  align-items: center;
+	  gap: 8px;
+	  font-size: 0.8rem;
+	  font-weight: 700;
+	  
+	  /* Visual Padrão (OFFLINE) */
+	  color: rgba(255, 255, 255, 0.6);
+	  background: rgba(255, 255, 255, 0.1);
+	  padding: 6px 12px;
+	  border-radius: 20px;
+	  border: 1px solid rgba(255, 255, 255, 0.1);
+	  transition: all 0.3s ease;
+
+	  .indicator {
+	    width: 8px;
+	    height: 8px;
+	    border-radius: 50%;
+	    
+	    /* 🔴 MUDANÇA: Cor Vermelha para Offline (era cinza #757575) */
+	    background-color: #ff5252; 
+	    box-shadow: 0 0 5px rgba(255, 82, 82, 0.4); /* Leve brilho vermelho */
+	    transition: all 0.3s ease;
+	  }
+
+	  /* 🟢 ESTADO ONLINE */
+	  &.online {
+		color: rgba(255, 255, 255, 0.6);
+		  background: rgba(255, 255, 255, 0.1);
+		  padding: 6px 12px;
+		  border-radius: 20px;
+		  border: 1px solid rgba(255, 255, 255, 0.1);
+		  transition: all 0.3s ease;
+	    .indicator {
+			width: 8px;
+		    height: 8px;
+		    border-radius: 50%;
+			background-color: #00e676;
+			box-shadow: 0 0 10px #00e676;
+		    transition: all 0.3s ease;
+	      
+	      /* ✨ AQUI ESTÁ O PULSAR ATIVO */
+	      animation: pulse 50s infinite;
+	    }
+	  }
+	}
+
+	/* 👇 DEFINIÇÃO DA ANIMAÇÃO (Isso é obrigatório para o 'pulse' funcionar) */
+	@keyframes pulse {
+	  0% {
+	    transform: scale(0.95);
+	    opacity: 0.7;
+	    box-shadow: 0 0 0 0 rgba(0, 188, 212, 0.7);
+	  }
+	  70% {
+	    transform: scale(1.2); /* Aumenta um pouco */
+	    opacity: 1;
+	    box-shadow: 0 0 0 6px rgba(0, 188, 212, 0); /* Efeito de onda sumindo */
+	  }
+	  100% {
+	    transform: scale(0.95);
+	    opacity: 0.7;
+	    box-shadow: 0 0 0 0 rgba(0, 188, 212, 0);
+	  }
+	}
   }
-}
 
-.btn-save {
-  width: 100%;
-  padding: 10px;
-  background-color: $primary-color;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-weight: 600;
-  transition: background 0.2s;
-  &:hover { background-color: darken($primary-color, 10%); }
-}
-
-// Lista de Alertas
-.alerts-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1rem;
-
-  .btn-refresh {
-    background: none; border: none; font-size: 1.2rem; cursor: pointer;
-    transition: transform 0.3s;
-    &:hover { transform: rotate(180deg); }
-  }
-}
-
-.alerts-container {
-  max-height: 70vh;
-  overflow-y: auto; // Scroll interno na lista se for longa
-  padding-right: 5px;
-}
-
-.alert-card {
-  background: white;
-  border: 1px solid #eee;
-  border-left: 4px solid #ccc;
-  padding: 1rem;
-  margin-bottom: 0.8rem;
-  border-radius: 4px;
-  transition: transform 0.2s;
-
-  &:hover { transform: translateX(2px); }
-
-  // Estilos Condicionais (Severidade)
-  &.critical {
-    border-left-color: $danger-color;
-    background-color: rgba($danger-color, 0.05);
-  }
-  &.warning {
-    border-left-color: $warning-color;
-    background-color: rgba($warning-color, 0.05);
-  }
-
-  .alert-header {
+  mat-card-content {
+    flex-grow: 1;
+    padding: 0;
+    position: relative;
+    background: #000; // Fundo preto do player
     display: flex;
-    justify-content: space-between;
-    margin-bottom: 0.5rem;
-
-    .alert-type { font-size: 0.95rem; color: #333; }
-
-    .badge {
-      font-size: 0.7rem;
-      padding: 2px 6px;
-      border-radius: 4px;
-      color: white;
-      background: #999;
-      font-weight: bold;
-      text-transform: uppercase;
-
-      &.CRITICAL { background: $danger-color; }
-      &.WARNING { background: $warning-color; color: #212529; }
-      &.INFO { background: $primary-color; }
-    }
-  }
-
-  .alert-desc { margin: 0.5rem 0; color: #555; font-size: 0.9rem; line-height: 1.4; }
-
-  .alert-footer {
-    display: flex;
-    justify-content: space-between;
     align-items: center;
-    margin-top: 0.8rem;
-    font-size: 0.8rem;
-    color: #999;
+    justify-content: center;
+  }
 
-    .btn-ack {
-      background: white;
-      border: 1px solid #ccc;
-      padding: 4px 10px;
-      border-radius: 20px;
-      cursor: pointer;
-      font-size: 0.75rem;
-      color: #666;
-      &:hover { background: #f0f0f0; border-color: #bbb; }
+  // Wrapper do Vídeo
+  .video-wrapper {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    // A imagem do feed (MJPEG)
+    .live-feed {
+      width: 100%;
+      height: 100%;
+      object-fit: contain; // Garante que o vídeo não estique
+      display: block;
     }
 
-    .read-status { color: $success-color; font-weight: bold; display: flex; align-items: center; gap: 4px; }
-  }
-}
+    // Overlays (Carregando / Offline / Erro)
+    .overlay {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      text-align: center;
+      background: rgba(0, 0, 0, 0.7); // Escurece um pouco o fundo
+      z-index: 10;
 
-.empty-state {
-  text-align: center;
-  color: #999;
-  padding: 2rem;
-  font-style: italic;
-}
-.evidence-img {
-  width: 100%;
-  max-height: 200px;
-  object-fit: cover;
-  border-radius: 4px;
-  margin: 10px 0;
-  border: 1px solid #ddd;
-}
-// Animação do botão ativo
-@keyframes pulse {
-  0% { box-shadow: 0 0 0 0 rgba(220, 53, 69, 0.7); }
-  70% { box-shadow: 0 0 0 10px rgba(220, 53, 69, 0); }
-  100% { box-shadow: 0 0 0 0 rgba(220, 53, 69, 0); }
-}
+      &.loading {
+        p { margin-top: 16px; font-weight: 500; letter-spacing: 0.5px; opacity: 0.9; }
+      }
 
-// ... (variáveis e estilos gerais mantidos) ...
-
-// Estilos Específicos do Vídeo
-.video-container {
-  width: 100%;
-  min-height: 300px;
-  background: #000;
-  border-radius: 4px;
-  overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative; // Para posicionar msg de erro
-
-  img { width: 100%; height: auto; display: block; }
-
-  // Mensagens de Status (Loading / Erro)
-  .video-status {
-    text-align: center;
-    z-index: 10;
-
-    &.loading { color: #ffc107; font-weight: bold; }
-
-    &.error {
-      color: #dc3545;
-      p { margin-bottom: 10px; font-weight: bold; }
-      button {
-        background: transparent;
-        border: 1px solid #dc3545;
-        color: #dc3545;
-        padding: 5px 10px;
-        border-radius: 4px;
-        cursor: pointer;
-        &:hover { background: #dc3545; color: white; }
+      &.offline {
+        .large-icon {
+          font-size: 64px;
+          width: 64px;
+          height: 64px;
+          opacity: 0.4;
+          margin-bottom: 16px;
+        }
+        h3 { margin: 0; font-size: 1.5rem; font-weight: 600; }
+        p { margin-top: 8px; opacity: 0.6; }
       }
     }
   }
+
+  // Ações do Card (Botões Play/Stop)
+  mat-card-actions {
+    padding: 16px 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(0, 0, 0, 0.2);
+    gap: 12px;
+
+    button {
+      height: 44px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      min-width: 140px;
+      border-radius: 8px;
+    }
+  }
 }
 
+/* ============================================================
+   ALERTS PANEL (Painel Direito)
+   ============================================================ */
+.panel-right {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+
+  .alerts-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    padding: 0 4px;
+
+    h2 {
+      margin: 0;
+      font-weight: 700;
+      color: #fff;
+      font-size: 1.2rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    button { color: rgba(255, 255, 255, 0.8); }
+  }
+
+  .alerts-list {
+    flex-grow: 1;
+    overflow-y: auto;
+    padding-right: 6px; // Espaço para scrollbar
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+
+    // Barra de rolagem customizada
+    &::-webkit-scrollbar { width: 6px; }
+    &::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.05); }
+    &::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.2); border-radius: 3px; }
+
+    .alert-item {
+      background: rgba(255, 255, 255, 0.05) !important;
+      backdrop-filter: blur(8px) !important;
+      border: 1px solid rgba(255, 255, 255, 0.1) !important;
+      border-radius: 12px;
+      padding: 16px;
+      color: #fff;
+      transition: transform 0.2s;
+
+      &:hover {
+        background: rgba(255, 255, 255, 0.08) !important;
+        transform: translateY(-2px);
+      }
+
+      // Estilo Crítico
+      &.critical {
+        border-left: 4px solid $warn !important;
+        background: linear-gradient(90deg, rgba(244, 67, 54, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%) !important;
+      }
+
+      .alert-row {
+        display: flex;
+        gap: 16px;
+      }
+
+      .alert-icon {
+        padding-top: 2px;
+        mat-icon { color: rgba(255, 255, 255, 0.7); }
+        .warn-icon { color: $warn; }
+      }
+
+      .alert-content {
+        flex: 1;
+
+        .alert-top {
+          display: flex;
+          justify-content: space-between;
+          margin-bottom: 6px;
+          
+          .type { font-weight: 700; font-size: 0.95rem; }
+          .time { font-size: 0.8rem; opacity: 0.6; }
+        }
+
+        .desc {
+          margin: 0 0 10px 0;
+          font-size: 0.9rem;
+          opacity: 0.8;
+          line-height: 1.4;
+        }
+
+        .evidence-wrapper {
+          position: relative;
+          overflow: hidden;
+          border-radius: 8px;
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          
+          img {
+            width: 100%;
+            height: auto;
+            display: block;
+            transition: transform 0.3s;
+            cursor: zoom-in;
+            
+            &:hover { transform: scale(1.05); }
+          }
+        }
+      }
+
+      .alert-action {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        
+        .check-icon { color: $success; }
+      }
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 40px;
+      opacity: 0.5;
+      color: #fff;
+
+      mat-icon { font-size: 48px; width: 48px; height: 48px; margin-bottom: 12px; }
+      p { margin: 0; font-size: 1rem; }
+    }
+  }
+}
+
+/* ============================================================
+   BOTÕES DE AÇÃO (Oval + Alinhados)
+   ============================================================ */
+
+button[mat-stroked-button],
+button[mat-flat-button] {
+  height: 45px; /* Altura confortável */
+  
+  /* 👇 O SEGREDO DO FORMATO OVAL 👇 */
+  border-radius: 50px !important; 
+  
+  /* Ajuste de largura mínima para ficarem elegantes */
+  min-width: 140px; 
+  padding: 0 24px;
+
+  /* Classe interna de alinhamento (que criamos antes) */
+  .btn-label {
+    display: flex;
+    align-items: center; 
+    justify-content: center;
+    line-height: 1; 
+    
+    mat-icon {
+      margin: 0;
+      margin-right: 8px;
+      font-size: 22px;
+      width: 22px;
+      height: 22px;
+    }
+    
+    span {
+      display: inline-block;
+      padding-top: 2px;
+      font-weight: 600; /* Texto um pouco mais forte fica melhor no botão oval */
+      letter-spacing: 0.5px;
+    }
+  }
+}
+
+// Animação de Pulsar
+@keyframes pulse {
+  0% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(1.1); }
+  100% { opacity: 1; transform: scale(1); }
+}

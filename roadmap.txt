@@ -1,0 +1,57 @@
+Com base na arquitetura sólida que já construímos (Spring Boot, Python, RabbitMQ, Angular, Postgres), existem tecnologias complementares que elevariam o SafeVision ao nível de "Big Tech" ou produto comercial de alta performance.
+
+Aqui estão as 5 principais tecnologias que eu sugiro adicionar ao seu roadmap para enriquecer o projeto:
+
+1. WebSockets (Substituir o Polling) ⚡
+O Problema: Atualmente, o seu Frontend Angular fica perguntando ao servidor a cada 5 segundos: "Tem alerta novo?" (Polling). Isso gasta bateria do celular, dados móveis e atrasa o alerta em até 5s. A Solução: Spring WebSocket (STOMP).
+
+Como funciona: O servidor mantém um canal aberto com o navegador. Assim que o AlertService recebe a mensagem do RabbitMQ, ele "empurra" (Push) o alerta para o Angular em milissegundos.
+
+Benefício: Alerta instantâneo e menor consumo de rede.
+
+2. MinIO (Object Storage - S3 Compatible) 🗄️
+O Problema: Se o Vision Agent detectar uma arma, onde salvamos a foto ou o vídeo da prova? Salvar no banco de dados (BLOB) é pesadíssimo e salvar no disco do container é volátil (se reiniciar, perde). A Solução: MinIO.
+
+O que é: Um servidor de armazenamento de arquivos open-source que funciona exatamente igual ao AWS S3.
+
+Fluxo:
+
+Python detecta arma -> Envia foto para o MinIO.
+
+MinIO devolve uma URL (http://minio/safevision/evidencia-123.jpg).
+
+Python envia essa URL no JSON para o RabbitMQ.
+
+Angular mostra a foto do bandido no Card de Alerta.
+
+3. Redis (Cache de Alta Performance) 🚀
+O Problema: Toda vez que o RecognitionService processa um frame, ou o Gateway valida um token, eles consultam o banco de dados ou fazem cálculos repetitivos. A Solução: Redis.
+
+Uso 1 (Cache de Token): O Gateway guarda tokens válidos no Redis. Validação ocorre em 0.1ms sem bater no banco.
+
+Uso 2 (Estado do Vision Agent): Em vez de guardar o histórico de movimento na memória RAM do Java (MovementHistoryService), guardamos no Redis. Isso permite que o serviço Java reinicie sem perder o contexto da ameaça.
+
+4. Prometheus + Grafana (Monitoramento Profissional) 📊
+O Problema: O Zipkin mostra o tempo das requisições, mas não mostra se o servidor está ficando sem memória, se a CPU está em 100% ou quantas mensagens estão acumuladas no RabbitMQ. A Solução:
+
+Prometheus: Coleta métricas numéricas do Spring Boot (via Actuator).
+
+Grafana: Cria dashboards visuais lindos (estilo NASA).
+
+O que você vê: Um gráfico em tempo real mostrando "Alertas por Minuto", "Uso de CPU do Python", "Erros de Login".
+
+5. Kubernetes (K8s) (Orquestração de Produção) ☸️
+O Problema: O docker-compose é ótimo para um servidor só. Mas se você tiver 1.000 câmeras e precisar de 50 servidores processando? A Solução: Kubernetes.
+
+Ele gerencia seus containers automaticamente. Se o vision-agent travar, o K8s mata e sobe outro em segundos. Se o tráfego aumentar, ele sobe mais cópias do recognition-service (Auto-scaling).
+
+🗺️ Qual implementar primeiro?
+Se o objetivo é melhorar a Experiência do Usuário e Segurança, eu recomendo esta ordem:
+
+MinIO: Para poder ver a FOTO do momento da detecção no Dashboard (vital para segurança).
+
+WebSockets: Para o alerta pipocar na tela na hora.
+
+Redis: Para otimizar a performance.
+
+Quer que eu te ajude a configurar o MinIO no docker-compose para começarmos a salvar as fotos das ameaças?

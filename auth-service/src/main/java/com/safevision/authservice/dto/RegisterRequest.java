@@ -16,11 +16,22 @@ import java.util.Set;
  * @param cameraUrl   The connection string (RTSP/HTTP) for the Vision Agent.
  * @param roles       The set of permissions (e.g., "ADMIN", "USER"). Can be null (defaults to USER).
  */
+
+
+import com.safevision.common.enums.AlertType;
+
+import java.util.Set;
+
+/**
+ * RegisterRequest record - immutable DTO for registration payload.
+ */
 public record RegisterRequest(
     String username,
     String password,
     String email,
     String phoneNumber,
     String cameraUrl,
-    Set<String> roles
+    Set<String> roles,
+    Set<AlertType> alertTypes   // <-- agora usamos o enum
 ) {}
+

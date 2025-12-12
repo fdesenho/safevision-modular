@@ -4,23 +4,115 @@ server:
 spring:
   application:
     name: gateway-service
+  
   cloud:
     gateway:
       discovery:
         locator:
-          enabled: false
+          enabled: false 
           lower-case-service-id: true
-    circuitbreaker:
-      configs:
-        default:
-          slidingWindowType: COUNT_BASED
-          slidingWindowSize: 10
-          failureRateThreshold: 50
-          waitDurationInOpenState: 5s
-          permittedNumberOfCallsInHalfOpenState: 3
-          recordExceptions:
-            - org.springframework.web.client.ResourceAccessException
-            - java.io.IOException
+      
+      # Timeout da conexão HTTP
+      httpclient:
+        connect-timeout: 5000
+        response-timeout: 20000 
+
+      # --- FILTROS PADRÃO (Aplicados a todas as rotas) ---
+      default-filters:
+        # 👇 1. LIMPEZA DE CORS DUPLICADO (Novo)
+        # Remove cabeçalhos duplicados vindos dos microsserviços para evitar conflito com sua classe Java
+        - DedupeResponseHeader=Access-Control-Allow-Origin Access-Control-Allow-Credentials, RETAIN_FIRST
+        
+        # 👇 2. RETRY (Ajustado)
+        - name: Retry
+          args:
+            retries: 3
+            # Sem NOT_FOUND para login rápido
+            statuses: BAD_GATEWAY,GATEWAY_TIMEOUT,INTERNAL_SERVER_ERROR,SERVICE_UNAVAILABLE
+            methods: GET,POST,PUT,DELETE,PATCH,OPTIONS
+            backoff:
+              firstBackoff: 500ms 
+              maxBackoff: 2000ms
+              factor: 2
+              basedOnPreviousValue: false
+
+      routes:
+        # --- AUTH SERVICE ---
+        - id: auth-service-swagger
+          uri: ${safevision.services.auth}
+          predicates:
+            - Path=/aggregate/auth-service/v3/api-docs
+          filters:
+            - RewritePath=/aggregate/auth-service/(?<segment>.*), /${segment}
+            - name: CircuitBreaker
+              args:
+                name: authServiceCircuitBreaker
+                fallbackUri: forward:/fallback
+
+        - id: auth-service
+          uri: ${safevision.services.auth}
+          predicates:
+            - Path=/auth/**
+          filters:
+            - name: CircuitBreaker
+              args:
+                name: authServiceCircuitBreaker
+                fallbackUri: forward:/fallback
+
+        # --- ALERT SERVICE ---
+        - id: alert-websocket
+          uri: ${safevision.services.alert}
+          predicates:
+            - Path=/alert/ws/**
+          filters:
+            - RewritePath=/alert/ws/(?<segment>.*), /ws/${segment}
+            - SaveSession
+            # Headers essenciais para o Handshake WebSocket passar pelo Gateway
+            - SetRequestHeader=Upgrade, websocket
+            - SetRequestHeader=Connection, Upgrade
+
+        - id: alert-service-swagger
+          uri: ${safevision.services.alert}
+          predicates:
+            - Path=/aggregate/alert-service/v3/api-docs
+          filters:
+            - RewritePath=/aggregate/alert-service/(?<segment>.*), /${segment}
+            - name: CircuitBreaker
+              args:
+                name: alertServiceCircuitBreaker
+                fallbackUri: forward:/fallback
+
+        - id: alert-service
+          uri: ${safevision.services.alert}
+          predicates:
+            - Path=/alert/**
+          filters:
+            - name: CircuitBreaker
+              args:
+                name: alertServiceCircuitBreaker
+                fallbackUri: forward:/fallback
+
+        # --- RECOGNITION SERVICE ---
+        - id: recognition-service-swagger
+          uri: ${safevision.services.recognition}
+          predicates:
+            - Path=/aggregate/recognition-service/v3/api-docs
+          filters:
+            - RewritePath=/aggregate/recognition-service/(?<segment>.*), /${segment}
+            - name: CircuitBreaker
+              args:
+                name: recognitionServiceCircuitBreaker
+                fallbackUri: forward:/fallback
+
+        - id: recognition-service
+          uri: ${safevision.services.recognition}
+          predicates:
+            - Path=/recognition/**
+          filters:
+            - name: CircuitBreaker
+              args:
+                name: recognitionServiceCircuitBreaker
+                fallbackUri: forward:/fallback
 
 eureka:
   client:
@@ -30,8 +122,27 @@ eureka:
     register-with-eureka: true
     fetch-registry: true
 
+safevision:
+  services:
+    auth: ${SAFEVISION_SERVICES_AUTH:lb://auth-service}
+    alert: ${SAFEVISION_SERVICES_ALERT:lb://alert-service}
+    recognition: ${SAFEVISION_SERVICES_RECOGNITION:lb://recognition-service}
+  jwt:
+    secret: ${SAFEVISION_JWT_SECRET:segredo_padrao_apenas_para_desenvolvimento_local_sem_docker}
+
 resilience4j:
   circuitbreaker:
+    configs:
+      default:
+        slidingWindowType: COUNT_BASED
+        slidingWindowSize: 10
+        failureRateThreshold: 50
+        waitDurationInOpenState: 5s
+        permittedNumberOfCallsInHalfOpenState: 3
+        recordExceptions:
+          - java.io.IOException
+          - java.util.concurrent.TimeoutException
+          - org.springframework.web.client.HttpServerErrorException
     instances:
       authServiceCircuitBreaker:
         baseConfig: default
@@ -39,19 +150,21 @@ resilience4j:
         baseConfig: default
       recognitionServiceCircuitBreaker:
         baseConfig: default
+  
+  timelimiter:
     configs:
       default:
-        slidingWindowSize: 10
+        timeoutDuration: 20s
+        cancelRunningFuture: true
 
-# --- CONFIGURAÇÃO ZIPKIN E METRICAS ---
 management:
   endpoints:
     web:
       exposure:
-        include: "health,info,prometheus"
+        include: "health,info,prometheus,metrics,gateway"
   tracing:
     sampling:
-      probability: 1.0 # 100% de amostragem para Dev
+      probability: 1.0
   zipkin:
     tracing:
       endpoint: "http://zipkin:9411/api/v2/spans"
@@ -59,15 +172,6 @@ management:
 metrics:
     tags:
       application: ${spring.application.name}
-
-safevision:
-  services:
-    auth: ${SAFEVISION_SERVICES_AUTH:lb://AUTH-SERVICE}
-    alert: ${SAFEVISION_SERVICES_ALERT:lb://ALERT-SERVICE}
-    recognition: ${SAFEVISION_SERVICES_RECOGNITION:lb://RECOGNITION-SERVICE}
-  
-  jwt:
-    secret: ${SAFEVISION_JWT_SECRET:segredo_padrao_apenas_para_desenvolvimento_local_sem_docker}
 
 logging:
   file:
@@ -78,4 +182,5 @@ logging:
       max-history: 7
   level:
     root: INFO
+    org.springframework.cloud.gateway: INFO 
     com.safevision: DEBUG

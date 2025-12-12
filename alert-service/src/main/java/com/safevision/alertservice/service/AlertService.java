@@ -1,21 +1,27 @@
 package com.safevision.alertservice.service;
 
+import com.safevision.alertservice.client.AlertPreferenceClient;
 import com.safevision.alertservice.dto.AlertEventDTO;
 import com.safevision.alertservice.dto.AlertResponse;
 import com.safevision.alertservice.model.Alert;
 import com.safevision.alertservice.repository.AlertRepository;
+import com.safevision.common.enums.AlertType;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
  * Service layer for managing Alert business logic.
- * Handles persistence, real-time updates (WebSocket), and critical notifications (Telephony).
+ * Handles persistence, real-time updates via WebSocket,
+ * and triggers external notifications when severity is CRITICAL.
  */
 @Slf4j
 @Service
@@ -25,19 +31,19 @@ public class AlertService {
     private final AlertRepository repository;
     private final TelephonyService telephonyService;
     private final SimpMessagingTemplate messagingTemplate;
+    private final TelegramService telegramService;
+    private final EmailAlertService emailService;
+
+    // 🔥 Novo: consultar preferências via Feign Client
+    private final AlertPreferenceClient preferenceClient;
+
 
     /**
      * Processes a new alert event received from RabbitMQ or HTTP.
-     * 1. Persists to Database.
-     * 2. Pushes to Frontend via WebSocket.
-     * 3. Triggers external notification if CRITICAL.
-     *
-     * @param event The DTO containing alert details.
      */
     public void createAlert(AlertEventDTO event) {
-        log.info("🛡️ Processing new alert event for user: {} | Type: {}", event.userId(), event.alertType());
+        log.info("🛡️ Processing alert for user {} | Type {}", event.userId(), event.alertType());
 
-        // 1. Build and Save Entity
         var alert = Alert.builder()
                 .userId(event.userId())
                 .alertType(event.alertType())
@@ -49,81 +55,96 @@ public class AlertService {
                 .build();
 
         var savedAlert = repository.save(alert);
-        log.debug("✅ Alert persisted with ID: {}", savedAlert.getId());
 
-        // 2. Convert to Response DTO
-        var response = toResponse(savedAlert);
+        sendWebSocket(event.userId(), savedAlert);
 
-        // 3. Push via WebSocket (Real-time)
-        var topic = "/topic/alerts/" + event.userId();
-        try {
-            messagingTemplate.convertAndSend(topic, response);
-            log.info("📡 WebSocket notification sent to topic: {}", topic);
-        } catch (Exception e) {
-            log.error("❌ Failed to send WebSocket notification: {}", e.getMessage());
-        }
-
-        // 4. Trigger Telephony Service (Immediate Reaction)
         if ("CRITICAL".equalsIgnoreCase(event.severity())) {
-            log.warn("🚨 CRITICAL severity detected! Triggering Telephony Service for camera: {}", event.cameraId());
-            telephonyService.sendCriticalSms(event);
+            Set<AlertType> preferences = getUserPreferences(event.userId());
+            triggerCriticalNotifications(event, preferences);
         }
     }
 
-    /**
-     * Retrieves alerts for a specific user.
-     *
-     * @param userId     The user UUID.
-     * @param onlyUnread If true, filters out acknowledged alerts.
-     * @return List of AlertResponse DTOs.
-     */
-    public List<AlertResponse> getUserAlerts(String userId, boolean onlyUnread) {
-        log.debug("Fetching alerts for user: {} (Unread Only: {})", userId, onlyUnread);
 
-        List<Alert> alerts;
+  
+    private Set<AlertType> getUserPreferences(String userId) {
+        Set<AlertType> response = new HashSet<>();
 
-        if (onlyUnread) {
-            alerts = repository.findByUserIdAndAcknowledgedFalseOrderByCreatedAtDesc(userId);
-        } else {
-            alerts = repository.findByUserIdOrderByCreatedAtDesc(userId);
+        try {
+            List<AlertType> types = preferenceClient.getPreferences(userId);
+
+            if (types != null) {
+                response.addAll(types);
+            }
+
+        } catch (Exception e) {
+            log.error("❌ Failed to fetch alert preferences for user {}. Error: {}",
+                    userId, e.getMessage());
         }
 
-        log.info("Found {} alerts for user: {}", alerts.size(), userId);
+        return response;
+    }
+
+
+
+    private void sendWebSocket(String userId, Alert savedAlert) {
+        var response = toResponse(savedAlert);
+        var topic = "/topic/alert/" + userId;
+
+        try {
+            messagingTemplate.convertAndSend(topic, response);
+            log.info("📡 WebSocket pushed to {}", topic);
+        } catch (Exception e) {
+            log.error("❌ WebSocket failed: {}", e.getMessage());
+        }
+    }
+
+
+    private void triggerCriticalNotifications(AlertEventDTO event, Set<AlertType> prefs) {
+       
+    	if (prefs.contains(AlertType.SMS)) {
+            telephonyService.sendCriticalSms(event);
+        }
+        if (prefs.contains(AlertType.TELEGRAM)) {
+            telegramService.sendAlert(event);
+        }
+        if (prefs.contains(AlertType.EMAIL)) {
+            emailService.sendHtmlAlert(event);
+        }
+    }
+
+
+    /**
+     * Retrieves alerts for a user.
+     */
+    public List<AlertResponse> getUserAlerts(String userId, boolean onlyUnread) {
+        log.debug("Fetching alerts for user {} | unread={}", userId, onlyUnread);
+
+        List<Alert> alerts = onlyUnread
+                ? repository.findByUserIdAndAcknowledgedFalseOrderByCreatedAtDesc(userId)
+                : repository.findByUserIdOrderByCreatedAtDesc(userId);
 
         return alerts.stream()
                 .map(this::toResponse)
                 .collect(Collectors.toList());
     }
 
+
     /**
-     * Marks an alert as read/acknowledged.
-     * Ensures the user owns the alert before modifying it.
-     *
-     * @param alertId The UUID of the alert.
-     * @param userId  The UUID of the current user.
-     * @return true if successful, false otherwise.
+     * Acknowledge alert.
      */
     @Transactional
     public boolean acknowledgeAlert(String alertId, String userId) {
-        log.info("Attempting to acknowledge alert ID: {} for user: {}", alertId, userId);
-
         return repository.findById(alertId)
-                .filter(alert -> alert.getUserId().equals(userId))
-                .map(alert -> {
-                    alert.setAcknowledged(true);
-                    repository.save(alert);
-                    log.info("✅ Alert {} successfully acknowledged.", alertId);
+                .filter(a -> a.getUserId().equals(userId))
+                .map(a -> {
+                    a.setAcknowledged(true);
+                    repository.save(a);
                     return true;
                 })
-                .orElseGet(() -> {
-                    log.warn("❌ Failed to acknowledge. Alert {} not found or access denied for user {}", alertId, userId);
-                    return false;
-                });
+                .orElse(false);
     }
 
-    /**
-     * Mapper method to convert Entity to DTO.
-     */
+
     private AlertResponse toResponse(Alert alert) {
         return new AlertResponse(
                 alert.getId(),

@@ -5,29 +5,44 @@ spring:
   application:
     name: auth-service
 
-  # --- CONFIGURAÇÃO RABBITMQ (MOVIDA PARA DENTRO DO BLOCO SPRING) ---
-  # O bloco 'rabbitmq' deve estar dentro de 'spring', pois a classe RabbitProperties do Spring Boot espera assim.
-  rabbitmq:
-    host: ${RABBITMQ_HOST:localhost}
-    port: 5672
-    username: ${RABBITMQ_USERNAME:user}
-    password: ${RABBITMQ_PASSWORD:password}
-
   datasource:
     url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/safevision}
     username: ${SPRING_DATASOURCE_USERNAME:user}
     password: ${SPRING_DATASOURCE_PASSWORD:pass}
     driver-class-name: org.postgresql.Driver
+    
+    # --- CORREÇÃO PRINCIPAL: TUNING DO POOL DE CONEXÕES (HikariCP) ---
+    hikari:
+      # Mantém 5 conexões abertas e prontas, mesmo sem ninguém usar.
+      # Isso elimina o tempo de espera no primeiro login.
+      minimum-idle: 5
+      
+      # Máximo de conexões simultâneas (evita travar o banco).
+      maximum-pool-size: 20
+      
+      # Tempo (ms) que a aplicação espera por uma conexão livre antes de dar erro.
+      # 30000ms = 30 segundos (Aumentamos a paciência do serviço).
+      connection-timeout: 30000
+      
+      # Tempo máximo de vida de uma conexão (30 min). Evita conexões "velhas" e quebradas.
+      max-lifetime: 1800000
+      
+      # Tempo que uma conexão pode ficar parada antes de ser reciclada.
+      idle-timeout: 300000
 
   jpa:
+    # Fecha a conexão com o banco assim que o Service termina (libera mais rápido).
+    open-in-view: false
     hibernate:
       ddl-auto: update
     show-sql: true
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
+        # (Opcional) Melhora performance de inserts em lote
+        jdbc:
+          batch_size: 50
 
-# --- CONFIGURAÇÃO ZIPKIN E METRICAS ---
 management:
   endpoints:
     web:
@@ -47,13 +62,6 @@ eureka:
     register-with-eureka: true
     fetch-registry: true
 
-# --- CONFIGURAÇÃO DE FILAS PERSONALIZADAS ---
-# Este bloco fica na raiz porque a classe RabbitMQConfig deve ler 'rabbitmq.queues'
-# Se o seu @ConfigurationProperties for prefix="rabbitmq.queues", deixe assim.
-rabbitmq:
-  queues:
-    vision-configuration: ${VISION_QUEUE_NAME:safevision.vision.configuration.queue}
-
 safevision:
   jwt:
     secret: ${SAFEVISION_JWT_SECRET:segredo_padrao_apenas_para_desenvolvimento_local_sem_docker}
@@ -70,3 +78,5 @@ logging:
     root: INFO
     org.springframework.security: DEBUG
     com.safevision: DEBUG
+    # Debug para ver se o pool de conexões está funcionando
+    com.zaxxer.hikari: INFO

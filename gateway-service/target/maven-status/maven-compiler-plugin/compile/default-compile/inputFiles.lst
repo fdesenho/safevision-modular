@@ -1,4 +1,6 @@
 C:\Users\work\eclipse-workspace\safevision-modular\gateway-service\src\main\java\com\safevision\gatewayservice\config\CorsGlobalConfig.java
+C:\Users\work\eclipse-workspace\safevision-modular\gateway-service\src\main\java\com\safevision\gatewayservice\config\JwtProperties.java
 C:\Users\work\eclipse-workspace\safevision-modular\gateway-service\src\main\java\com\safevision\gatewayservice\config\SecurityConfig.java
+C:\Users\work\eclipse-workspace\safevision-modular\gateway-service\src\main\java\com\safevision\gatewayservice\controller\FallbackController.java
 C:\Users\work\eclipse-workspace\safevision-modular\gateway-service\src\main\java\com\safevision\gatewayservice\GatewayServiceApplication.java
 C:\Users\work\eclipse-workspace\safevision-modular\gateway-service\src\main\java\com\safevision\gatewayservice\routes\GatewayRoutes.java

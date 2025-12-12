@@ -1,43 +1,35 @@
-import { Injectable } from '@angular/core';
-import {
-  HttpInterceptor,
-  HttpRequest,
-  HttpHandler,
-  HttpErrorResponse
-} from '@angular/common/http';
-import { Router } from '@angular/router';
-import { catchError, throwError } from 'rxjs';
+import { ErrorHandler, Injectable, NgZone, inject } from '@angular/core';
+// Importa diretamente o SnackBar do Material
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Injectable()
-export class GlobalErrorInterceptor implements HttpInterceptor {
+export class GlobalErrorHandler implements ErrorHandler {
+  // Injeção direta do componente visual
+  private snackBar = inject(MatSnackBar);
+  private zone = inject(NgZone);
 
-  constructor(private router: Router) {}
+  handleError(error: any): void {
+    // 1. Loga o erro real no console para o programador
+    console.error('🔥 CRITICAL APP ERROR:', error);
 
-  intercept(req: HttpRequest<any>, next: HttpHandler) {
-    return next.handle(req).pipe(
-      catchError((error: HttpErrorResponse) => {
+    // 2. Tenta extrair uma mensagem legível, se existir
+    const message = error?.message || 'Ocorreu um erro inesperado.';
 
-        if (error.status === 400) {
-          console.error('Bad Request:', error.error?.error || error.message);
-          alert(error.error?.error || 'Erro de requisição.');
+    // 3. Executa a abertura do SnackBar dentro da NgZone
+    // Isso garante que a UI atualize mesmo se o erro vier de um evento assíncrono externo
+    this.zone.run(() => {
+      this.snackBar.open(
+        `Erro de Aplicação: ${message}`, // Mensagem para o utilizador
+        'FECHAR',
+        {
+          duration: 5000,
+          horizontalPosition: 'right',
+          verticalPosition: 'top',
+          panelClass: ['snackbar-error'] // Usa a mesma classe vermelha do styles.scss
         }
+      );
+    });
 
-        if (error.status === 401) {
-          console.warn('Unauthorized - redirect to login');
-          alert('Usuário ou senha inválidos.');
-
-          // Opcional: limpa token
-          localStorage.removeItem('token');
-
-          this.router.navigate(['/login']);
-        }
-
-        if (error.status === 500) {
-          alert('Erro interno no servidor.');
-        }
-
-        return throwError(() => error);
-      })
-    );
+    // TODO: Integração com Sentry/LogRocket seria feita aqui
   }
 }

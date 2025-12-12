@@ -12,5 +12,5 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  * @param rawTracking The name of the input queue (from Vision Agent).
  * @param alerts      The name of the output queue (to Alert Service).
  */
-@ConfigurationProperties(prefix = "rabbitmq.queues")
+@ConfigurationProperties(prefix = "spring.rabbitmq.queues")
 public record RabbitQueueProperties(String rawTracking, String alerts) {}

@@ -1,59 +1,97 @@
-import { Injectable, inject } from '@angular/core';
+import { Injectable, inject, PLATFORM_ID, OnDestroy } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { RxStomp } from '@stomp/rx-stomp';
 import { AuthService } from './auth.service';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Observable, Subject } from 'rxjs';
+import { map } from 'rxjs/operators'; // <--- IMPORTANTE: Faltava isso
+import { IMessage } from '@stomp/stompjs'; // <--- IMPORTANTE: Para tipar a mensagem
 import { Alert } from '../models/app.models';
+import { environment } from '../../../environments/environment';
 
-@Injectable({ providedIn: 'root' })
-export class WebSocketService {
-  private rxStomp: RxStomp;
+@Injectable()
+export class WebSocketService implements OnDestroy {
+
+  private rxStomp = new RxStomp();
+  private platformId = inject(PLATFORM_ID);
   private authService = inject(AuthService);
 
+  private alertSubject = new Subject<Alert>();
+  private isConnected = false;
+
   constructor() {
-    this.rxStomp = new RxStomp();
+    // Evita erro no SSR (Server Side Rendering)
+    if (!isPlatformBrowser(this.platformId)) return;
+
     this.configure();
+
+    // 🔥 Só depois de conectar vamos registrar o watch
+    this.rxStomp.connected$.subscribe(() => {
+      console.log('🟢 [WebSocket] Conectado com sucesso.');
+      this.isConnected = true;
+      this.subscribeToAlerts();
+    });
+
     this.rxStomp.activate();
   }
 
   private configure() {
-    // Pega o token atual
     const token = this.authService.getToken();
 
-    this.rxStomp.configure({
-      brokerURL: 'ws://localhost:8080/alert/ws/websocket',
+    // Transforma http -> ws e https -> wss
+    const wsUrl = environment.apiUrl.replace(/^http/, 'ws') + '/alert/ws/websocket';
 
-      // --- AJUSTE CRÍTICO: Enviar Token no Header STOMP ---
+    console.log(`🔌 [WebSocket] Tentando conectar em: ${wsUrl}`);
+
+    this.rxStomp.configure({
+      brokerURL: wsUrl,
       connectHeaders: {
-        // Isso autentica a sessão STOMP, mesmo que o handshake HTTP seja público
         Authorization: token ? `Bearer ${token}` : ''
       },
-      // ----------------------------------------------------
-
-      debug: (msg: string) => {
-        console.log(new Date(), msg);
-      },
-
-      reconnectDelay: 5000, // Aumentei para 5s para não flodar em erro
-
-      // Ajuste para evitar problemas de heartbeat
+      // Debug: mostre o log para facilitar a detecção de erros
+      debug: (msg: string) => console.debug(new Date(), msg),
+      reconnectDelay: 5000,
       heartbeatIncoming: 0,
       heartbeatOutgoing: 20000,
     });
   }
 
-  public watchAlerts(): Observable<Alert> {
+  private subscribeToAlerts() {
     const username = this.authService.currentUser()?.username;
 
     if (!username) {
-        console.warn("Tentando ouvir alertas sem usuário logado.");
-        return new Observable(); // Retorna vazio se não tiver user
+      console.warn('⚠️ [WebSocket] Usuário não identificado. Não foi possível inscrever no tópico.');
+      return;
     }
 
-    console.log(`🔌 Ouvindo tópico: /topic/alerts/${username}`);
+    const topic = `/topic/alert/${username}`;
+    console.log(`📡 [WebSocket] Inscrevendo no tópico: ${topic}`);
 
-    return this.rxStomp.watch(`/topic/alerts/${username}`).pipe(
-      map(message => JSON.parse(message.body) as Alert)
-    );
+    this.rxStomp.watch(topic).subscribe({
+      next: (msg: IMessage) => { // <--- Tipagem aqui também é boa prática
+        try {
+          const alert = JSON.parse(msg.body) as Alert;
+          console.log('🚨 [WebSocket] ALERTA RECEBIDO:', alert);
+          this.alertSubject.next(alert);
+        } catch (e) {
+          console.error('❌ [WebSocket] Erro ao processar mensagem JSON:', e);
+        }
+      },
+      error: (err) => console.error('❌ [WebSocket] Erro na subscrição:', err)
+    });
+  }
+
+  // --- AQUI ESTAVA O ERRO ---
+  watchAlerts(topicUrl: string): Observable<Alert> {
+      const destination = topicUrl || '/topic/alert';
+
+      return this.rxStomp.watch(destination).pipe(
+        // Adicionamos a tipagem ': IMessage' aqui
+        map((message: IMessage) => JSON.parse(message.body) as Alert)
+      );
+  }
+
+  ngOnDestroy() {
+    console.log('🔌 [WebSocket] Encerrando conexão e limpando recursos.');
+    this.rxStomp.deactivate(); // Fecha a conexão TCP/WS
   }
 }

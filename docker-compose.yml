@@ -1,121 +1,171 @@
 version: '3.8'
 
-# 1. ÂNCORA DE JWT (Lê do arquivo .env)
-x-jwt-config: &jwt-config
+# ==============================================================================
+# ⚓ ANCORAS DE CONFIGURAÇÃO
+# ==============================================================================
+x-common-env: &common-env
   SAFEVISION_JWT_SECRET: "${JWT_SECRET}"
+  TZ: "America/Sao_Paulo"
+
+# ☕ Otimização JAVA (Baixo consumo de RAM/CPU)
+x-java-opts: &java-opts
+  JAVA_TOOL_OPTIONS: >
+    -Djava.security.egd=file:/dev/./urandom
+    -XX:+UseSerialGC
+    -Xss512k
+    -XX:TieredStopAtLevel=1
+
+# 🐍 Otimização PYTHON (Single Thread)
+x-python-opts: &python-opts
+  PYTHONUNBUFFERED: "1"
+  OMP_NUM_THREADS: "1"
+  MKL_NUM_THREADS: "1"
+  OPENBLAS_NUM_THREADS: "1"
+  MALLOC_ARENA_MAX: "2"
 
 services:
-  # --- INFRAESTRUTURA ---
-  
-  # ZIPKIN (Rastreamento)
+  # ============================================================================
+  # INFRAESTRUTURA
+  # ============================================================================
+
   zipkin:
     image: openzipkin/zipkin
     container_name: zipkin
+    restart: always
     ports:
       - "9411:9411"
+    environment:
+      <<: *common-env
     networks:
       - safevision-net
 
-  # RABBITMQ (Mensageria)
   rabbitmq:
     image: rabbitmq:3-management
     container_name: rabbitmq
+    restart: always
     ports:
       - "5672:5672"
       - "15672:15672"
     environment:
+      <<: *common-env
       RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER}
       RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASS}
-      RABBITMQ_SERVER_ADDITIONAL_ERL_ARGS: "-rabbit log_levels [{connection,debug},{channel,debug}]"
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 10s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
     networks:
       - safevision-net
 
-  # POSTGRES (Banco de Dados)
   postgres:
     image: postgres:16
     container_name: postgres
+    restart: always
     ports:
       - "5432:5432"
     environment:
+      <<: *common-env
       POSTGRES_DB: ${DB_NAME}
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASS}
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
     networks:
       - safevision-net
 
-  # NOVO: MINIO (Object Storage - S3 Compatible)
   minio:
     image: minio/minio
     container_name: minio
+    restart: always
     ports:
-      - "9000:9000" # API S3
-      - "9001:9001" # Console Web
+      - "9000:9000"
+      - "9001:9001"
     environment:
+      <<: *common-env
       MINIO_ROOT_USER: ${MINIO_ROOT_USER}
       MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
+      MINIO_EXTERNAL_PREFIX: ${MINIO_EXTERNAL_PREFIX}
     command: server /data --console-address ":9001"
     volumes:
       - minio_data:/data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 20s
+      retries: 3
+      start_period: 15s
     networks:
       - safevision-net
 
-  # EUREKA (Service Discovery)
   eureka-server:
     build: ./eureka-server
     container_name: eureka-server
+    restart: on-failure
     ports:
       - "8761:8761"
-    volumes:
-      - ./logs:/var/logs
+    environment:
+      # 👇 CORREÇÃO AQUI: Lista de âncoras entre colchetes
+      <<: [*common-env, *java-opts]
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8761/actuator/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 40s
     networks:
       - safevision-net
 
-  # ----------------------------------------------------
+  # ============================================================================
+  # CORE DO SISTEMA
+  # ============================================================================
 
-  # --- AGENTE DE VISÃO (PYTHON) ---
   vision-agent:
     build: ./vision-agent
     container_name: vision-agent
+    restart: on-failure
     ports:
       - "5000:5000"
     environment:
-      # RabbitMQ
+      # 👇 CORREÇÃO AQUI: Mesclando Common e Python Opts
+      <<: [*common-env, *python-opts]
       RABBITMQ_HOST: rabbitmq
       RABBITMQ_USERNAME: ${RABBITMQ_USER}
       RABBITMQ_PASSWORD: ${RABBITMQ_PASS}
       VISION_QUEUE_NAME: ${QUEUE_RAW}
-      QUEUE_VISION_CONFIGURATION: ${QUEUE_VISION_CONFIGURATION}
-      CAMERA_URL: ${CAMERA_URL}
-      
-      # NOVO: Configuração do MinIO (S3)
       MINIO_ENDPOINT: minio:9000
       MINIO_ACCESS_KEY: ${MINIO_ROOT_USER}
       MINIO_SECRET_KEY: ${MINIO_ROOT_PASSWORD}
       MINIO_BUCKET: ${MINIO_BUCKET_NAME}
-      MINIO_EXTERNAL_PREFIX: ${MINIO_EXTERNAL_URL}
-      
+      MINIO_EXTERNAL_PREFIX: ${MINIO_EXTERNAL_PREFIX}
     depends_on:
-      - rabbitmq
-      - minio # Aguarda o Storage subir
+      rabbitmq:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
     networks:
       - safevision-net
 
-  # ----------------------------------------------------
-
-  # --- MICROSSERVIÇOS JAVA ---
   auth-service:
     build: ./auth-service
     container_name: auth-service
+    restart: on-failure
     ports:
       - "8081:8080"
     volumes:
       - ./logs:/var/logs
     environment:
+      # 👇 CORREÇÃO AQUI
+      <<: [*common-env, *java-opts]
       SPRING_APPLICATION_NAME: auth-service
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka/
-      <<: *jwt-config
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/${DB_NAME}
       SPRING_DATASOURCE_USERNAME: ${DB_USER}
       SPRING_DATASOURCE_PASSWORD: ${DB_PASS}
@@ -123,24 +173,30 @@ services:
       RABBITMQ_USERNAME: ${RABBITMQ_USER}
       RABBITMQ_PASSWORD: ${RABBITMQ_PASS}
     depends_on:
-      - postgres
-      - eureka-server
-      - rabbitmq
-      - zipkin
+      postgres:
+        condition: service_healthy
+      eureka-server:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+      zipkin:
+        condition: service_started
     networks:
       - safevision-net
 
   alert-service:
     build: ./alert-service
     container_name: alert-service
+    restart: on-failure
     ports:
       - "8082:8080"
     volumes:
       - ./logs:/var/logs
     environment:
+      # 👇 CORREÇÃO AQUI
+      <<: [*common-env, *java-opts]
       SPRING_APPLICATION_NAME: alert-service
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka/
-      <<: *jwt-config
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/${DB_NAME}
       SPRING_DATASOURCE_USERNAME: ${DB_USER}
       SPRING_DATASOURCE_PASSWORD: ${DB_PASS}
@@ -151,65 +207,90 @@ services:
       TELEPHONY_ACCOUNT_SID: ${TWILIO_SID}
       TELEPHONY_AUTH_TOKEN: ${TWILIO_TOKEN}
       TELEPHONY_FROM_NUMBER: ${TWILIO_FROM_NUMBER}
-      ALERT_PHONE_NUMBER: ${MY_PHONE_NUMBER}
+      TELEGRAM_ENABLED: "true"
+      TELEGRAM_BOT_TOKEN: ${TELEGRAM_BOT_TOKEN}
+      TELEGRAM_CHAT_ID: ${TELEGRAM_CHAT_ID}
+      APP_EMAIL_ENABLED: "true"
+      APP_EMAIL_ADMIN_ADDRESS: ${ADRESS_PROVIDER_EMAIL}
+      SPRING_MAIL_HOST: smtp.gmail.com
+      SPRING_MAIL_PORT: 587
+      SPRING_MAIL_USERNAME: ${ADRESS_PROVIDER_EMAIL}
+      SPRING_MAIL_PASSWORD: ${EMAIL_PASSWORD}
+      SPRING_MAIL_PROPERTIES_MAIL_SMTP_AUTH: "true"
+      SPRING_MAIL_PROPERTIES_MAIL_SMTP_STARTTLS_ENABLE: "true"
     depends_on:
-      - eureka-server
-      - postgres
-      - rabbitmq
-      - zipkin
+      postgres:
+        condition: service_healthy
+      eureka-server:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+      zipkin:
+        condition: service_started
     networks:
       - safevision-net
 
   recognition-service:
     build: ./recognition-service
     container_name: recognition-service
+    restart: on-failure
     ports:
       - "8083:8080"
     volumes:
       - ./logs:/var/logs
     environment:
+      # 👇 CORREÇÃO AQUI
+      <<: [*common-env, *java-opts]
       SPRING_APPLICATION_NAME: recognition-service
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka/
-      <<: *jwt-config
       RABBITMQ_HOST: rabbitmq
       RABBITMQ_USERNAME: ${RABBITMQ_USER}
       RABBITMQ_PASSWORD: ${RABBITMQ_PASS}
       VISION_QUEUE_NAME: ${QUEUE_RAW}
       ALERTS_QUEUE_NAME: ${QUEUE_ALERTS}
     depends_on:
-      - eureka-server
-      - rabbitmq
-      - zipkin
+      eureka-server:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+      zipkin:
+        condition: service_started
     networks:
       - safevision-net
 
   gateway-service:
     build: ./gateway-service
     container_name: gateway-service
+    restart: on-failure
     ports:
       - "8080:8080"
     volumes:
       - ./logs:/var/logs
     environment:
+      # 👇 CORREÇÃO AQUI
+      <<: [*common-env, *java-opts]
       SPRING_APPLICATION_NAME: gateway-service
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka/
-      <<: *jwt-config
       SAFEVISION_SERVICES_AUTH: lb://auth-service
       SAFEVISION_SERVICES_ALERT: lb://alert-service
       SAFEVISION_SERVICES_RECOGNITION: lb://recognition-service
     depends_on:
-      - eureka-server
-      - auth-service
-      - alert-service
-      - recognition-service
-      - zipkin
+      eureka-server:
+        condition: service_healthy
+      auth-service:
+        condition: service_started
+      alert-service:
+        condition: service_started
+      recognition-service:
+        condition: service_started
+      zipkin:
+        condition: service_started
     networks:
       - safevision-net
 
-# VOLUMES
 volumes:
   postgres_data:
-  minio_data: # Novo volume para guardar as fotos
+  minio_data:
 
 networks:
   safevision-net:

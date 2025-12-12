@@ -5,14 +5,14 @@ import { tap } from 'rxjs';
 import { jwtDecode } from 'jwt-decode';
 import { isPlatformBrowser } from '@angular/common'; // <--- Importante
 import { AuthResponse, LoginRequest, RegisterRequest, User, UserUpdateRequest } from '../models/app.models';
-
+import { environment } from '../../../environments/environment';
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private http = inject(HttpClient);
   private router = inject(Router);
   private platformId = inject(PLATFORM_ID); // <--- Identifica se é Navegador ou Servidor
 
-  private readonly API_URL = 'http://localhost:8080/auth';
+  private readonly API_URL = `${environment.apiUrl}/auth`;
   private readonly TOKEN_KEY = 'safevision_token';
 
   private userSignal = signal<User | null>(null);
@@ -23,14 +23,15 @@ export class AuthService {
   constructor() {
     // CORREÇÃO: Só carrega do storage se estiver no navegador
     if (isPlatformBrowser(this.platformId)) {
+      console.log('🔑 [AuthService] API configurada para:', this.API_URL);
       this.loadUserFromStorage();
     }
   }
 
   login(credentials: LoginRequest) {
-    return this.http.post<AuthResponse>(`${this.API_URL}/login`, credentials).pipe(
-      tap(res => this.saveSession(res.token))
-    );
+    return this.http
+      .post<AuthResponse>(`${this.API_URL}/login`, credentials)
+      .pipe(tap((res) => this.saveSession(res.token)));
   }
 
   register(data: RegisterRequest) {
@@ -39,8 +40,8 @@ export class AuthService {
 
   updateUser(data: UserUpdateRequest) {
     return this.http.put<User>(`${this.API_URL}/update`, data).pipe(
-      tap(updatedUser => {
-        this.userSignal.update(current => current ? { ...current, ...updatedUser } : null);
+      tap((updatedUser) => {
+        this.userSignal.update((current) => (current ? { ...current, ...updatedUser } : null));
       })
     );
   }
@@ -82,7 +83,7 @@ export class AuthService {
       this.userSignal.set({
         id: decoded.id,
         username: decoded.sub,
-        roles: decoded.roles
+        roles: decoded.roles,
       } as User);
     } catch {
       this.logout();

@@ -16,7 +16,7 @@ import org.springframework.context.annotation.Configuration;
 @Slf4j
 @Configuration
 @RequiredArgsConstructor
-@EnableConfigurationProperties(RabbitQueueProperties.class) // Enables the record we created above
+@EnableConfigurationProperties(RabbitQueueProperties.class) 
 public class RabbitMQConfig {
 
     private final RabbitQueueProperties queueProperties;

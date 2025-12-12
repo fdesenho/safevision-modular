@@ -1,1 +1,112 @@
-/* You can add global styles to this file, and also import other style files */
+
+// Include theming for Angular Material with `mat.theme()`.
+// This Sass mixin will define CSS variables that are used for styling Angular Material
+// components according to the Material 3 design spec.
+// Learn more about theming and how to use it for your application's
+// custom components at https://material.angular.dev/guide/theming
+@use '@angular/material' as mat;
+/* ============================================================
+   GLOBAL BACKGROUND (Safe Vision)
+   Aplica o mesmo fundo moderno usado no login a todo o sistema
+   ============================================================ */
+body, app-root {
+  position: relative;
+  z-index: 0;
+}
+body, app-root {
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+
+  background-image: url('/assets/bg-login.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+
+  position: relative;
+}
+
+/* Overlay global com cor da marca */
+body::before,
+app-root::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+
+  background: linear-gradient(
+    120deg,
+    rgba(192, 46, 95, 0.35),
+    rgba(22, 22, 24, 0.85)
+  );
+
+  backdrop-filter: blur(6px);
+  z-index: -5; /* Para não sobrepor os componentes */
+}
+
+html {
+  @include mat.theme((
+    color: (
+      primary: mat.$rose-palette,
+      tertiary: mat.$red-palette,
+    ),
+    typography: Roboto,
+    density: 0,
+  ));
+}
+
+body {
+  // Default the application to a light color theme. This can be changed to
+  // `dark` to enable the dark color theme, or to `light dark` to defer to the
+  // user's system settings.
+  color-scheme: light;
+
+  // Set a default background, font and text colors for the application using
+  // Angular Material's system-level CSS variables. Learn more about these
+  // variables at https://material.angular.dev/guide/system-variables
+  background-color: var(--mat-sys-surface);
+  color: var(--mat-sys-on-surface);
+  font: var(--mat-sys-body-medium);
+
+  // Reset the user agent margin.
+  margin: 0;
+}
+:root {
+  --color-brand-rose: #d63384;  /* A cor principal */
+  --color-danger-red: #f44336;  /* Vermelho Material */
+  --color-safe-cyan: #00bcd4;   /* Ciano (Substitui o verde comum) */
+  --color-inactive: #424242;    /* Cinza escuro */
+}
+
+/* ============================================================
+   SNACKBARS (Notificações)
+   ============================================================ */
+
+/* Sucesso/Monitorando (Agora é CIANO para bater com o vídeo) */
+.success-snackbar {
+  --mdc-snackbar-container-color: var(--color-safe-cyan) !important;
+  --mdc-snackbar-supporting-text-color: #ffffff !important;
+  --mat-snack-bar-button-color: #ffffff !important;
+  font-weight: 500;
+}
+
+/* Erro/Arma (Vermelho) */
+.error-snackbar {
+  --mdc-snackbar-container-color: var(--color-danger-red) !important;
+  --mdc-snackbar-supporting-text-color: #ffffff !important;
+  --mat-snack-bar-button-color: #ffffff !important;
+  font-weight: 600;
+}
+
+/* Info/Atenção (Rose - A cor da marca) */
+.info-snackbar {
+  --mdc-snackbar-container-color: var(--color-brand-rose) !important;
+  --mdc-snackbar-supporting-text-color: #ffffff !important;
+  --mat-snack-bar-button-color: #ffffff !important;
+}
+
+// Ajuste global para o corpo
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; background-color: #f5f5f5; }
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }

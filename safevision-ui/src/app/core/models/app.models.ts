@@ -1,5 +1,7 @@
 // --- MODELOS DE USUÁRIO ---
 
+import { AlertType } from "../../features/auth/register/register.component";
+
 export interface User {
   id: string;
   username: string;
@@ -22,6 +24,8 @@ export interface RegisterRequest {
   email: string;
   phoneNumber: string;
   cameraUrl: string;
+  roles: string[];
+  alertTypes: AlertType[];
 }
 
 export interface UserUpdateRequest {

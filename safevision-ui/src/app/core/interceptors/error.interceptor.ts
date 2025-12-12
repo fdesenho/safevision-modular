@@ -1,62 +1,58 @@
 import { HttpErrorResponse, HttpInterceptorFn } from '@angular/common/http';
 import { inject } from '@angular/core';
-import { Router } from '@angular/router';
 import { catchError, throwError } from 'rxjs';
-import { AuthService } from '../services/auth.service';
+// Importa o SnackBar do Material diretamente
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 export const errorInterceptor: HttpInterceptorFn = (req, next) => {
-  const router = inject(Router);
-  // Opcional: Injetar AuthService se precisar fazer logout no 401 aqui dentro
-  // const authService = inject(AuthService);
+  // Injeta o componente de notificação do Material
+  const snackBar = inject(MatSnackBar);
 
   return next(req).pipe(
     catchError((error: HttpErrorResponse) => {
-      let errorMessage = 'Ocorreu um erro inesperado. Tente novamente.';
+      let errorMessage = 'Ocorreu um erro desconhecido.';
 
-      if (error.error instanceof ErrorEvent) {
-        // Erro do lado do cliente (ex: rede)
-        errorMessage = `Erro de conexão: ${error.error.message}`;
+      // Lógica de identificação do erro
+	  if (typeof ErrorEvent !== 'undefined' && error.error instanceof ErrorEvent) {
+          
+          errorMessage = `Erro: ${error.error.message}`;
       } else {
-        // Erro do lado do servidor (Spring Boot)
+        // Erro do lado do servidor
         switch (error.status) {
           case 0:
-            errorMessage = 'Servidor indisponível. Verifique sua conexão ou se o Docker está rodando.';
+            errorMessage = 'Servidor indisponível. Verifique sua conexão.';
             break;
-
-          case 400: // Bad Request (Validações do Java)
-            // Tenta pegar a mensagem { "error": "..." } ou { "message": "..." }
-            errorMessage = error.error?.error || error.error?.message || 'Dados inválidos.';
+          case 400:
+            errorMessage = error.error?.error || 'Dados inválidos.';
             break;
-
-          case 401: // Unauthorized
-            errorMessage = 'Sessão expirada ou credenciais inválidas.';
-             localStorage.removeItem('safevision_token');
-             router.navigate(['/login']);
+          case 401:
+            errorMessage = 'Sessão expirada. Faça login novamente.';
             break;
-
-          case 403: // Forbidden
-            errorMessage = 'Você não tem permissão para realizar esta ação.';
+          case 403:
+            errorMessage = 'Acesso negado.';
             break;
-
-          case 404: // Not Found
-            errorMessage = 'Recurso não encontrado no servidor.';
+          case 404:
+            errorMessage = 'Recurso não encontrado.';
             break;
-
-          case 500: // Internal Server Error
-            errorMessage = 'Erro interno no servidor. Contate o suporte.';
+          case 500:
+            errorMessage = 'Erro interno no servidor.';
             break;
-
           default:
-             // Tenta usar a mensagem crua se houver
-            errorMessage = error.error?.message || `Erro código ${error.status}`;
+            errorMessage = `Erro (${error.status}): ${error.statusText}`;
         }
       }
 
-      // Log para o desenvolvedor
-      console.error('❌ [Error Interceptor]', error);
+      // Exibe o SnackBar se não for um erro de sessão (o AuthInterceptor já trata redirects)
+      if (error.status !== 401) {
+        snackBar.open(errorMessage, 'FECHAR', {
+          duration: 5000,
+          horizontalPosition: 'right',
+          verticalPosition: 'top',
+          panelClass: ['snackbar-error'] // Usa a classe vermelha definida no styles.scss
+        });
+      }
 
-      // Retorna o erro modificado (apenas a string) para o componente exibir fácil
-      return throwError(() => new Error(errorMessage));
+      return throwError(() => error);
     })
   );
 };

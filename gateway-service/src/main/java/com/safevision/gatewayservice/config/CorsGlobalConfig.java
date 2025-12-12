@@ -12,50 +12,36 @@ import java.util.List;
 
 /**
  * Global CORS configuration for the API Gateway.
- * Controls which domains (origins) and HTTP methods are allowed to access the backend API.
  */
 @Slf4j
 @Configuration
 public class CorsGlobalConfig {
 
-    /**
-     * Configures the CORS source bean.
-     * In development mode, we allow all origins ("*") to simplify frontend testing.
-     *
-     * @return The configured reactive CORS source.
-     */
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
-        log.info("Initializing Global CORS Configuration...");
+        log.info("Initializing Global CORS Configuration (WebSocket Compatible)...");
 
         CorsConfiguration config = new CorsConfiguration();
 
-        // Allow any origin (e.g., http://localhost:4200, mobile apps, etc.)
-        // Security Note: In production, replace "*" with specific domains.
-        config.setAllowedOrigins(List.of("*"));
+      
+        config.setAllowedOriginPatterns(List.of("*"));
 
-        // Define allowed HTTP methods
+        // 2. Permitir Credenciais é OBRIGATÓRIO para sessões WebSocket/STOMP estáveis
+        config.setAllowCredentials(true); 
+
         config.setAllowedMethods(List.of(
             HttpMethod.GET.name(),
             HttpMethod.POST.name(),
             HttpMethod.PUT.name(),
-            HttpMethod.PATCH.name(), // Required for updating resources partially
+            HttpMethod.PATCH.name(),
             HttpMethod.DELETE.name(),
-            HttpMethod.OPTIONS.name() // Required for CORS preflight checks
+            HttpMethod.OPTIONS.name()
         ));
 
-        // Allow all headers (Content-Type, Authorization, etc.)
         config.setAllowedHeaders(List.of("*"));
-
-        // Expose the Authorization header so the frontend can read the JWT
-        config.setExposedHeaders(List.of("Authorization"));
-
-        // Credentials (cookies) are disabled because allowedOrigins is "*"
-        // If credentials are needed, specific origins must be defined.
-        config.setAllowCredentials(false);
+        config.setExposedHeaders(List.of("Authorization", "Link", "X-Total-Count"));
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        // Apply this configuration to all routes (/**)
         source.registerCorsConfiguration("/**", config);
 
         return source;

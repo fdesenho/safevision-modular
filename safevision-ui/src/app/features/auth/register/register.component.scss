@@ -1,104 +1,179 @@
+/* ============================================================
+   SAFE VISION - REGISTER SCREEN (Premium Edition)
+   Design System + Sass Modules + Modern Effects
+   ============================================================ */
+@use "sass:color";
+
+/* ============================================================
+   DESIGN SYSTEM (Shared Variables)
+   ============================================================ */
+
+/* Paleta principal */
+$primary: #d63384; // Rose Brand Color
+$primary-hover: color.adjust($primary, $lightness: -10%);
+$accent: #00bcd4; // Cyan (Safe/Active)
+
+/* Estados */
+$error-text: #ff5252;
+$success-text: #69f0ae;
+
+/* Glassmorphism (padrão do sistema) */
+$glass-bg: rgba(23, 23, 23, 0.75); // Fundo mais escuro para contraste
+$glass-border: rgba(255, 255, 255, 0.15);
+$glass-blur: 20px;
+
+/* Sombra padrão */
+$shadow-strong: 0 20px 45px rgba(0, 0, 0, 0.6);
+
+/* Breakpoints */
+$max-mobile: 480px;
+
+/* ============================================================
+   WRAPPER & LAYOUT
+   ============================================================ */
+
 .register-wrapper {
   display: flex;
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  background-color: #f0f2f5;
-  padding: 20px; // Para telas pequenas não colarem na borda
+  padding: 20px;
+  box-sizing: border-box;
+
+  position: relative;
+  z-index: 10;
 }
 
-.register-container {
-  background: white;
-  padding: 2rem;
-  border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+/* ============================================================
+   CARD (Glass style)
+   ============================================================ */
+
+.register-card {
+  position: relative;
+  z-index: 10;
+
   width: 100%;
-  max-width: 450px; // Um pouco mais largo que o login
+  max-width: 480px; // Largura confortável
+  padding: 20px;
 
-  .header {
-    text-align: center;
-    margin-bottom: 1.5rem;
+  border-radius: 24px;
 
-    h2 { color: #333; margin: 0; }
-    p { color: #666; font-size: 0.9rem; margin-top: 0.5rem; }
+  /* Glassmorphism */
+  background: $glass-bg !important;
+  backdrop-filter: blur($glass-blur) !important;
+  border: 1px solid $glass-border;
+  box-shadow: $shadow-strong;
+
+  /* Animação de Entrada */
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeInUp 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+@keyframes fadeInUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
-.form-group {
-  margin-bottom: 1rem;
+/* ============================================================
+   HEADER & TYPOGRAPHY
+   ============================================================ */
 
-  label {
-    display: block;
-    margin-bottom: 0.3rem;
-    color: #444;
-    font-weight: 500;
-    font-size: 0.9rem;
-  }
-
-  input {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    font-size: 1rem;
-    box-sizing: border-box;
-
-    &:focus {
-      outline: none;
-      border-color: #28a745; // Verde para diferenciar do login azul (opcional)
-      box-shadow: 0 0 0 2px rgba(40, 167, 69, 0.25);
-    }
-  }
-
-  small {
-    display: block;
-    color: #888;
-    font-size: 0.75rem;
-    margin-top: 2px;
-  }
-}
-
-.alert {
-  padding: 10px;
-  border-radius: 4px;
-  margin-bottom: 1rem;
+mat-card-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   text-align: center;
-  font-size: 0.9rem;
+  margin-bottom: 1.5rem;
 
-  &.error { background-color: #f8d7da; color: #721c24; }
-  &.success { background-color: #d4edda; color: #155724; }
+  mat-card-title {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 5px;
+    letter-spacing: 0.5px;
+  }
+
+  mat-card-subtitle {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.95rem;
+  }
 }
 
-button {
+/* ============================================================
+   FORMS & INPUTS (Material Overrides)
+   ============================================================ */
+
+.full-width {
   width: 100%;
-  padding: 12px;
-  background-color: #28a745; // Verde de sucesso
-  color: white;
-  border: none;
-  border-radius: 4px;
-  font-size: 1rem;
-  font-weight: bold;
-  cursor: pointer;
-  transition: opacity 0.2s;
+  margin-bottom: 0.8rem;
+}
 
-  &:disabled {
-    background-color: #a8dcb3;
-    cursor: not-allowed;
+// Customização profunda do Material Form Field para Dark Theme
+.mat-mdc-form-field {
+  .mdc-text-field--filled {
+    background-color: rgba(255, 255, 255, 0.05) !important;
+    border-radius: 8px;
   }
 
-  &:hover:not(:disabled) {
-    opacity: 0.9;
+  // Cor do Texto
+  .mdc-text-field__input {
+    color: #fff !important;
+    caret-color: $primary !important;
+  }
+
+  // Cor dos Labels
+  .mdc-floating-label {
+    color: rgba(255, 255, 255, 0.6) !important;
+  }
+  .mdc-floating-label--float-above {
+    color: $primary !important;
+  }
+
+  // Ícones
+  .mat-icon {
+    color: rgba(255, 255, 255, 0.7);
+  }
+
+  // Linha inferior e erros
+  .mdc-line-ripple::before {
+    border-bottom-color: rgba(255, 255, 255, 0.3) !important;
+  }
+  .mdc-line-ripple::after {
+    border-bottom-color: $primary !important;
   }
 }
 
-.footer {
-  text-align: center;
-  margin-top: 1.5rem;
-  font-size: 0.9rem;
+// Estilo de erro específico
+mat-error {
+  color: $error-text !important;
+  font-size: 0.8rem;
+}
 
-  a {
-    color: #007bff;
-    text-decoration: none;
-    &:hover { text-decoration: underline; }
+mat-hint {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+// Erro de senha não coincidente
+.password-error {
+  color: $error-text;
+  font-size: 12px;
+  margin-top: -10px;
+  margin-bottom: 15px;
+  margin-left: 4px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255, 82, 82, 0.1);
+  padding: 8px;
+  border-radius: 6px;
+
+  mat-icon {
+    font-size: 16px;
+    height: 16px;
+    width: 16px;
   }
 }
+

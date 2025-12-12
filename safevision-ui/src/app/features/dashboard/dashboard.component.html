@@ -1,116 +1,148 @@
-<div class="dashboard-wrapper">
+<mat-toolbar color="primary" class="dashboard-toolbar">
+  <span class="brand">👁️ SafeVision</span>
+  <span class="spacer"></span>
 
-  <header class="dashboard-header">
-    <div class="logo-area">
-      <h1>👁️ SafeVision Monitor</h1>
+  <div class="user-info">
+    <span class="username">Olá, {{ auth.currentUser()?.username }}</span>
+    <button mat-icon-button (click)="auth.logout()" matTooltip="Sair do Sistema">
+      <mat-icon>logout</mat-icon>
+    </button>
+  </div>
+</mat-toolbar>
+
+<div class="dashboard-content">
+
+  <div class="panel-left">
+    <mat-card class="video-card">
+
+      <mat-card-header>
+        <mat-card-title>Monitoramento em Tempo Real</mat-card-title>
+
+        <div class="status-badge" [class.online]="isCameraActive()">
+          <div class="indicator"></div>
+          <span>{{ isCameraActive() ? 'ONLINE' : 'OFFLINE' }}</span>
+        </div>
+      </mat-card-header>
+
+      <mat-card-content>
+        <div class="video-wrapper">
+
+          @if (isCameraActive() && videoStreamUrl()) {
+            <img
+              [src]="videoStreamUrl()"
+              alt="Feed de Vídeo"
+              class="live-feed"
+              (error)="onVideoError()"
+            >
+          }
+
+          @else if (isLoading() && !isCameraActive()) {
+            <div class="overlay loading">
+              <mat-spinner diameter="50" color="accent"></mat-spinner>
+              <p>Conectando a câmera...</p>
+            </div>
+          }
+
+          @else {
+            <div class="overlay offline">
+              <mat-icon class="large-icon">videocam_off</mat-icon>
+              <h3>Sistema Desativado</h3>
+              <p>Clique em "ATIVAR" para iniciar o Monitoramento.</p>
+            </div>
+          }
+        </div>
+      </mat-card-content>
+
+      <mat-card-actions align="end" class="control-actions">
+
+		<button
+		          mat-stroked-button
+		          color="warn"
+		          (click)="toggleSystem(false)"
+		          [disabled]="!isCameraActive() || isLoading()">
+		            @if (isLoading() && isCameraActive()) {
+		                <mat-spinner diameter="20" color="warn"></mat-spinner>
+		            } @else {
+		                <span class="btn-label">
+		                    <mat-icon>stop_circle</mat-icon>
+		                    <span>DESATIVAR</span>
+		                </span>
+		            }
+		        </button>
+
+		        <button
+		          mat-flat-button
+		          color="primary"
+		          (click)="toggleSystem(true)"
+		          [disabled]="isCameraActive() || isLoading()">
+		            @if (isLoading() && !isCameraActive()) {
+		                <mat-spinner diameter="20" color="accent"></mat-spinner>
+		            } @else {
+		                <span class="btn-label">
+		                    <mat-icon>play_circle</mat-icon>
+		                    <span>ATIVAR</span>
+		                </span>
+		            }
+		        </button>
+
+      </mat-card-actions>
+    </mat-card>
+  </div>
+
+  <div class="panel-right">
+    <div class="alerts-header">
+      <h2>🚨 Últimos Alertas</h2>
+      <button mat-icon-button (click)="loadAlerts()" matTooltip="Atualizar lista">
+        <mat-icon>refresh</mat-icon>
+      </button>
     </div>
 
-    <div class="user-info">
-      <span>Olá, <strong>{{ auth.currentUser()?.username }}</strong></span>
-      <button class="btn-logout" (click)="auth.logout()">Sair</button>
+    <div class="alerts-list">
+      @for (alert of alerts(); track alert.id) {
+        <mat-card class="alert-item" [class.critical]="alert.severity === 'CRITICAL'">
+
+          <div class="alert-row">
+            <div class="alert-icon">
+                <mat-icon [class.warn-icon]="alert.severity === 'CRITICAL'">
+                    {{ alert.severity === 'CRITICAL' ? 'warning' : 'info' }}
+                </mat-icon>
+            </div>
+
+            <div class="alert-content">
+                <div class="alert-top">
+                    <span class="type">{{ alert.alertType }}</span>
+                    <span class="time">{{ alert.createdAt | date:'HH:mm:ss' }}</span>
+                </div>
+
+                <p class="desc">{{ alert.description }}</p>
+
+                @if (alert.snapshotUrl) {
+                    <div class="evidence-wrapper">
+                        <img [src]="alert.snapshotUrl" alt="Evidência" loading="lazy">
+                    </div>
+                }
+            </div>
+
+            <div class="alert-action">
+                @if (alert.acknowledged) {
+                    <mat-icon class="check-icon" matTooltip="Lido">check_circle</mat-icon>
+                } @else {
+                    <button mat-icon-button color="primary" (click)="ack(alert.id)" matTooltip="Marcar como lido">
+                        <mat-icon>mark_email_read</mat-icon>
+                    </button>
+                }
+            </div>
+          </div>
+
+        </mat-card>
+      }
+      @empty {
+        <div class="empty-state">
+          <mat-icon>notifications_none</mat-icon>
+          <p>Tudo seguro. Nenhum alerta recente.</p>
+        </div>
+      }
     </div>
-  </header>
+  </div>
 
-  <main class="dashboard-grid">
-
-    <section class="left-panel">
-      <div class="card video-card">
-        <div class="card-header-row">
-          <h3>Monitoramento Ativo</h3>
-        </div>
-
-        <div class="system-control">
-          <div class="status-indicator" [class.active]="isSystemArmed()">
-            Status: <strong>{{ isSystemArmed() ? 'PROTEÇÃO ATIVA' : 'STANDBY' }}</strong>
-          </div>
-          <button
-            class="btn-toggle"
-            [class.active]="isSystemArmed()"
-            (click)="toggleSystem()">
-            {{ isSystemArmed() ? '🛑 DESATIVAR' : '🛡️ ATIVAR PROTEÇÃO' }}
-          </button>
-        </div>
-
-        <div class="video-container">
-
-          <div *ngIf="isVideoLoading() && !isVideoError()" class="video-status loading">
-            <p>⌛ Conectando à câmera...</p>
-          </div>
-
-          <div *ngIf="isVideoError()" class="video-status error">
-            <p>🔴 Câmera Offline ou Vision Agent desligado.</p>
-            <button (click)="retryVideo()">Tentar Novamente</button>
-          </div>
-
-          <img
-            *ngIf="videoSrc()"
-            [src]="videoSrc()"
-            alt="Feed de Vídeo"
-            (load)="onVideoLoad()"
-            (error)="onVideoError()"
-            [style.display]="(isVideoLoading() || isVideoError()) ? 'none' : 'block'"
-          >
-        </div>
-      </div>
-
-      <div class="card config-card">
-        <h4>⚙️ Configurar Agente</h4>
-
-        <form [formGroup]="configForm" (ngSubmit)="saveConfig()">
-          <div class="form-group">
-            <label>Nova URL da Câmera</label>
-            <input formControlName="cameraUrl" placeholder="http://192.168..." />
-          </div>
-          <div class="form-group">
-            <label>Telefone para Alerta</label>
-            <input formControlName="phone" placeholder="+55 11..." />
-          </div>
-
-          <button type="submit" class="btn-save">
-            Salvar e Reiniciar Agente
-          </button>
-        </form>
-      </div>
-    </section>
-
-    <section class="right-panel">
-      <div class="alerts-header">
-        <h3>Últimos Alertas</h3>
-        <button class="btn-refresh" (click)="forceRefresh()" title="Atualizar">🔄</button>
-      </div>
-
-      <div class="alerts-container">
-
-        <div
-          *ngFor="let alert of alerts()"
-          class="alert-card"
-          [class.critical]="alert.severity === 'CRITICAL'"
-          [class.warning]="alert.severity === 'WARNING'"
-        >
-          <div class="alert-header">
-            <strong class="alert-type">{{ alert.alertType }}</strong>
-            <span class="badge" [ngClass]="alert.severity">{{ alert.severity }}</span>
-          </div>
-
-          <p class="alert-desc">{{ alert.description }}</p>
-
-          <div *ngIf="alert.snapshotUrl" class="evidence-box">
-            <img [src]="alert.snapshotUrl" alt="Foto da Ameaça" class="evidence-img">
-          </div>
-          <div class="alert-footer">
-            <small>{{ alert.createdAt | date:'short' }}</small>
-            <button *ngIf="!alert.acknowledged" (click)="ack(alert.id)" class="btn-ack">
-              Marcar como Lido
-            </button>
-            <span *ngIf="alert.acknowledged" class="read-status">✅ Lido</span>
-          </div>
-        </div>
-
-        <div *ngIf="alerts().length === 0" class="empty-state">
-          Nenhum alerta registrado.
-        </div>
-      </div>
-    </section>
-
-  </main>
 </div>

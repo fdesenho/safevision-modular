@@ -1,65 +1,85 @@
-import os
-import io
-import cv2
 from minio import Minio
-import json
+import io
+import config
+import json  # Import necessário para criar a política
 
 class MinioClient:
     def __init__(self):
-        self.client = Minio(
-            os.environ.get("MINIO_ENDPOINT", "minio:9000"),
-            access_key=os.environ.get("MINIO_ACCESS_KEY", "minioadmin"),
-            secret_key=os.environ.get("MINIO_SECRET_KEY", "minioadmin"),
-            secure=False # HTTP interno
-        )
-        self.bucket_name = os.environ.get("MINIO_BUCKET", "safevision-evidence")
-        self.external_url = os.environ.get("MINIO_EXTERNAL_PREFIX", "http://localhost:9000")
-        
-        self._setup_bucket()
-
-    def _setup_bucket(self):
-        """Cria o bucket e define como público (Read-Only)"""
+        self.client = None
         try:
-            if not self.client.bucket_exists(self.bucket_name):
-                self.client.make_bucket(self.bucket_name)
-                print(f"🗄️ Bucket '{self.bucket_name}' criado.")
-                
-                # Política pública (permite que o Angular leia as fotos)
-                policy = {
-                    "Version": "2012-10-17",
-                    "Statement": [
-                        {
-                            "Effect": "Allow",
-                            "Principal": {"AWS": "*"},
-                            "Action": ["s3:GetObject"],
-                            "Resource": [f"arn:aws:s3:::{self.bucket_name}/*"]
-                        }
-                    ]
-                }
-                self.client.set_bucket_policy(self.bucket_name, json.dumps(policy))
-                print("🔓 Política de acesso público aplicada.")
-        except Exception as e:
-            print(f"❌ Erro ao configurar MinIO: {e}")
-
-    def upload_frame(self, frame, filename):
-        """Sobe o frame (imagem numpy) e retorna a URL pública"""
-        try:
-            # Converte OpenCV Frame -> Bytes (JPEG)
-            _, buffer = cv2.imencode(".jpg", frame)
-            io_buf = io.BytesIO(buffer)
-            length = io_buf.getbuffer().nbytes
-
-            self.client.put_object(
-                self.bucket_name,
-                filename,
-                io_buf,
-                length,
-                content_type="image/jpeg"
+            # Acessando direto de config.VARIAVEL
+            self.client = Minio(
+                config.MINIO_ENDPOINT,
+                access_key=config.MINIO_ACCESS_KEY,
+                secret_key=config.MINIO_SECRET_KEY,
+                secure=False
             )
             
-            # Retorna a URL que o Angular vai usar
-            return f"{self.external_url}/{self.bucket_name}/{filename}"
+            # Garante que o bucket existe
+            bucket = config.MINIO_BUCKET
+            if not self.client.bucket_exists(bucket):
+                self.client.make_bucket(bucket)
+                print(f"✅ [MinIO] Bucket '{bucket}' criado.")
+                # Se acabou de criar, aplica a política
+                self._set_public_policy(bucket)
+            else:
+                # Mesmo se já existe, reaplica a política para corrigir buckets antigos
+                self._set_public_policy(bucket)
             
         except Exception as e:
-            print(f"❌ Erro no upload: {e}")
+            print(f"❌ [MinIO] Erro ao conectar: {e}")
+
+    def _set_public_policy(self, bucket_name):
+        """
+        Define o bucket como READ-ONLY para o mundo (Público).
+        Isso permite acessar a imagem direto pela URL sem login/assinatura.
+        """
+        try:
+            policy = {
+                "Version": "2012-10-17",
+                "Statement": [
+                    {
+                        "Effect": "Allow",
+                        "Principal": {"AWS": ["*"]}, # "*" significa qualquer um (público)
+                        "Action": ["s3:GetObject"],   # Apenas permissão de LEITURA
+                        "Resource": [f"arn:aws:s3:::{bucket_name}/*"] # Em todos os arquivos
+                    }
+                ]
+            }
+            self.client.set_bucket_policy(bucket_name, json.dumps(policy))
+            print(f"🔓 [MinIO] Política pública aplicada ao bucket '{bucket_name}'")
+        except Exception as e:
+            print(f"⚠️ [MinIO] Falha ao aplicar política pública: {e}")
+
+    def upload_frame(self, frame_bytes, filename):
+        if not self.client:
+            return None
+            
+        try:
+            # Se frame_bytes for numpy array (imagem OpenCV), converte para bytes
+            import numpy as np
+            import cv2
+            if isinstance(frame_bytes, np.ndarray):
+                ret, buffer = cv2.imencode('.jpg', frame_bytes)
+                if ret:
+                    frame_bytes = buffer.tobytes()
+
+            # Prepara o stream
+            data_stream = io.BytesIO(frame_bytes)
+            file_size = len(frame_bytes)
+            
+            # Upload
+            self.client.put_object(
+                config.MINIO_BUCKET,
+                filename,
+                data_stream,
+                file_size,
+                content_type='image/jpeg'
+            )
+            
+            # Retorna a URL pública
+            return f"{config.MINIO_EXTERNAL_PREFIX}/{config.MINIO_BUCKET}/{filename}"
+            
+        except Exception as e:
+            print(f"❌ [MinIO] Erro upload: {e}")
             return None

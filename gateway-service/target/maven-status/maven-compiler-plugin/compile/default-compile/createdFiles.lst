@@ -1,4 +1,7 @@
+com\safevision\gatewayservice\config\JwtProperties.class
 com\safevision\gatewayservice\config\SecurityConfig.class
+com\safevision\gatewayservice\controller\FallbackController.class
 com\safevision\gatewayservice\config\CorsGlobalConfig.class
 com\safevision\gatewayservice\GatewayServiceApplication.class
 com\safevision\gatewayservice\routes\GatewayRoutes.class
+META-INF\spring-configuration-metadata.json

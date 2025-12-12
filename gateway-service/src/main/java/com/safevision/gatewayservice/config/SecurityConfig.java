@@ -11,6 +11,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
+import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
 import org.springframework.security.oauth2.jwt.NimbusReactiveJwtDecoder;
 import org.springframework.security.oauth2.jwt.ReactiveJwtDecoder;
 import org.springframework.security.web.server.SecurityWebFilterChain;
@@ -37,11 +38,13 @@ public class SecurityConfig {
         "/swagger-ui/**",
         "/v3/api-docs/**",
         "/swagger-resources/**",
-        "/actuator/prometheus",
         "/auth/login",
         "/auth/register",
         "/alert/event", // Allow internal/machine event push
-        "/alert/ws/**"  // Allow WebSocket Handshake (no auth header supported by browsers here)
+        "/alert/ws/**",
+        "/actuator/**", // Health checks
+        "/ws/**",
+        "/alert/ws/**"
     };
 
     /**
@@ -79,8 +82,10 @@ public class SecurityConfig {
     @Bean
     public ReactiveJwtDecoder jwtDecoder() {
         byte[] keyBytes = jwtProperties.secret().getBytes();
-        SecretKey originalKey = new SecretKeySpec(keyBytes, 0, keyBytes.length, "HmacSHA256");
+        SecretKey originalKey = new SecretKeySpec(keyBytes, 0, keyBytes.length, MacAlgorithm.HS256.getName());
         
-        return NimbusReactiveJwtDecoder.withSecretKey(originalKey).build();
+        return NimbusReactiveJwtDecoder.withSecretKey(originalKey)
+                .macAlgorithm(MacAlgorithm.HS256)
+                .build();
     }
 }

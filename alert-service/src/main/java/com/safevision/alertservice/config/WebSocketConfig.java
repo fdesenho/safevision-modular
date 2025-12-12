@@ -18,7 +18,8 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     private static final String BROKER_PREFIX = "/topic";
     private static final String APP_PREFIX = "/app";
-    private static final String ENDPOINT = "/ws"; // Or "/alert/ws" if modified for Gateway
+    private static final String ENDPOINT_WS = "/ws";
+    private static final String ENDPOINT_ALERT = "alert/ws";
 
     /**
      * Configures the message broker options.
@@ -40,11 +41,17 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
      */
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        log.info("Registering STOMP Endpoint at: {}", ENDPOINT);
-
+        log.info("Registering STOMP Endpoint at: {}", ENDPOINT_WS);
+        
+        registry.addEndpoint(ENDPOINT_ALERT)
+        .setAllowedOriginPatterns("*") // Allows connections from any origin (CORS)
+        .withSockJS(); // Fallback options for older browsers
+        
+        
+        
         // Defines the connection endpoint (Handshake).
         // Angular will connect to: http://localhost:8080/alert/ws (via Gateway)
-        registry.addEndpoint(ENDPOINT)
+        registry.addEndpoint(ENDPOINT_WS)
                 .setAllowedOriginPatterns("*") // Allows connections from any origin (CORS)
                 .withSockJS(); // Fallback options for older browsers
     }

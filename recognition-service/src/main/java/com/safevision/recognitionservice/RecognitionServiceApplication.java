@@ -19,8 +19,6 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
  */
 @Slf4j
 @SpringBootApplication
-// Explicitly enables the Record that maps 'rabbitmq.queues' from YAML
-@EnableConfigurationProperties(RabbitQueueProperties.class) 
 public class RecognitionServiceApplication {
 
     public static void main(String[] args) {

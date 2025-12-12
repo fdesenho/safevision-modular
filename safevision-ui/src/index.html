@@ -2,12 +2,30 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>SafevisionUi</title>
+  <title>SafeVision Monitor</title>
   <base href="/">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <link rel="icon" type="image/jpeg" href="logo.jpeg">
+
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+  <script src="https://cdn.jsdelivr.net/npm/eruda"></script>
+  <script>eruda.init();</script>
+
+  <meta http-equiv="Content-Security-Policy" content="
+    default-src 'self' 'unsafe-inline' 'unsafe-eval' *;
+    connect-src 'self' 
+      http://localhost:* ws://localhost:* http://192.168.112.1:* ws://192.168.112.1:* http://*.nip.io:* ws://*.nip.io:* data: blob:;
+    img-src 'self' 
+      http://localhost:* http://192.168.112.1:* http://*.nip.io:* data: blob: https://images.unsplash.com;
+    media-src *;
+    frame-src *;
+    style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
+    font-src 'self' https://fonts.gstatic.com data:;
+  ">
 </head>
-<body>
+<body class="mat-typography">
   <app-root></app-root>
 </body>
 </html>
