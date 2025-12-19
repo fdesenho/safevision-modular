@@ -10,6 +10,7 @@ com\safevision\authservice\AuthServiceApplication.class
 com\safevision\authservice\dto\UserResponse.class
 com\safevision\authservice\controller\AlertPreferenceController.class
 com\safevision\authservice\dto\TokenResponse.class
+com\safevision\authservice\dto\UserProfileDTO.class
 com\safevision\authservice\repository\AlertPreferenceRepository.class
 com\safevision\authservice\config\GlobalExceptionHandler$ErrorResponse.class
 com\safevision\authservice\dto\UserUpdateRequest.class

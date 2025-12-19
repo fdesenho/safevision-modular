@@ -112,7 +112,6 @@ services:
     ports:
       - "8761:8761"
     environment:
-      # 👇 CORREÇÃO AQUI: Lista de âncoras entre colchetes
       <<: [*common-env, *java-opts]
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8761/actuator/health"]
@@ -131,11 +130,20 @@ services:
     build: ./vision-agent
     container_name: vision-agent
     restart: on-failure
+    # ⚠️ CONFIGURAÇÃO CRÍTICA PARA GPS ⚠️
+    # Permite acesso ao hardware USB do Host
+    privileged: true 
+    devices:
+      # Mapeia a porta serial do Host para o Container
+      # Formato: "/caminho/no/host:/caminho/no/container"
+      # Se estiver no Windows ou sem GPS, COMENTE a linha abaixo para não dar erro
+      - "/dev/ttyUSB0:/dev/ttyUSB0" 
     ports:
       - "5000:5000"
     environment:
-      # 👇 CORREÇÃO AQUI: Mesclando Common e Python Opts
       <<: [*common-env, *python-opts]
+      # Configuração do GPS para o script Python
+      GPS_SERIAL_PORT: "/dev/ttyUSB0"
       RABBITMQ_HOST: rabbitmq
       RABBITMQ_USERNAME: ${RABBITMQ_USER}
       RABBITMQ_PASSWORD: ${RABBITMQ_PASS}
@@ -162,7 +170,6 @@ services:
     volumes:
       - ./logs:/var/logs
     environment:
-      # 👇 CORREÇÃO AQUI
       <<: [*common-env, *java-opts]
       SPRING_APPLICATION_NAME: auth-service
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka/
@@ -193,7 +200,6 @@ services:
     volumes:
       - ./logs:/var/logs
     environment:
-      # 👇 CORREÇÃO AQUI
       <<: [*common-env, *java-opts]
       SPRING_APPLICATION_NAME: alert-service
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka/
@@ -239,7 +245,6 @@ services:
     volumes:
       - ./logs:/var/logs
     environment:
-      # 👇 CORREÇÃO AQUI
       <<: [*common-env, *java-opts]
       SPRING_APPLICATION_NAME: recognition-service
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka/
@@ -267,7 +272,6 @@ services:
     volumes:
       - ./logs:/var/logs
     environment:
-      # 👇 CORREÇÃO AQUI
       <<: [*common-env, *java-opts]
       SPRING_APPLICATION_NAME: gateway-service
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka/

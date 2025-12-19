@@ -1,0 +1,99 @@
+<h2 mat-dialog-title>
+  <div class="title-wrapper">
+      <mat-icon class="title-icon">manage_accounts</mat-icon>
+      Configurações do Usuário
+  </div>
+</h2>
+
+<mat-dialog-content class="custom-scrollbar">
+  @if (isLoading) {
+    <mat-progress-bar mode="indeterminate" class="top-loader"></mat-progress-bar>
+  }
+
+  <form [formGroup]="profileForm" class="profile-form">
+
+    <div class="info-text">
+      Editando: <strong>{{ username }}</strong>
+    </div>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>URL da Câmera (RTSP/HTTP)</mat-label>
+      <input matInput formControlName="cameraConnectionUrl" placeholder="rtsp://192.168...">
+      <mat-icon matSuffix>videocam</mat-icon>
+    </mat-form-field>
+
+    <div class="alert-selection-container">
+        <label class="label-header">Canais de Notificação</label>
+        <mat-chip-listbox aria-label="Seleção de Alertas" multiple>
+            @for (opt of alertOptions; track opt.value) {
+            <mat-chip-option
+                color="accent"
+                [selected]="alertPreferencesControl.value.includes(opt.value)"
+                (selectionChange)="toggleAlert(opt.value, $event.selected)">
+                <mat-icon matChipAvatar>{{ opt.icon }}</mat-icon>
+                {{ opt.label }}
+            </mat-chip-option>
+            }
+        </mat-chip-listbox>
+        <mat-hint class="chip-hint">Selecione onde deseja receber alertas</mat-hint>
+    </div>
+
+
+    <div class="row">
+      <mat-form-field appearance="outline" class="half-width">
+        <mat-label>E-mail *</mat-label>
+        <input matInput formControlName="email" type="email">
+        <mat-icon matSuffix>email</mat-icon>
+        @if (profileForm.get('email')?.hasError('required')) {
+            <mat-error>E-mail é obrigatório</mat-error>
+        }
+        @if (profileForm.get('email')?.hasError('email')) {
+            <mat-error>E-mail inválido</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="half-width">
+        <mat-label>Celular *</mat-label>
+        <input matInput formControlName="phoneNumber" type="tel" appPhoneMask placeholder="+55 48 99999-9999">
+        <mat-icon matSuffix>smartphone</mat-icon>
+        @if (profileForm.get('phoneNumber')?.hasError('required')) {
+            <mat-error>Celular é obrigatório</mat-error>
+        }
+      </mat-form-field>
+    </div>
+
+    <div class="password-section">
+        <mat-form-field appearance="outline" class="full-width warn-field">
+            <mat-label>Nova Senha</mat-label>
+            <input matInput formControlName="password" type="password" autocomplete="new-password" placeholder="Preencha apenas se quiser alterar">
+            <mat-icon matSuffix>lock</mat-icon>
+            @if (profileForm.get('password')?.hasError('minlength')) {
+                <mat-error>Mínimo de 6 caracteres</mat-error>
+            }
+        </mat-form-field>
+
+        @if (profileForm.get('password')?.value) {
+            <mat-form-field appearance="outline" class="full-width warn-field animation-fade">
+                <mat-label>Confirmar Nova Senha</mat-label>
+                <input matInput formControlName="confirmPassword" type="password" placeholder="Repita a nova senha">
+                <mat-icon matSuffix>lock_reset</mat-icon>
+            </mat-form-field>
+
+            @if (profileForm.hasError('mismatch') && profileForm.get('confirmPassword')?.touched) {
+                <div class="password-error">
+                    <mat-icon>error_outline</mat-icon>
+                    As senhas não coincidem
+                </div>
+            }
+        }
+    </div>
+
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close [disabled]="isLoading">Cancelar</button>
+  <button mat-flat-button color="primary" (click)="onSubmit()" [disabled]="profileForm.invalid || isLoading">
+    Salvar Alterações
+  </button>
+</mat-dialog-actions>

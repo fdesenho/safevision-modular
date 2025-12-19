@@ -4,6 +4,7 @@ import { DashboardComponent } from './features/dashboard/dashboard.component';
 import { RegisterComponent } from './features/auth/register/register.component';
 import { authGuard } from './core/guards/auth-guard';
 
+
 export const routes: Routes = [
   // Rota padrão redireciona para login
   { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -20,6 +21,13 @@ export const routes: Routes = [
     component: DashboardComponent,
     canActivate: [authGuard]
   },
+
+  {
+          path: 'history',
+          loadComponent: () => import('./features/alert-history/alert-history.component')
+              .then(m => m.AlertHistoryComponent),
+          canActivate: [authGuard]
+   },
 
   // (Opcional) Rota Curinga: Se digitar algo errado, vai pro login
   { path: '**', redirectTo: 'login' }

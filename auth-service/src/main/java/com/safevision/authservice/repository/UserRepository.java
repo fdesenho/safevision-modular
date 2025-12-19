@@ -55,4 +55,9 @@ public interface UserRepository extends JpaRepository<User, String> {
      * @return {@code true} if the email exists, {@code false} otherwise.
      */
     boolean existsByEmail(String email);
+    
+    boolean existsByEmailAndIdNot(String email, String id);
+    
+    
+    boolean existsByPhoneNumberAndIdNot(String phoneNumber, String id);
 }

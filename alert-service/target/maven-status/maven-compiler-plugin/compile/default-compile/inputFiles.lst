@@ -18,5 +18,6 @@ C:\Users\work\eclipse-workspace\safevision-modular\alert-service\src\main\java\c
 C:\Users\work\eclipse-workspace\safevision-modular\alert-service\src\main\java\com\safevision\alertservice\repository\AlertRepository.java
 C:\Users\work\eclipse-workspace\safevision-modular\alert-service\src\main\java\com\safevision\alertservice\service\AlertService.java
 C:\Users\work\eclipse-workspace\safevision-modular\alert-service\src\main\java\com\safevision\alertservice\service\EmailAlertService.java
+C:\Users\work\eclipse-workspace\safevision-modular\alert-service\src\main\java\com\safevision\alertservice\service\GeocodingService.java
 C:\Users\work\eclipse-workspace\safevision-modular\alert-service\src\main\java\com\safevision\alertservice\service\TelegramService.java
 C:\Users\work\eclipse-workspace\safevision-modular\alert-service\src\main\java\com\safevision\alertservice\service\TelephonyService.java

@@ -12,9 +12,12 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * Core Logic Service (The "Brain").
- * Analyzes raw tracking events from the Vision Agent and applies security rules
- * to determine if a critical alert should be triggered.
+ * Core Logic Service (The "Brain" of Recognition).
+ * <p>
+ * Analyzes raw tracking telemetry received from the Vision Agent (Edge)
+ * and applies security rules (Business Logic) to determine if a critical
+ * alert should be triggered.
+ * </p>
  */
 @Slf4j
 @Service
@@ -24,19 +27,23 @@ public class ThreatAnalysisService {
     private final AlertProducer alertProducer;
     private final MovementHistoryService historyService;
 
-    // --- VARIÁVEIS DE ESTADO ---
+    // --- STATE VARIABLES ---
     
-    // Regra 1: Contador de Olhar
+    // Rule 1: Stare Counter (Persistence of Vision)
     private final Map<String, Integer> stareCountMap = new ConcurrentHashMap<>();
-    private static final int STARE_THRESHOLD = 20; 
+    
+    // ⚠️ AJUSTE: Python roda a 0.5s (2 FPS). 
+    // Para 5 segundos de detecção: 5s / 0.5s = 10 frames.
+    private static final int STARE_THRESHOLD = 10; 
 
-    // Regra 2: Configurações
-    private static final int LOITERING_WINDOW = 20;
+    // Rule 2: Loitering Configurations
+    // Janela de histórico ajustada para 5 segundos (10 frames)
+    private static final int LOITERING_WINDOW = 10;
     private static final int PROXIMITY_DIFFERENCE = 15;
 
-    // --- NOVO: CACHE DE EVIDÊNCIAS (MEMÓRIA VISUAL) ---
-    // Armazena a última URL de foto válida recebida para cada ID de detecção.
-    // Isso resolve o problema de alertas disparados em frames sem foto.
+    // --- VISUAL MEMORY (EVIDENCE CACHE) ---
+    // Stores the last valid snapshot URL for a detection ID.
+    // Resolves the issue where some frames might detect a threat but fail to upload an image.
     private final Map<String, String> evidenceCache = new ConcurrentHashMap<>();
 
     /**
@@ -50,30 +57,29 @@ public class ThreatAnalysisService {
         
         String id = event.detectionId();
         log.trace("Analyzing event for ID: {}", event.detectionId());
-        // 1. ATUALIZAR CACHE DE EVIDÊNCIA
-        // Se este pacote trouxe uma foto, salvamos ela como a "melhor foto até agora" para este ID.
+        
+        // 1. UPDATE EVIDENCE CACHE
+        // If this packet contains a snapshot, save it as the "best evidence so far".
         if (event.snapshotUrl() != null && !event.snapshotUrl().isEmpty()) {
             evidenceCache.put(id, event.snapshotUrl());
             log.debug("📸 Evidence cached for ID: {}", id);
         }
 
-        // 2. Regra de Arma (Prioridade Máxima)
+        // 2. Rule: Weapon Detection (Highest Priority)
         analyzeWeaponRule(event);
 
-        // 3. Regra de Olhar
+        // 3. Rule: Persistent Stare (Behavioral)
         analyzeStareRule(event);
 
-        // 4. Regra de Rondar
+        // 4. Rule: Loitering / Approach (Behavioral)
         analyzeLoiteringRule(event);
         
-        // Nota: A limpeza do evidenceCache deve ocorrer quando o objeto sai de cena.
-        // Como não temos um evento "saiu de cena" explícito do Python, 
-        // podemos limpar quando o contador de Stare é resetado ou manter até expirar (via TTL), 
-        // mas para este MVP, vamos limpar apenas ao disparar o alerta ou no reset do stare.
+        // Note: Cache cleanup should happen when object leaves the scene.
+        // For MVP, we clean up when an alert is triggered or state resets.
     }
 
     // ==============================================================
-    // RULE 0: WEAPON
+    // RULE 0: WEAPON DETECTION
     // ==============================================================
     private void analyzeWeaponRule(RawTrackingEvent event) {
         if (event.hasWeapon()) {
@@ -87,38 +93,39 @@ public class ThreatAnalysisService {
     }
 
     // ==============================================================
-    // RULE 1: STARE
+    // RULE 1: STARE DETECTION
     // ==============================================================
     private void analyzeStareRule(RawTrackingEvent event) {
         String id = event.detectionId();
 
         if (event.isFacingCamera()) {
+            // Incrementa o contador para este ID
             int currentCount = stareCountMap.merge(id, 1, Integer::sum);
 
             if (currentCount >= STARE_THRESHOLD) {
                 log.warn("👁️ Persistent Stare Detected! ID: {}", id);
                 
-                double seconds = STARE_THRESHOLD / 10.0; 
+                // ⚠️ AJUSTE: Cálculo de tempo baseado no intervalo de 0.5s
+                double seconds = STARE_THRESHOLD * 0.5; 
+                
                 sendCriticalAlert(
                     event,
                     "OBSERVACAO_DETECTADA",
-                    "Pessoa te observou por " + seconds + " seconds."
+                    "Pessoa te observou por " + seconds + " segundos."
                 );
 
-                // Reset e Limpeza
+                // Reset and Cleanup
                 stareCountMap.remove(id);
-                evidenceCache.remove(id); // Limpa a foto usada
+                evidenceCache.remove(id); // Consume evidence
             }
         } else {
-            // Se parou de olhar, reseta o contador
+            // Reset counter if eye contact is broken
             stareCountMap.remove(id);
-            // Opcional: Limpar a foto também se quiser que a "sessão de foto" seja vinculada ao olhar
-            // evidenceCache.remove(id); 
         }
     }
 
     // ==============================================================
-    // RULE 2: LOITERING
+    // RULE 2: LOITERING / APPROACH
     // ==============================================================
     private void analyzeLoiteringRule(RawTrackingEvent event) {
         historyService.recordEvent(event);
@@ -137,24 +144,28 @@ public class ThreatAnalysisService {
 
             sendCriticalAlert(
                 event,
-                "LOITERING_AND_APPROACH",
-                "Person loitering and rapidly approaching the camera."
+                "PESSOA_APROXIMANDO",
+                "Pessoa que está rondando e se aproximando rapidamente do perímetro de segurança."
             );
 
             historyService.clearHistory(id);
-            evidenceCache.remove(id); // Limpa a foto usada
+            evidenceCache.remove(id); 
         }
     }
 
     // ==============================================================
-    // MÉTODO UNIFICADO DE ENVIO (COM LÓGICA DE RECUPERAÇÃO DE FOTO)
+    // UNIFIED ALERT DISPATCHER
     // ==============================================================
+    /**
+     * Constructs the Alert DTO using the current event data and cached evidence,
+     * then dispatches it to the Message Broker.
+     */
     private void sendCriticalAlert(RawTrackingEvent event, String type, String description) {
         
-        // 1. Tenta pegar a URL que veio neste evento específico
+        // 1. Try to get the snapshot from the current event
         String finalSnapshotUrl = event.snapshotUrl();
 
-        // 2. Se veio nula, tenta pegar do CACHE (a melhor foto recente)
+        // 2. If null, fallback to the Evidence Cache (best photo from previous frames)
         if (finalSnapshotUrl == null || finalSnapshotUrl.isEmpty()) {
             finalSnapshotUrl = evidenceCache.get(event.detectionId());
             if (finalSnapshotUrl != null) {
@@ -162,13 +173,18 @@ public class ThreatAnalysisService {
             }
         }
 
+        // 3. Create DTO with new GPS fields
+        // Note: 'address' is null here because it's resolved asynchronously by the Alert Service later.
         AlertEventDTO finalAlert = new AlertEventDTO(
             event.userId(),
             type,
             description,
             "CRITICAL",
             event.cameraId(),
-            finalSnapshotUrl // Envia a melhor URL encontrada
+            finalSnapshotUrl, // Best available evidence
+            event.latitude(), // 📍 GPS Latitude from Python
+            event.longitude(),// 📍 GPS Longitude from Python
+            null              // Address (to be resolved by Alert Service)
         );
         
         alertProducer.sendAlert(finalAlert);

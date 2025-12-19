@@ -11,6 +11,6 @@ import java.util.List;
 public interface AlertPreferenceClient {
 
     
-    @GetMapping("/{username}/alert-preferences")
+    @GetMapping("/alert-preferences/{username}")
     List<AlertType> getPreferences(@PathVariable("username") String username);
 }

@@ -1,0 +1,23 @@
+<mat-toolbar color="primary" class="app-header">
+  
+  <span class="brand" (click)="goHome()" matTooltip="Ir para Dashboard">
+    👁️ SafeVision
+  </span>
+
+  <span class="spacer"></span>
+
+  <div class="user-info">
+    <span class="username">Olá, {{ auth.currentUser()?.username }}</span>
+    
+    <button mat-icon-button (click)="openProfileSettings()" matTooltip="Configurações de Perfil">
+        <mat-icon>manage_accounts</mat-icon>
+    </button>
+
+    <div class="divider"></div>
+
+    <button mat-icon-button (click)="auth.logout()" matTooltip="Sair" color="warn">
+      <mat-icon>logout</mat-icon>
+    </button>
+  </div>
+
+</mat-toolbar>

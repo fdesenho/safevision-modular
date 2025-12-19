@@ -1,5 +1,6 @@
 package com.safevision.alertservice.model;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import org.hibernate.annotations.CreationTimestamp;
@@ -18,18 +19,15 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
- * JPA Entity representing a Security Alert.
+ * JPA Entity representing a persisted Security Alert.
  * <p>
- * This entity stores the details of a threat detected by the Recognition Service.
- * It includes metadata about the user, camera, threat type, and visual evidence (snapshot).
+ * This class maps to the 'alerts' table in PostgreSQL. It stores the full context
+ * of a threat, including the visual evidence (snapshot) and physical location (GPS/Address).
  * </p>
  */
 @Entity
 @Table(name = "alerts", indexes = {
-    // 1. Índice simples para contagens ou buscas sem ordem
     @Index(name = "idx_alert_user_id", columnList = "userId"),
-    
-   
     @Index(name = "idx_alert_user_date", columnList = "userId, createdAt DESC")
 })
 @Getter
@@ -44,59 +42,51 @@ public class Alert {
     @Column(length = 36)
     private String id;
 
-    // --- CORE DATA ---
-
-    /**
-     * The ID of the user who owns the camera/alert.
-     */
     @Column(nullable = false)
     private String userId;
 
-    /**
-     * The classification of the event (e.g., WEAPON_DETECTED, THREAT_STARE).
-     */
     @Column(nullable = false)
     private String alertType;
 
-    /**
-     * The risk level: INFO, WARNING, or CRITICAL.
-     */
     @Column
     private String severity;
 
-    /**
-     * A human-readable description of the event.
-     * Uses TEXT type in Postgres to support long descriptions.
-     */
     @Column(columnDefinition = "TEXT")
     private String description;
-
-    // --- METADATA & EVIDENCE ---
 
     @Column
     private String cameraId;
 
-    /**
-     * Public URL pointing to the evidence image stored in MinIO.
-     * Length set to 1024 to accommodate long signed URLs or deep paths.
-     */
     @Column(length = 1024)
     private String snapshotUrl;
 
-    // --- STATUS & AUDIT ---
+    // --- GEOLOCATION DATA ---
 
     /**
-     * Flag indicating if the user has seen/acknowledged this alert.
-     * Defaults to false.
+     * GPS Latitude. Nullable to allow operation in GPS-denied environments.
      */
+    @Column(precision = 10, scale = 7)
+    private BigDecimal latitude;
+
+    /**
+     * GPS Longitude. Nullable to allow operation in GPS-denied environments.
+     */
+    @Column(precision = 10, scale = 7)
+    private BigDecimal longitude;
+
+    /**
+     * Human-readable address derived from Reverse Geocoding.
+     * Example: "123 Main St, Springfield".
+     */
+    @Column(length = 500)
+    private String address;
+
+    // --- STATE ---
+
     @Builder.Default
     @Column(nullable = false)
     private boolean acknowledged = false;
 
-    /**
-     * The exact timestamp when the alert was persisted.
-     * Managed automatically by Hibernate.
-     */
     @CreationTimestamp
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;

@@ -1,15 +1,4 @@
-<mat-toolbar color="primary" class="dashboard-toolbar">
-  <span class="brand">👁️ SafeVision</span>
-  <span class="spacer"></span>
-
-  <div class="user-info">
-    <span class="username">Olá, {{ auth.currentUser()?.username }}</span>
-    <button mat-icon-button (click)="auth.logout()" matTooltip="Sair do Sistema">
-      <mat-icon>logout</mat-icon>
-    </button>
-  </div>
-</mat-toolbar>
-
+<app-header></app-header>
 <div class="dashboard-content">
 
   <div class="panel-left">
@@ -30,7 +19,7 @@
           @if (isCameraActive() && videoStreamUrl()) {
             <img
               [src]="videoStreamUrl()"
-              alt="Feed de Vídeo"
+              alt="Transmissão ao Vivo"
               class="live-feed"
               (error)="onVideoError()"
             >
@@ -39,7 +28,7 @@
           @else if (isLoading() && !isCameraActive()) {
             <div class="overlay loading">
               <mat-spinner diameter="50" color="accent"></mat-spinner>
-              <p>Conectando a câmera...</p>
+              <p>Conectando à câmera...</p>
             </div>
           }
 
@@ -47,55 +36,61 @@
             <div class="overlay offline">
               <mat-icon class="large-icon">videocam_off</mat-icon>
               <h3>Sistema Desativado</h3>
-              <p>Clique em "ATIVAR" para iniciar o Monitoramento.</p>
+              <p>Clique em "ATIVAR" para iniciar o monitoramento.</p>
             </div>
           }
         </div>
       </mat-card-content>
 
       <mat-card-actions align="end" class="control-actions">
+        <button
+          mat-stroked-button
+          color="warn"
+          (click)="toggleSystem(false)"
+          [disabled]="!isCameraActive() || isLoading()">
+            @if (isLoading() && isCameraActive()) {
+                <mat-spinner diameter="20" color="warn"></mat-spinner>
+            } @else {
+                <span class="btn-label">
+                    <mat-icon>stop_circle</mat-icon>
+                    <span>DESATIVAR</span>
+                </span>
+            }
+        </button>
 
-		<button
-		          mat-stroked-button
-		          color="warn"
-		          (click)="toggleSystem(false)"
-		          [disabled]="!isCameraActive() || isLoading()">
-		            @if (isLoading() && isCameraActive()) {
-		                <mat-spinner diameter="20" color="warn"></mat-spinner>
-		            } @else {
-		                <span class="btn-label">
-		                    <mat-icon>stop_circle</mat-icon>
-		                    <span>DESATIVAR</span>
-		                </span>
-		            }
-		        </button>
-
-		        <button
-		          mat-flat-button
-		          color="primary"
-		          (click)="toggleSystem(true)"
-		          [disabled]="isCameraActive() || isLoading()">
-		            @if (isLoading() && !isCameraActive()) {
-		                <mat-spinner diameter="20" color="accent"></mat-spinner>
-		            } @else {
-		                <span class="btn-label">
-		                    <mat-icon>play_circle</mat-icon>
-		                    <span>ATIVAR</span>
-		                </span>
-		            }
-		        </button>
-
+        <button
+          mat-flat-button
+          color="primary"
+          (click)="toggleSystem(true)"
+          [disabled]="isCameraActive() || isLoading()">
+            @if (isLoading() && !isCameraActive()) {
+                <mat-spinner diameter="20" color="accent"></mat-spinner>
+            } @else {
+                <span class="btn-label">
+                    <mat-icon>play_circle</mat-icon>
+                    <span>ATIVAR</span>
+                </span>
+            }
+        </button>
       </mat-card-actions>
     </mat-card>
   </div>
 
   <div class="panel-right">
-    <div class="alerts-header">
-      <h2>🚨 Últimos Alertas</h2>
-      <button mat-icon-button (click)="loadAlerts()" matTooltip="Atualizar lista">
-        <mat-icon>refresh</mat-icon>
-      </button>
-    </div>
+	<div class="alerts-header">
+	      <h2>🚨 Últimos Alertas</h2>
+	      
+	      <div class="actions">
+			
+			
+			  <button mat-icon-button (click)="goToHistory()" matTooltip="Ver histórico completo">
+		            <mat-icon>event_note</mat-icon>
+	          </button>
+	          <button mat-icon-button (click)="loadAlerts()" matTooltip="Atualizar lista">
+	            <mat-icon>refresh</mat-icon>
+	          </button>
+	      </div>
+	    </div>
 
     <div class="alerts-list">
       @for (alert of alerts(); track alert.id) {
@@ -119,6 +114,23 @@
                 @if (alert.snapshotUrl) {
                     <div class="evidence-wrapper">
                         <img [src]="alert.snapshotUrl" alt="Evidência" loading="lazy">
+                    </div>
+                }
+
+                @if (alert.latitude && alert.longitude) {
+                    <div class="geo-tag-bar">
+                        <div class="coords-info">
+                            <mat-icon>place</mat-icon>
+                            @if (alert.address) {
+                                <span class="address-text" [matTooltip]="alert.address">{{ alert.address }}</span>
+                            } @else {
+                                <span class="raw-coords">{{ alert.latitude | number:'1.4-4' }}, {{ alert.longitude | number:'1.4-4' }}</span>
+                            }
+                        </div>
+						
+                        <button mat-stroked-button color="accent" class="btn-map-small" (click)="openLocation(alert)">
+                            Localização
+                        </button>
                     </div>
                 }
             </div>

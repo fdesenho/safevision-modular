@@ -1,0 +1,262 @@
+/* Variáveis de Cores (Design System) */
+$primary: #d63384;
+$success: #2e7d32;
+$warn: #f44336;
+$info: #0288d1;
+$dark-glass: rgba(30, 30, 30, 0.7);
+
+.history-container {
+    padding: 24px;
+    max-width: 100%;
+    margin: 0 auto;
+    color: #fff;
+    animation: fadeIn 0.4s ease-out;
+
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 24px;
+
+        .title-group {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            h1 { margin: 0; font-size: 1.8rem; font-weight: 300; letter-spacing: 0.5px; }
+        }
+
+        .stats {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+    }
+}
+
+.table-wrapper {
+    position: relative;
+    background: $dark-glass;
+    backdrop-filter: blur(16px);
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+
+table.alert-table {
+    width: 100%;
+    background: transparent;
+
+    th.mat-header-cell {
+        background: rgba(0, 0, 0, 0.5);
+        color: rgba(255, 255, 255, 0.9);
+        font-weight: 600;
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        padding: 16px;
+        white-space: nowrap;
+    }
+
+    td.mat-cell {
+        color: rgba(255, 255, 255, 0.9);
+        border-bottom-color: rgba(255, 255, 255, 0.05);
+        padding: 8px 16px;
+        font-size: 0.9rem;
+        vertical-align: middle;
+    }
+
+    .table-row {
+        transition: background 0.2s;
+        &:hover { background: rgba(255, 255, 255, 0.05); }
+    }
+}
+
+/* --- Colunas Específicas --- */
+
+/* 1. Address Wrapper (Icon + Text) */
+.address-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    max-width: 280px;
+
+    .addr-text {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .text-muted { opacity: 0.5; }
+}
+
+/* 2. Snapshot Image */
+.img-thumb-container {
+    width: 70px;
+    height: 45px;
+    border-radius: 6px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    cursor: pointer;
+    background: #000;
+
+    img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.2s;
+        &:hover { transform: scale(1.1); }
+    }
+}
+
+/* 3. Badges (Severity) */
+.badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    border-radius: 16px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+
+    .badge-icon { font-size: 16px; width: 16px; height: 16px; }
+
+    &.critical { background: rgba($warn, 0.15); color: #ff8a80; border: 1px solid rgba($warn, 0.3); }
+    &.warning { background: rgba(#ff9800, 0.15); color: #ffcc80; border: 1px solid rgba(#ff9800, 0.3); }
+    &.info { background: rgba($info, 0.15); color: #81d4fa; border: 1px solid rgba($info, 0.3); }
+}
+
+/* 4. Status Chips */
+.status-chip {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.85rem;
+
+    mat-icon { font-size: 18px; width: 18px; height: 18px; }
+
+    &.success { color: #69f0ae; }
+    &.pending { color: #ffab40; opacity: 0.8; }
+}
+
+/* Utilitários */
+.truncate-cell { display: block; max-width: 250px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; opacity: 0.8; }
+.cam-code { font-family: 'Roboto Mono', monospace; background: rgba(255,255,255,0.1); padding: 2px 6px; border-radius: 4px; font-size: 0.8rem; }
+.bold-text { font-weight: 600; }
+.no-img { opacity: 0.3; font-size: 1.2rem; }
+
+/* Loading & Empty States */
+.loading-shade {
+    position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.4); z-index: 10;
+    display: flex; align-items: center; justify-content: center;
+}
+
+.empty-state {
+    display: flex; flex-direction: column; align-items: center; gap: 12px; opacity: 0.6;
+    mat-icon { font-size: 48px; width: 48px; height: 48px; }
+    p { margin: 0; }
+}
+
+/* Paginator Dark Override */
+::ng-deep .mat-mdc-paginator {
+    background: transparent !important;
+    color: #fff !important;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    .mat-mdc-icon-button { color: rgba(255,255,255,0.9) !important; }
+    .mat-mdc-select-value { color: #fff !important; }
+}
+
+.thumb-wrapper {
+    /* 1. Definimos tamanhos FIXOS para a caixa da imagem */
+    width: 80px;
+    height: 50px;
+
+    /* 2. Estética para ficar bonito na tabela escura */
+    border-radius: 6px;         /* Cantos arredondados */
+    overflow: hidden;           /* Garante que a imagem respeite a borda redonda */
+    border: 1px solid rgba(255, 255, 255, 0.25); /* Borda sutil para definição */
+    cursor: pointer;            /* Mãozinha para indicar clique */
+    background: #1a1a1a;        /* Fundo escuro enquanto carrega */
+    position: relative;         /* Para o alinhamento interno */
+    margin: 4px 0;              /* Um pequeno respiro vertical na célula */
+    box-shadow: 0 2px 5px rgba(0,0,0,0.3); /* Sombra leve */
+
+    /* 3. Comportamento da imagem dentro da caixa */
+    img {
+        width: 100%;
+        height: 100%;
+        /* O SEGREDO: 'cover' faz a imagem preencher a caixa sem distorcer, cortando excessos se necessário */
+        object-fit: cover;
+        display: block;         /* Remove espaços em branco indesejados abaixo da imagem */
+        transition: transform 0.3s ease; /* Suaviza o efeito de zoom */
+        opacity: 0.9;           /* Leve transparência para integrar melhor */
+    }
+
+    /* 4. Efeito Hover (Zoom suave ao passar o mouse) */
+    &:hover {
+        border-color: rgba(255, 255, 255, 0.5); /* Realça a borda */
+        img {
+            transform: scale(1.1); /* Zoom de 10% */
+            opacity: 1;            /* Fica totalmente nítida */
+        }
+    }
+
+
+    /* --- CORES DE SEVERIDADE (NÍVEL) --- */
+.severity-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+
+    .badge-icon { font-size: 16px; width: 16px; height: 16px; }
+
+    /* 🔴 CRITICAL: Vermelho Alerta Forte */
+    &.critical {
+        background: rgba(211, 47, 47, 0.2);
+        color: #ff5252;
+        border: 1px solid rgba(255, 82, 82, 0.4);
+        box-shadow: 0 0 8px rgba(211, 47, 47, 0.3); /* Efeito de brilho */
+    }
+
+    /* 🟠 WARNING: Laranja */
+    &.warning {
+        background: rgba(255, 152, 0, 0.15);
+        color: #ffb74d;
+        border: 1px solid rgba(255, 152, 0, 0.3);
+    }
+
+    /* 🔵 INFO: Azul */
+    &.info {
+        background: rgba(3, 169, 244, 0.15);
+        color: #4fc3f7;
+        border: 1px solid rgba(3, 169, 244, 0.3);
+    }
+}
+
+/* --- BOTÃO DE MAPA AMIGÁVEL --- */
+.btn-map-friendly {
+    /* Um Azul Turquesa/Ciano é "amigável", tecnológico e lembra GPS */
+    color: #40c4ff !important;
+
+    &:hover {
+        background-color: rgba(64, 196, 255, 0.15) !important;
+        transform: scale(1.1); /* Leve zoom ao passar o mouse */
+        transition: transform 0.2s ease;
+    }
+
+    mat-icon {
+        font-size: 22px; /* Ícone levemente maior */
+    }
+}
+}
+
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }

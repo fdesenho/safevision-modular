@@ -1,0 +1,164 @@
+@use "sass:color";
+
+/* ============================================================
+   DESIGN SYSTEM (Baseado no RegisterComponent)
+   ============================================================ */
+$primary: #d63384;
+$accent: #00bcd4;
+$error-text: #ff5252;
+$glass-bg: rgba(23, 23, 23, 0.95); // Fundo sólido para modal
+
+/* ============================================================
+   LAYOUT
+   ============================================================ */
+
+:host {
+    display: block;
+    background: $glass-bg;
+    color: #fff;
+}
+
+.title-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1.4rem;
+    font-weight: 300;
+}
+
+.top-loader {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    z-index: 10;
+}
+
+.profile-form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding-top: 10px;
+    min-width: 450px;
+}
+
+.info-text {
+    margin-bottom: 8px;
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 0.9rem;
+    padding-bottom: 12px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+
+    strong { color: $primary; }
+}
+
+.full-width {
+    width: 100%;
+}
+
+.row {
+    display: flex;
+    gap: 16px;
+    .half-width { flex: 1; }
+}
+
+/* ============================================================
+   CHIPS SECTION (Igual Register)
+   ============================================================ */
+.alert-selection-container {
+    margin: 8px 0 16px 0;
+    padding: 12px;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+
+    .label-header {
+        display: block;
+        margin-bottom: 10px;
+        color: rgba(255, 255, 255, 0.8);
+        font-size: 0.9rem;
+        font-weight: 500;
+    }
+
+    .chip-hint {
+        display: block;
+        margin-top: 8px;
+        font-size: 0.75rem;
+        color: rgba(255, 255, 255, 0.4);
+    }
+}
+
+// Animação para o campo do Telegram
+.telegram-field {
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-5px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ============================================================
+   MATERIAL OVERRIDES (Estilo Dark/Glass)
+   ============================================================ */
+
+::ng-deep .mat-mdc-form-field {
+    .mdc-text-field--filled {
+        background-color: rgba(255, 255, 255, 0.05) !important;
+        border-radius: 8px;
+    }
+
+    .mdc-text-field__input {
+        color: #fff !important;
+        caret-color: $primary !important;
+    }
+
+    .mdc-floating-label { color: rgba(255, 255, 255, 0.6) !important; }
+    .mdc-floating-label--float-above { color: $primary !important; }
+    .mat-icon { color: rgba(255, 255, 255, 0.7); }
+
+    .mdc-line-ripple::before { border-bottom-color: rgba(255, 255, 255, 0.3) !important; }
+    .mdc-line-ripple::after { border-bottom-color: $primary !important; }
+}
+
+// Estilo para o campo de senha (aviso sutil)
+.warn-field {
+    margin-top: 8px;
+    .mat-icon { color: #ffb74d !important; }
+}
+
+/* Mobile */
+@media (max-width: 600px) {
+    .profile-form { min-width: auto; }
+    .row { flex-direction: column; gap: 0; }
+}
+
+
+// ... estilos anteriores ...
+
+.password-section {
+    display: flex;
+    flex-direction: column;
+}
+
+.password-error {
+    color: #ff5252;
+    font-size: 12px;
+    margin-top: -10px;
+    margin-bottom: 15px;
+    margin-left: 4px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(255, 82, 82, 0.1);
+    padding: 8px;
+    border-radius: 6px;
+
+    mat-icon {
+        font-size: 16px;
+        height: 16px;
+        width: 16px;
+    }
+}
+
+.animation-fade {
+    animation: fadeIn 0.3s ease-out;
+}

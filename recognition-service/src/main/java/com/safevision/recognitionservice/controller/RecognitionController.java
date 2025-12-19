@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.RestController;
 /**
  * REST Controller for external interaction with the Recognition Service.
  * <p>
- * Primarily used for health checks, configuration (future), and manual testing
- * of the alert pipeline without needing the Python Agent.
+ * Primarily used for health checks, configuration, and manual simulation
+ * of the alert pipeline without requiring a physical camera or Python Agent.
  * </p>
  */
 @Slf4j
@@ -26,7 +26,10 @@ public class RecognitionController {
 
     /**
      * Manually triggers a detection event and sends it directly to the Alert Service queue.
-     * This endpoint is protected by JWT and useful for testing the RabbitMQ -> Alert flow.
+     * <p>
+     * This endpoint is useful for integration testing (RabbitMQ -> Alert Service -> Frontend)
+     * independently of the Edge/Python layer.
+     * </p>
      *
      * @return Confirmation message.
      */
@@ -35,14 +38,17 @@ public class RecognitionController {
         log.info("🔄 Manual simulation triggered via HTTP endpoint.");
 
         // 1. Create a CRITICAL test DTO
-        // Note: snapshotUrl is null because there is no real image evidence for manual tests.
+        // Adjusted constructor to match the new DTO signature with GPS fields.
         var testAlert = new AlertEventDTO(
-            "superadmin",
-            "MANUAL_TRIGGER",
-            "Manual API test triggered via HTTP endpoint.",
-            "CRITICAL",
-            "CAM-TEST-00",
-            null 
+            "superadmin",       // userId
+            "MANUAL_TRIGGER",   // alertType
+            "Manual API test triggered via HTTP endpoint.", // description
+            "CRITICAL",         // severity
+            "CAM-TEST-00",      // cameraId
+            null,               // snapshotUrl (no image for manual test)
+            null,               // latitude (no GPS for manual test)
+            null,               // longitude
+            null                // address
         );
 
         // 2. Dispatch to RabbitMQ

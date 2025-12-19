@@ -13,13 +13,10 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatChipsModule } from '@angular/material/chips';
+import { AlertType } from '../../../core/models/app.models';
 
 // Enum para tipagem forte
-export enum AlertType {
-  TELEGRAM = 'TELEGRAM',
-  EMAIL = 'EMAIL',
-  SMS = 'SMS'
-}
+
 
 @Component({
   selector: 'app-register',
@@ -43,7 +40,7 @@ export class RegisterComponent {
 
   // Controle de Estado da UI
   isLoading = signal<boolean>(false);
-  
+
   // ✅ NOVO: Controla se mostramos o form ou a tela de "Check" verde
   isRegisterSuccess = signal<boolean>(false);
 
@@ -98,7 +95,7 @@ export class RegisterComponent {
     if (this.registerForm.invalid) return;
 
     this.isLoading.set(true);
-    
+
     // Removemos confirmPassword do payload
     const { confirmPassword, ...registerData } = this.registerForm.getRawValue();
 
@@ -112,13 +109,13 @@ export class RegisterComponent {
     this.authService.register(finalPayload as any).subscribe({
       next: () => {
         this.isLoading.set(false);
-        
+
         // ✅ SUCESSO:
         // 1. Muda o estado para mostrar a tela de sucesso (troca o HTML)
         this.isRegisterSuccess.set(true);
 
         // 2. Opcional: Mostra um feedback rápido no topo, mas sem texto no card
-        this.snackBar.open('Cadastro realizado com sucesso!', 'OK', { 
+        this.snackBar.open('Cadastro realizado com sucesso!', 'OK', {
           duration: 3000,
           panelClass: ['success-snackbar'] // Use a classe CSS que definimos antes
         });
@@ -128,7 +125,7 @@ export class RegisterComponent {
       error: (err) => {
         console.error(err);
         this.isLoading.set(false);
-        
+
         // ✅ ERRO:
         // Mostra APENAS no SnackBar (mais limpo que texto vermelho no card)
         this.snackBar.open('Falha ao registrar. Verifique os dados ou tente outro usuário.', 'Fechar', {

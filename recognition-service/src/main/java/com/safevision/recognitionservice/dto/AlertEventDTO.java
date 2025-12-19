@@ -1,5 +1,7 @@
 package com.safevision.recognitionservice.dto;
 
+import java.math.BigDecimal;
+
 /**
  * Data Transfer Object (DTO) representing an Alert Event.
  * <p>
@@ -16,10 +18,14 @@ package com.safevision.recognitionservice.dto;
  * @param snapshotUrl The public URL pointing to the evidence image stored in MinIO (can be null).
  */
 public record AlertEventDTO(
-    String userId,
-    String alertType,
-    String description,
-    String severity,
-    String cameraId,
-    String snapshotUrl
+	    
+	    String userId,
+	    String alertType,
+	    String description,
+	    String severity,
+	    String cameraId,
+	    String snapshotUrl,
+	    BigDecimal latitude,
+	    BigDecimal longitude,
+	    String address // 📍 Novo campo
 ) {}

@@ -1,5 +1,8 @@
 package com.safevision.alertservice.repository;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaRepository;
 import com.safevision.alertservice.model.Alert;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -33,4 +36,9 @@ public interface AlertRepository extends JpaRepository<Alert, String> {
      * @return A list of unread alerts.
      */
     List<Alert> findByUserIdAndAcknowledgedFalseOrderByCreatedAtDesc(String userId);
+    
+ 
+    Page<Alert> findByUserId(String userId, Pageable pageable);
+    
+   
 }

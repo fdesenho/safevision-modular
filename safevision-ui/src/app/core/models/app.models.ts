@@ -1,7 +1,11 @@
 // --- MODELOS DE USUÁRIO ---
 
-import { AlertType } from "../../features/auth/register/register.component";
 
+export enum AlertType {
+  TELEGRAM = 'TELEGRAM',
+  EMAIL = 'EMAIL',
+  SMS = 'SMS'
+}
 export interface User {
   id: string;
   username: string;
@@ -32,6 +36,8 @@ export interface UserUpdateRequest {
   email?: string;
   phoneNumber?: string;
   cameraConnectionUrl?: string;
+  password?: string;
+  alertPreferences?: AlertType[]; // 📍 NOVO
 }
 
 // --- MODELOS DE RESPOSTA (RESPONSES) ---
@@ -55,6 +61,31 @@ export interface Alert {
   severity: 'INFO' | 'WARNING' | 'CRITICAL';
   cameraId: string;
   acknowledged: boolean;
-  createdAt: string;
-  snapshotUrl?: string
+  createdAt: string; // ISO Date String
+  snapshotUrl?: string; // Opcional: nem todo alerta tem foto
+
+  // 📍 NOVOS CAMPOS DE GEOLOCALIZAÇÃO
+  // Devem ser opcionais (?) pois alertas antigos ou câmeras sem GPS virão nulos
+  latitude?: number;
+  longitude?: number;
+  address?: string; // Endereço legível (Ex: "Rua X, Centro")
+}
+
+export interface UserProfileDTO {
+  id: string;
+  username: string;
+  email: string;
+  phoneNumber: string;
+  cameraConnectionUrl: string;
+  alertPreferences: AlertType[];
+}
+
+export interface Page<T> {
+  content: T[];
+  page: {          // 👈 Agora os metadados ficam aqui dentro
+    totalElements: number;
+    totalPages: number;
+    size: number;
+    number: number;
+  };
 }

@@ -1,57 +1,56 @@
 package com.safevision.recognitionservice.dto;
 
+import java.math.BigDecimal;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 /**
- * Data Transfer Object (DTO) representing the raw telemetry data received from the Vision Agent.
+ * Data Transfer Object (DTO) representing the raw telemetry received from the Vision Agent.
  * <p>
- * This record maps the JSON payload sent by the Python script via RabbitMQ.
- * It contains a mix of behavioral data (gaze, proximity) and object detection data (weapons).
+ * This Java Record serves as an immutable carrier for the data coming from RabbitMQ.
+ * It includes behavioral analysis, threat detection, and geolocation metadata.
  * </p>
- * * @param detectionId    Unique identifier for the tracking session/object.
- * @param timestamp      Unix timestamp (seconds) of the event occurrence.
- * @param cameraId       Identifier of the source camera (e.g., "BODY-CAM-01").
- * @param userId         The ID of the user utilizing the device.
- * @param isFacingCamera True if the subject's face is oriented towards the camera.
- * @param gazeDirection  Estimated direction of the gaze (e.g., "CENTER", "LEFT").
- * @param depthPosition  A calculated score (0-100+) indicating proximity based on face width.
- * @param hasWeapon      True if a threat object (knife/gun) was detected via YOLO.
- * @param weaponType     The label of the detected weapon (e.g., "KNIFE", "HANDGUN").
- * @param weaponLocation The estimated position of the weapon relative to the body (e.g., "HAND", "WAIST").
- * @param snapshotUrl    The MinIO public URL for the evidence image (can be null if no upload occurred).
+ *
+ * @param detectionId    Unique UUID for the detection session.
+ * @param timestamp      Unix timestamp of capture.
+ * @param cameraId       Identifier of the recording device.
+ * @param userId         The user associated with the device.
+ * @param isFacingCamera Behavioral flag: is the subject looking at the lens?
+ * @param gazeDirection  Estimated direction of gaze.
+ * @param depthPosition  Proximity score.
+ * @param hasWeapon      Threat flag: was a weapon detected?
+ * @param weaponType     Classification of the weapon (e.g., KNIFE).
+ * @param weaponLocation Relative location of the weapon (e.g., HAND).
+ * @param snapshotUrl    MinIO URL for the evidence image.
+ * @param latitude       GPS Latitude (nullable if no signal).
+ * @param longitude      GPS Longitude (nullable if no signal).
  */
-@JsonIgnoreProperties(ignoreUnknown = true) 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public record RawTrackingEvent(
-    // --- Metadata ---
     String detectionId,
     long timestamp,
     String cameraId,
     String userId,
-
-    // --- Behavioral Analysis Data ---
     boolean isFacingCamera,
     String gazeDirection,
     int depthPosition,
-
-    // --- Threat Detection Data (Zero Tolerance) ---
     boolean hasWeapon,
     String weaponType,
     String weaponLocation,
-
-    // --- Evidence ---
-    String snapshotUrl
+    String snapshotUrl,
+    BigDecimal latitude,
+    BigDecimal longitude
 ) {
-    
     /**
-     * Compact Constructor for validation.
-     * Ensures that critical identification fields are never null.
+     * Validation constructor.
+     * Ensures critical identity fields are present.
      */
     public RawTrackingEvent {
         if (detectionId == null || detectionId.isBlank()) {
-            throw new IllegalArgumentException("Detection ID cannot be null or empty");
+            throw new IllegalArgumentException("Detection ID cannot be null");
         }
         if (userId == null || userId.isBlank()) {
-            throw new IllegalArgumentException("User ID cannot be null or empty");
+            throw new IllegalArgumentException("User ID cannot be null");
         }
     }
 }

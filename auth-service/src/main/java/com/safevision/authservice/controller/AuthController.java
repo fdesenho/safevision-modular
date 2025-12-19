@@ -98,10 +98,15 @@ public class AuthController {
         // Retorna um JSON simples: { "cameraUrl": "http://..." }
         return ResponseEntity.ok(Map.of("cameraUrl", url != null ? url : ""));
     }
- // ... Imports existentes
-
+    
+    
+    @GetMapping("/profile/{username}")
+    public ResponseEntity<UserProfileDTO> getUserProfile(@PathVariable String username) {
+        return ResponseEntity.ok(authenticationService.getUserProfile(username));
+    }
+    
  
-    @GetMapping("/{username}/alert-preferences")
+    @GetMapping("/alert-preferences/{username}")
     public ResponseEntity<List<AlertType>> getPreferences(@PathVariable String username) {
         return ResponseEntity.ok(authenticationService.getAlertPreferences(username));
     }

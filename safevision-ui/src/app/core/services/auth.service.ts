@@ -1,10 +1,10 @@
 import { Injectable, inject, signal, computed, PLATFORM_ID } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { tap } from 'rxjs';
+import { Observable, tap } from 'rxjs';
 import { jwtDecode } from 'jwt-decode';
 import { isPlatformBrowser } from '@angular/common'; // <--- Importante
-import { AuthResponse, LoginRequest, RegisterRequest, User, UserUpdateRequest } from '../models/app.models';
+import { AlertType, AuthResponse, LoginRequest, RegisterRequest, User, UserProfileDTO, UserUpdateRequest } from '../models/app.models';
 import { environment } from '../../../environments/environment';
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -88,5 +88,18 @@ export class AuthService {
     } catch {
       this.logout();
     }
+  }
+
+  getAlertPreferences(username: string): Observable<AlertType[]> {
+      return this.http.get<AlertType[]>(`${this.API_URL}/alert-preferences/${username}`);
+  }
+
+
+  getUserContact(username: string): Observable<any> {
+    return this.http.get<any>(`${this.API_URL}/contact/${username}`);
+  }
+
+  getUserProfile(username: string): Observable<UserProfileDTO> {
+      return this.http.get<UserProfileDTO>(`${this.API_URL}/profile/${username}`);
   }
 }

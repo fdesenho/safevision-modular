@@ -1,0 +1,19 @@
+<div class="map-container-wrapper">
+  <div class="map-header">
+    <h3><mat-icon>location_on</mat-icon> Localização da Ameaça</h3>
+    
+    <div class="location-details">
+        @if (data.address) {
+            <span class="main-loc">{{ data.address }}</span>
+        }
+        <span class="sub-loc">Lat: {{data.lat | number:'1.5-5'}} | Lon: {{data.lng | number:'1.5-5'}}</span>
+    </div>
+  </div>
+  
+  <div id="leaflet-map" class="leaflet-map"></div>
+
+  <div class="map-footer">
+    <span class="time">Ocorrência: {{data.timestamp | date:'medium'}}</span>
+    <button mat-stroked-button (click)="close()">FECHAR MAPA</button>
+  </div>
+</div>

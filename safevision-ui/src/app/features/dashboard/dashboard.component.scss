@@ -1,64 +1,44 @@
 /* ============================================================
-   SAFE VISION — Dashboard (Premium UI)
-   Padronizado com Login + Register
+   SAFE VISION — Dashboard Style
    ============================================================ */
 @use "sass:color";
 
-/* ------------------------------------------------------------
-   DESIGN SYSTEM (shared)
-   ------------------------------------------------------------ */
+// Variáveis Locais
 $primary: #d63384;
-$primary-hover: color.adjust($primary, $lightness: -10%);
 $warn: #f44336;
 $success: #2e7d32;
-
-$glass-bg: rgba(255, 255, 255, 0.08);
 $glass-border: rgba(255, 255, 255, 0.18);
-$glass-blur: 12px;
-
-$shadow-soft: 0 12px 28px rgba(0, 0, 0, 0.35);
 $shadow-hard: 0 18px 45px rgba(0, 0, 0, 0.55);
 
-/* ============================================================
-   TOOLBAR
-   ============================================================ */
+// Toolbar e Layout
 .dashboard-toolbar {
   position: sticky;
   top: 0;
   z-index: 50;
-  background: rgba(0, 0, 0, 0.6) !important; // Fundo escuro leve para leitura
+  background: rgba(0, 0, 0, 0.6) !important;
   backdrop-filter: blur(12px);
   border-bottom: 1px solid rgba(255, 255, 255, 0.15);
   display: flex;
   align-items: center;
 
-  .spacer {
-    flex: 1 1 auto;
-  }
-
-  .username {
-    margin-right: 12px;
-    font-size: 0.95rem;
-    color: #fff;
-    font-weight: 600;
-  }
-
-  mat-icon {
-    color: #fff;
+  .brand { font-weight: 700; letter-spacing: 1px; font-size: 1.2rem; }
+  .spacer { flex: 1 1 auto; }
+  .user-info {
+    display: flex;
+    align-items: center;
+    .username { margin-right: 12px; font-weight: 600; }
+    button { color: rgba(255, 255, 255, 0.9); }
   }
 }
 
-/* ============================================================
-   DASHBOARD CONTENT LAYOUT
-   ============================================================ */
 .dashboard-content {
   display: grid;
-  grid-template-columns: 2fr 1fr; // Vídeo maior (2/3) e Alertas menor (1/3)
+  grid-template-columns: 2fr 1fr;
   gap: 24px;
   padding: 24px;
   max-width: 1600px;
   margin: 0 auto;
-  height: calc(100vh - 64px); // Altura total menos toolbar
+  height: calc(100vh - 64px);
 
   @media (max-width: 900px) {
     grid-template-columns: 1fr;
@@ -66,11 +46,8 @@ $shadow-hard: 0 18px 45px rgba(0, 0, 0, 0.55);
   }
 }
 
-/* ============================================================
-   VIDEO CARD (Painel Esquerdo)
-   ============================================================ */
+// Card de Vídeo
 .video-card {
-  /* Glass base para o card inteiro */
   background: rgba(255, 255, 255, 0.05) !important;
   backdrop-filter: blur(16px) !important;
   border: 1px solid $glass-border !important;
@@ -84,195 +61,87 @@ $shadow-hard: 0 18px 45px rgba(0, 0, 0, 0.55);
   mat-card-header {
     padding: 16px 20px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    
-    mat-card-title {
-      color: #fff;
-      font-size: 1.2rem;
-      letter-spacing: 0.5px;
+    mat-card-title { color: #fff; font-size: 1.2rem; letter-spacing: 0.5px; }
+
+    .status-badge {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: rgba(255, 255, 255, 0.6);
+      background: rgba(255, 255, 255, 0.1);
+      padding: 6px 12px;
+      border-radius: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      transition: all 0.3s ease;
+
+      .indicator {
+        width: 8px; height: 8px; border-radius: 50%;
+        background-color: #ff5252; box-shadow: 0 0 5px rgba(255, 82, 82, 0.4);
+      }
+
+      &.online {
+        color: #fff;
+        background: rgba(0, 230, 118, 0.15);
+        border: 1px solid rgba(0, 230, 118, 0.3);
+        .indicator {
+            background-color: #00e676;
+            box-shadow: 0 0 10px #00e676;
+            animation: pulse 2s infinite;
+        }
+      }
     }
-
-    // Badge de Status (Online/Offline)
-	.status-badge {
-	  margin-left: auto;
-	  display: flex;
-	  align-items: center;
-	  gap: 8px;
-	  font-size: 0.8rem;
-	  font-weight: 700;
-	  
-	  /* Visual Padrão (OFFLINE) */
-	  color: rgba(255, 255, 255, 0.6);
-	  background: rgba(255, 255, 255, 0.1);
-	  padding: 6px 12px;
-	  border-radius: 20px;
-	  border: 1px solid rgba(255, 255, 255, 0.1);
-	  transition: all 0.3s ease;
-
-	  .indicator {
-	    width: 8px;
-	    height: 8px;
-	    border-radius: 50%;
-	    
-	    /* 🔴 MUDANÇA: Cor Vermelha para Offline (era cinza #757575) */
-	    background-color: #ff5252; 
-	    box-shadow: 0 0 5px rgba(255, 82, 82, 0.4); /* Leve brilho vermelho */
-	    transition: all 0.3s ease;
-	  }
-
-	  /* 🟢 ESTADO ONLINE */
-	  &.online {
-		color: rgba(255, 255, 255, 0.6);
-		  background: rgba(255, 255, 255, 0.1);
-		  padding: 6px 12px;
-		  border-radius: 20px;
-		  border: 1px solid rgba(255, 255, 255, 0.1);
-		  transition: all 0.3s ease;
-	    .indicator {
-			width: 8px;
-		    height: 8px;
-		    border-radius: 50%;
-			background-color: #00e676;
-			box-shadow: 0 0 10px #00e676;
-		    transition: all 0.3s ease;
-	      
-	      /* ✨ AQUI ESTÁ O PULSAR ATIVO */
-	      animation: pulse 50s infinite;
-	    }
-	  }
-	}
-
-	/* 👇 DEFINIÇÃO DA ANIMAÇÃO (Isso é obrigatório para o 'pulse' funcionar) */
-	@keyframes pulse {
-	  0% {
-	    transform: scale(0.95);
-	    opacity: 0.7;
-	    box-shadow: 0 0 0 0 rgba(0, 188, 212, 0.7);
-	  }
-	  70% {
-	    transform: scale(1.2); /* Aumenta um pouco */
-	    opacity: 1;
-	    box-shadow: 0 0 0 6px rgba(0, 188, 212, 0); /* Efeito de onda sumindo */
-	  }
-	  100% {
-	    transform: scale(0.95);
-	    opacity: 0.7;
-	    box-shadow: 0 0 0 0 rgba(0, 188, 212, 0);
-	  }
-	}
   }
 
   mat-card-content {
-    flex-grow: 1;
-    padding: 0;
-    position: relative;
-    background: #000; // Fundo preto do player
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    flex-grow: 1; padding: 0; position: relative;
+    background: #000; display: flex; align-items: center; justify-content: center;
   }
 
-  // Wrapper do Vídeo
   .video-wrapper {
-    width: 100%;
-    height: 100%;
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    width: 100%; height: 100%; position: relative;
+    display: flex; align-items: center; justify-content: center;
 
-    // A imagem do feed (MJPEG)
-    .live-feed {
-      width: 100%;
-      height: 100%;
-      object-fit: contain; // Garante que o vídeo não estique
-      display: block;
-    }
+    .live-feed { width: 100%; height: 100%; object-fit: contain; display: block; }
 
-    // Overlays (Carregando / Offline / Erro)
     .overlay {
-      position: absolute;
-      inset: 0;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      color: white;
-      text-align: center;
-      background: rgba(0, 0, 0, 0.7); // Escurece um pouco o fundo
-      z-index: 10;
-
-      &.loading {
-        p { margin-top: 16px; font-weight: 500; letter-spacing: 0.5px; opacity: 0.9; }
-      }
-
+      position: absolute; inset: 0;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      color: white; text-align: center; background: rgba(0, 0, 0, 0.7); z-index: 10;
+      
       &.offline {
-        .large-icon {
-          font-size: 64px;
-          width: 64px;
-          height: 64px;
-          opacity: 0.4;
-          margin-bottom: 16px;
-        }
+        .large-icon { font-size: 64px; width: 64px; height: 64px; opacity: 0.4; margin-bottom: 16px; }
         h3 { margin: 0; font-size: 1.5rem; font-weight: 600; }
-        p { margin-top: 8px; opacity: 0.6; }
       }
     }
   }
 
-  // Ações do Card (Botões Play/Stop)
   mat-card-actions {
     padding: 16px 20px;
     border-top: 1px solid rgba(255, 255, 255, 0.1);
     background: rgba(0, 0, 0, 0.2);
     gap: 12px;
-
-    button {
-      height: 44px;
-      font-weight: 600;
-      letter-spacing: 0.5px;
-      min-width: 140px;
-      border-radius: 8px;
-    }
+    button { height: 44px; font-weight: 600; min-width: 140px; border-radius: 8px; }
   }
 }
 
-/* ============================================================
-   ALERTS PANEL (Painel Direito)
-   ============================================================ */
+// Painel de Alertas
 .panel-right {
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
+  display: flex; flex-direction: column; overflow: hidden;
 
   .alerts-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 16px;
-    padding: 0 4px;
-
-    h2 {
-      margin: 0;
-      font-weight: 700;
-      color: #fff;
-      font-size: 1.2rem;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 16px; padding: 0 4px;
+    h2 { margin: 0; font-weight: 700; color: #fff; font-size: 1.2rem; }
     button { color: rgba(255, 255, 255, 0.8); }
   }
 
   .alerts-list {
-    flex-grow: 1;
-    overflow-y: auto;
-    padding-right: 6px; // Espaço para scrollbar
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
+    flex-grow: 1; overflow-y: auto; padding-right: 6px;
+    display: flex; flex-direction: column; gap: 16px;
 
-    // Barra de rolagem customizada
     &::-webkit-scrollbar { width: 6px; }
     &::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.05); }
     &::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.2); border-radius: 3px; }
@@ -281,27 +150,13 @@ $shadow-hard: 0 18px 45px rgba(0, 0, 0, 0.55);
       background: rgba(255, 255, 255, 0.05) !important;
       backdrop-filter: blur(8px) !important;
       border: 1px solid rgba(255, 255, 255, 0.1) !important;
-      border-radius: 12px;
-      padding: 16px;
-      color: #fff;
+      border-radius: 12px; padding: 16px; color: #fff;
       transition: transform 0.2s;
 
-      &:hover {
-        background: rgba(255, 255, 255, 0.08) !important;
-        transform: translateY(-2px);
-      }
+      &:hover { background: rgba(255, 255, 255, 0.08) !important; transform: translateY(-2px); }
+      &.critical { border-left: 4px solid $warn !important; background: linear-gradient(90deg, rgba(244, 67, 54, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%) !important; }
 
-      // Estilo Crítico
-      &.critical {
-        border-left: 4px solid $warn !important;
-        background: linear-gradient(90deg, rgba(244, 67, 54, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%) !important;
-      }
-
-      .alert-row {
-        display: flex;
-        gap: 16px;
-      }
-
+      .alert-row { display: flex; gap: 16px; }
       .alert-icon {
         padding-top: 2px;
         mat-icon { color: rgba(255, 255, 255, 0.7); }
@@ -309,103 +164,116 @@ $shadow-hard: 0 18px 45px rgba(0, 0, 0, 0.55);
       }
 
       .alert-content {
-        flex: 1;
+        flex: 1; min-width: 0;
 
         .alert-top {
-          display: flex;
-          justify-content: space-between;
-          margin-bottom: 6px;
-          
+          display: flex; justify-content: space-between; margin-bottom: 6px;
           .type { font-weight: 700; font-size: 0.95rem; }
           .time { font-size: 0.8rem; opacity: 0.6; }
         }
 
-        .desc {
-          margin: 0 0 10px 0;
-          font-size: 0.9rem;
-          opacity: 0.8;
-          line-height: 1.4;
-        }
+        .desc { margin: 0 0 10px 0; font-size: 0.9rem; opacity: 0.8; line-height: 1.4; }
 
         .evidence-wrapper {
-          position: relative;
-          overflow: hidden;
-          border-radius: 8px;
-          border: 1px solid rgba(255, 255, 255, 0.1);
-          
-          img {
-            width: 100%;
-            height: auto;
-            display: block;
-            transition: transform 0.3s;
-            cursor: zoom-in;
-            
-            &:hover { transform: scale(1.05); }
-          }
+          position: relative; overflow: hidden;
+          border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.1); margin-bottom: 12px;
+          img { width: 100%; display: block; transition: transform 0.3s; cursor: zoom-in; &:hover { transform: scale(1.05); } }
+        }
+
+        /* 📍 ESTILO DA BARRA DE GPS (NOVO) */
+        .geo-tag-bar {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 8px 12px;
+            background: rgba(0, 0, 0, 0.25);
+            border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.05);
+            margin-top: 8px;
+
+            .coords-info {
+                display: flex; align-items: center; gap: 8px;
+                font-size: 0.85rem; overflow: hidden;
+                
+                mat-icon { font-size: 18px; width: 18px; height: 18px; color: $primary; }
+
+                .address-text {
+                    font-weight: 500; color: #fff;
+                    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+                    max-width: 180px;
+                }
+
+                .raw-coords {
+                    color: rgba(255, 255, 255, 0.7);
+                    font-family: 'Roboto Mono', monospace; font-size: 0.8rem;
+                }
+            }
+
+			.btn-map-small {
+			    /* 1. Trava as dimensões do container do botão */
+			    height: 26px !important;
+			    min-height: 26px !important;
+			    max-height: 26px !important;
+			    padding: 0 12px !important; // Espaçamento lateral menor
+			    min-width: auto !important;
+			    border-radius: 13px !important; // Metade da altura para ficar redondo
+			    
+			    /* 2. Ajustes de Fonte */
+			    font-size: 0.65rem !important;
+			    font-weight: 700 !important;
+			    letter-spacing: 0.5px;
+			    text-transform: uppercase;
+
+			    /* 3. Centralização do Host */
+			    display: inline-flex !important;
+			    align-items: center !important;
+			    justify-content: center !important;
+			    
+			    /* 4. Hack para matar o line-height padrão do Material */
+			    line-height: 0 !important; 
+
+			    /* 5. Acessa a estrutura interna do Angular Material (Label) */
+			    & ::ng-deep .mdc-button__label {
+			        display: flex !important;
+			        align-items: center !important;
+			        justify-content: center !important;
+			        line-height: normal !important; /* Restaura line-height só para o texto */
+			        height: 100%;
+			        margin-top: 1px; /* Ajuste fino ótico vertical */
+			    }
+
+			    /* Caso você adicione ícone no futuro, garante que não quebre */
+			    & ::ng-deep mat-icon {
+			        font-size: 14px !important;
+			        width: 14px !important;
+			        height: 14px !important;
+			        margin-right: 4px;
+			    }
+			}
         }
       }
 
       .alert-action {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        
+        display: flex; flex-direction: column; justify-content: center;
         .check-icon { color: $success; }
       }
     }
 
     .empty-state {
-      text-align: center;
-      padding: 40px;
-      opacity: 0.5;
-      color: #fff;
-
+      text-align: center; padding: 40px; opacity: 0.5;
       mat-icon { font-size: 48px; width: 48px; height: 48px; margin-bottom: 12px; }
-      p { margin: 0; font-size: 1rem; }
     }
   }
 }
 
-/* ============================================================
-   BOTÕES DE AÇÃO (Oval + Alinhados)
-   ============================================================ */
-
-button[mat-stroked-button],
-button[mat-flat-button] {
-  height: 45px; /* Altura confortável */
-  
-  /* 👇 O SEGREDO DO FORMATO OVAL 👇 */
-  border-radius: 50px !important; 
-  
-  /* Ajuste de largura mínima para ficarem elegantes */
-  min-width: 140px; 
-  padding: 0 24px;
-
-  /* Classe interna de alinhamento (que criamos antes) */
-  .btn-label {
-    display: flex;
-    align-items: center; 
-    justify-content: center;
-    line-height: 1; 
-    
-    mat-icon {
-      margin: 0;
-      margin-right: 8px;
-      font-size: 22px;
-      width: 22px;
-      height: 22px;
-    }
-    
-    span {
-      display: inline-block;
-      padding-top: 2px;
-      font-weight: 600; /* Texto um pouco mais forte fica melhor no botão oval */
-      letter-spacing: 0.5px;
-    }
+// Botões Ovais
+button[mat-stroked-button], button[mat-flat-button] {
+  height: 45px; border-radius: 50px !important; min-width: 140px; padding: 0 24px;
+  &:not(.btn-map-small) {
+      .btn-label { display: flex; align-items: center; justify-content: center; line-height: 1; 
+        mat-icon { margin-right: 8px; }
+        span { display: inline-block; padding-top: 2px; }
+      }
   }
 }
 
-// Animação de Pulsar
 @keyframes pulse {
   0% { opacity: 1; transform: scale(1); }
   50% { opacity: 0.5; transform: scale(1.1); }

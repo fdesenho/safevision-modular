@@ -1,0 +1,145 @@
+<app-header></app-header>
+
+<div class="history-container">
+
+  <div class="page-header">
+    <div class="title-group">
+        <button mat-icon-button (click)="goBack()" matTooltip="Voltar ao Dashboard">
+            <mat-icon>arrow_back</mat-icon>
+        </button>
+        <h1>Histórico de Alertas</h1>
+    </div>
+
+    <div class="stats-chip">
+
+        <span>Total: <strong>{{ resultsLength }}</strong></span>
+    </div>
+  </div>
+
+  <div class="table-wrapper mat-elevation-z8">
+
+    @if (isLoading) {
+      <div class="loading-shade">
+        <mat-progress-spinner mode="indeterminate" diameter="40"></mat-progress-spinner>
+      </div>
+    }
+
+    <table mat-table [dataSource]="dataSource" matSort matSortActive="createdAt" matSortDirection="asc" >
+
+      <ng-container matColumnDef="createdAt">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Data/Hora </th>
+        <td mat-cell *matCellDef="let row">
+            <span class="text-data">{{ row.createdAt | date:'dd/MM/yyyy HH:mm' }}</span>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="severity">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Nível </th>
+        <td mat-cell *matCellDef="let row">
+            <div class="severity-badge" [class]="row.severity.toLowerCase()">
+                <mat-icon class="badge-icon">
+                    {{ row.severity === 'CRITICAL' ? 'warning' : 'info' }}
+                </mat-icon>
+                <span>{{ row.severity }}</span>
+            </div>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="alertType">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Tipo </th>
+        <td mat-cell *matCellDef="let row">
+            <span class="type-text">{{ row.alertType }}</span>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="description">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Descrição </th>
+        <td mat-cell *matCellDef="let row">
+            <span class="truncate-text" [matTooltip]="row.description">
+                {{ row.description }}
+            </span>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="cameraId">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Câmera </th>
+        <td mat-cell *matCellDef="let row">
+            <code class="cam-badge">{{ row.cameraId }}</code>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="address">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Localização </th>
+        <td mat-cell *matCellDef="let row">
+            <div class="geo-cell">
+                @if (row.latitude && row.longitude) {
+                    <button mat-icon-button class="btn-map-friendly" (click)="openMap(row)" matTooltip="Abrir Mapa">
+                        <mat-icon>place</mat-icon>
+                    </button>
+                    <span class="geo-text" [matTooltip]="row.address">
+                        {{ row.address || 'Coordenadas GPS' }}
+                    </span>
+                } @else {
+                    <mat-icon class="icon-disabled" matTooltip="Sem GPS">location_off</mat-icon>
+                    <span class="geo-text disabled">Sem sinal GPS</span>
+                }
+            </div>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="snapshotUrl">
+        <th mat-header-cell *matHeaderCellDef> Evidência </th>
+        <td mat-cell *matCellDef="let row">
+            @if (row.snapshotUrl) {
+                <div class="thumb-wrapper" (click)="openImage(row)" matTooltip="Clique para ampliar">
+                    <img [src]="row.snapshotUrl" alt="Snapshot" loading="lazy">
+                </div>
+            } @else {
+                <span class="no-data">-</span>
+            }
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="acknowledged">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Status </th>
+        <td mat-cell *matCellDef="let row">
+            @if (row.acknowledged) {
+                <div class="status-indicator success">
+                    <mat-icon>verified</mat-icon>
+                    <span>Verificado</span>
+                </div>
+            } @else {
+                <div class="status-indicator pending clickable"
+                     (click)="markAsRead(row, $event)"
+                     matTooltip="Clique para marcar como lido">
+                    <mat-icon>pending</mat-icon>
+                    <span>Pendente</span>
+                </div>
+            }
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="element-row"></tr>
+
+      <tr class="mat-row" *matNoDataRow>
+        <td class="mat-cell" colspan="8">
+           <div class="empty-state-wrapper">
+               <mat-icon class="empty-icon">search_off</mat-icon>
+               <p>Nenhum registro encontrado no histórico.</p>
+           </div>
+        </td>
+      </tr>
+
+    </table>
+
+    <mat-paginator
+        [length]="resultsLength"
+        [pageSize]="10"
+        [pageSizeOptions]="[5, 10, 20, 50]"
+        showFirstLastButtons
+        aria-label="Selecione a página">
+    </mat-paginator>
+
+  </div>
+</div>

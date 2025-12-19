@@ -34,7 +34,7 @@ public class TrackingWorkflowFacade {
             return;
         }
 
-        log.debug("🔄 Starting workflow for Detection ID: {}", event.detectionId());
+        log.debug("🔄 Starting workflow for Detection ID: {}", event.toString());
 
         // Step 1: Record state history (Required for time-based rules like Loitering)
         movementHistoryService.recordEvent(event);

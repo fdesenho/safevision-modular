@@ -20,5 +20,6 @@ com\safevision\alertservice\listener\AlertListener.class
 com\safevision\alertservice\service\AlertService.class
 com\safevision\alertservice\config\SecurityConfig.class
 com\safevision\alertservice\config\EmailProperties.class
+com\safevision\alertservice\service\GeocodingService.class
 com\safevision\alertservice\repository\AlertRepository.class
 com\safevision\alertservice\dto\AlertResponse.class

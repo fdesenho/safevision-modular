@@ -1,0 +1,64 @@
+/* Header Component Styles */
+
+// Toolbar fixa e translúcida
+.app-header {
+  position: sticky;
+  top: 0;
+  z-index: 1000; // Alto z-index para ficar sobre mapas e vídeos
+  background: rgba(0, 0, 0, 0.6) !important;
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+  display: flex;
+  align-items: center;
+  height: 64px;
+  padding: 0 24px;
+
+  .brand {
+    font-weight: 700;
+    letter-spacing: 1px;
+    font-size: 1.2rem;
+    cursor: pointer; // Indica que é clicável
+    transition: opacity 0.2s;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    &:hover {
+      opacity: 0.8;
+    }
+  }
+
+  .spacer {
+    flex: 1 1 auto;
+  }
+
+  .user-info {
+    display: flex;
+    align-items: center;
+    
+    .username {
+        margin-right: 12px;
+        font-size: 0.95rem;
+        color: #fff;
+        font-weight: 600;
+        
+        // Esconde o nome em telas muito pequenas (mobile)
+        @media (max-width: 600px) {
+            display: none;
+        }
+    }
+	
+	.divider {
+	          width: 1px;
+	          height: 24px;
+	          background: rgba(255,255,255,0.2);
+	          margin: 0 8px;
+  	}
+	
+    button {
+        color: rgba(255, 255, 255, 0.9);
+        &:hover { color: #f44336; } // Vermelho ao passar o mouse (Logout)
+    }
+  }
+}

@@ -1,0 +1,70 @@
+// Cores Locais (Idealmente viriam de um arquivo de variáveis globais)
+$dialog-bg: #1e1e1e;
+$header-bg: rgba(255, 255, 255, 0.05);
+$border-color: rgba(255, 255, 255, 0.1);
+$text-color: #fff;
+$accent-color: #8282FF;
+
+.map-container-wrapper {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: $dialog-bg;
+  color: $text-color;
+}
+
+.map-header {
+  padding: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: $header-bg;
+  border-bottom: 1px solid $border-color;
+  
+  h3 { 
+    margin: 0; 
+    display: flex; 
+    align-items: center; 
+    gap: 8px; 
+    font-size: 1.1rem; 
+  }
+}
+
+.location-details {
+  display: flex;
+  flex-direction: column;
+  text-align: right;
+  
+  .main-loc { 
+    font-weight: bold; 
+    color: $text-color; 
+    font-size: 0.95rem; 
+  }
+  
+  .sub-loc { 
+    font-family: monospace; 
+    font-size: 0.8rem; 
+    opacity: 0.7; 
+    color: $accent-color; 
+  }
+}
+
+.leaflet-map {
+  height: 450px;
+  width: 100%;
+  background: #000;
+  z-index: 1; // Garante que o mapa fique no contexto correto de empilhamento
+}
+
+.map-footer {
+  padding: 12px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid $border-color;
+  
+  .time { 
+    opacity: 0.6; 
+    font-size: 0.85rem; 
+  }
+}

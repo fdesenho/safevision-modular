@@ -110,3 +110,15 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; background-
 
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+.blur-backdrop {
+    background-color: rgba(0, 0, 0, 0.85); /* Fundo bem escuro */
+    backdrop-filter: blur(8px); /* Desfoque moderno */
+}
+
+/* Remove padding padrão do Dialog para a imagem ir até a borda se quiser */
+.fullscreen-dialog .mat-mdc-dialog-container .mat-mdc-dialog-surface {
+    background: transparent !important; /* Remove fundo branco padrão */
+    box-shadow: none !important;
+    overflow: hidden !important;
+}

@@ -98,10 +98,7 @@ public class UserService implements UserDetailsService {
                 .build();
     }
 
-    public User getUserByUsername(String username) {
-        return repository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
-    }
+    
 
     public Optional<User> getUser(String id) {
         return repository.findById(id);
@@ -133,10 +130,7 @@ public class UserService implements UserDetailsService {
         }
 
         // Update password if provided
-        if (updatedData.getPassword() != null && !updatedData.getPassword().isEmpty()) {
-            existingUser.setPassword(passwordEncoder.encode(updatedData.getPassword()));
-        }
-
+       
         var savedUser = repository.save(existingUser);
 
        
@@ -146,6 +140,38 @@ public class UserService implements UserDetailsService {
 
     public void deleteUser(String id) {
         repository.deleteById(id);
+    }
+    
+    public User getUserByUsername(String username) {
+        return repository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
+    }
+
+    /**
+     * Valida integridade e persiste as alterações.
+     * NÃO realiza criptografia de senha (responsabilidade do Auth Service).
+     */
+    public User saveUser(User userToSave) {
+        // Validação de Integridade 1: E-mail Único
+        // Verifica se o email existe em ALGUM registro cujo ID NÃO SEJA o meu
+        if (userToSave.getEmail() != null) {
+            boolean emailTaken = repository.existsByEmailAndIdNot(userToSave.getEmail(), userToSave.getId());
+            if (emailTaken) {
+                throw new IllegalArgumentException("Este e-mail já está em uso por outro usuário.");
+            }
+        }
+
+        // Validação de Integridade 2: Telefone Único (Opcional, mas recomendado)
+        if (userToSave.getPhoneNumber() != null) {
+            boolean phoneTaken = repository.existsByPhoneNumberAndIdNot(userToSave.getPhoneNumber(), userToSave.getId());
+            if (phoneTaken) {
+                throw new IllegalArgumentException("Este telefone já está em uso por outro usuário.");
+            }
+        }
+
+        // Salvamento Limpo
+        // O JPA detecta que o ID existe e faz um UPDATE
+        return repository.save(userToSave);
     }
 
    
