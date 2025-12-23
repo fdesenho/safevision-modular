@@ -35,11 +35,9 @@ public class AuthenticationService {
     private final UserService userService;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
-    private final PasswordEncoder passwordEncoder; // 👈 Injeção Obrigatória para o updateUser funcionar
+    private final PasswordEncoder passwordEncoder;
 
-    /**
-     * DTO interno para enviar a mensagem ao Python (se necessário futuramente)
-     */
+    
     public record CameraConfigMessage(String action, String userId, String cameraUrl) implements Serializable {}
 
     public UserResponse register(RegisterRequest request) {
@@ -83,45 +81,44 @@ public class AuthenticationService {
     public UserResponse updateUser(String username, UserUpdateRequest request) {
         log.info("Processing update request for user: {}", username);
 
-        // 1. Busca Entidade Gerenciada (Managed State)
+        
         User currentUser = userService.getUserByUsername(username);
 
-        // 2. Atualização de E-mail (Com Trim e Null Check do Commons Lang)
+        
         if (StringUtils.isNotBlank(request.email())) {
-            // Trim remove espaços acidentais no início/fim
+        
             currentUser.setEmail(request.email().trim());
         }
 
-        // 3. Atualização de Telefone
+        
         if (StringUtils.isNotBlank(request.phoneNumber())) {
             currentUser.setPhoneNumber(request.phoneNumber().trim());
         }
 
-        // 4. Atualização de Câmera
-        // Aqui usamos stripToNull: se vier vazio ou espaços, vira null no banco (limpa o campo)
+        
         if (request.cameraConnectionUrl() != null) {
              currentUser.setCameraConnectionUrl(StringUtils.stripToNull(request.cameraConnectionUrl()));
         }
 
-        // 5. Atualização de Senha (CRÍTICO)
+        
         if (StringUtils.isNotBlank(request.password())) {
             String rawPassword = request.password().trim();
             
-            // Validação simples (pode ser expandida)
+        
             if (rawPassword.length() < 6) {
                 throw new IllegalArgumentException("A nova senha deve ter no mínimo 6 caracteres.");
             }
 
-            // CRIPTOGRAFIA ACONTECE AQUI (E SÓ AQUI)
+           
             String encodedPassword = passwordEncoder.encode(rawPassword);
             currentUser.setPassword(encodedPassword);
             
             log.info("Password updated for user: {}", username);
         }
 
-        // 6. Atualização de Preferências (One-To-Many)
+        
         if (request.alertPreferences() != null) {
-            // Limpa a coleção existente (não substitua a instância da lista para manter o Hibernate feliz)
+        
             currentUser.getAlertPreferences().clear();
 
             if (!request.alertPreferences().isEmpty()) {
@@ -135,7 +132,7 @@ public class AuthenticationService {
             }
         }
 
-        // 7. Chama o Executor para validar integridade e salvar
+        
         User savedUser = userService.saveUser(currentUser);
 
         return new UserResponse(
@@ -177,8 +174,7 @@ public class AuthenticationService {
             return List.of();
         }
 
-        // TRANSFORMAÇÃO:
-        // Pega a lista de Entidades (AlertPreference) -> Extrai apenas o Enum (AlertType)
+       
         return user.getAlertPreferences().stream()
                 .map(AlertPreference::getAlertType)
                 .collect(Collectors.toList());

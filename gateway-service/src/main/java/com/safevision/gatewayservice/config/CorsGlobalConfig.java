@@ -26,7 +26,7 @@ public class CorsGlobalConfig {
       
         config.setAllowedOriginPatterns(List.of("*"));
 
-        // 2. Permitir Credenciais é OBRIGATÓRIO para sessões WebSocket/STOMP estáveis
+        
         config.setAllowCredentials(true); 
 
         config.setAllowedMethods(List.of(

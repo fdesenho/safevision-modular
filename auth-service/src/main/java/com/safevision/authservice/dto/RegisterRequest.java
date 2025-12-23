@@ -32,6 +32,6 @@ public record RegisterRequest(
     String phoneNumber,
     String cameraUrl,
     Set<String> roles,
-    Set<AlertType> alertTypes   // <-- agora usamos o enum
+    Set<AlertType> alertTypes  
 ) {}
 

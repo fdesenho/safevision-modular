@@ -1,10 +1,9 @@
 package com.safevision.recognitionservice;
 
-import com.safevision.recognitionservice.config.RabbitQueueProperties;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Entry point for the Recognition Service (The "Brain" of the architecture).

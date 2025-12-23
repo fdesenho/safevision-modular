@@ -9,5 +9,5 @@ public record UserUpdateRequest(
     String phoneNumber,
     String cameraConnectionUrl,
     String password,
-    Set<AlertType> alertPreferences // 📍 CAMPO NOVO
+    Set<AlertType> alertPreferences 
 ) {}

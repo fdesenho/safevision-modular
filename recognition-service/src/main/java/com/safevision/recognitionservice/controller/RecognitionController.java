@@ -37,21 +37,20 @@ public class RecognitionController {
     public ResponseEntity<String> simulateDetection() {
         log.info("🔄 Manual simulation triggered via HTTP endpoint.");
 
-        // 1. Create a CRITICAL test DTO
-        // Adjusted constructor to match the new DTO signature with GPS fields.
+       
         var testAlert = new AlertEventDTO(
-            "superadmin",       // userId
-            "MANUAL_TRIGGER",   // alertType
-            "Manual API test triggered via HTTP endpoint.", // description
-            "CRITICAL",         // severity
-            "CAM-TEST-00",      // cameraId
-            null,               // snapshotUrl (no image for manual test)
-            null,               // latitude (no GPS for manual test)
-            null,               // longitude
-            null                // address
+            "superadmin",       
+            "MANUAL_TRIGGER",   
+            "Manual API test triggered via HTTP endpoint.", 
+            "CRITICAL",         
+            "CAM-TEST-00",      
+            null,               
+            null,               
+            null,               
+            null                
         );
 
-        // 2. Dispatch to RabbitMQ
+        
         alertProducer.sendAlert(testAlert);
 
         log.info("✅ Simulation sent to queue successfully.");

@@ -27,12 +27,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void configureMessageBroker(MessageBrokerRegistry config) {
         log.info("Configuring WebSocket Message Broker...");
-
-        // Enables a simple in-memory broker to send messages to clients.
-        // Prefix for messages going FROM server TO client (Push).
         config.enableSimpleBroker(BROKER_PREFIX);
-        
-        // Prefix for messages coming FROM client TO server (e.g. chat messages).
         config.setApplicationDestinationPrefixes(APP_PREFIX);
     }
 
@@ -42,17 +37,11 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         log.info("Registering STOMP Endpoint at: {}", ENDPOINT_WS);
-        
         registry.addEndpoint(ENDPOINT_ALERT)
-        .setAllowedOriginPatterns("*") // Allows connections from any origin (CORS)
-        .withSockJS(); // Fallback options for older browsers
-        
-        
-        
-        // Defines the connection endpoint (Handshake).
-        // Angular will connect to: http://localhost:8080/alert/ws (via Gateway)
+        .setAllowedOriginPatterns("*") 
+        .withSockJS(); 
         registry.addEndpoint(ENDPOINT_WS)
-                .setAllowedOriginPatterns("*") // Allows connections from any origin (CORS)
-                .withSockJS(); // Fallback options for older browsers
+        .setAllowedOriginPatterns("*") 
+        .withSockJS(); 
     }
 }

@@ -23,10 +23,10 @@ import java.util.concurrent.ConcurrentHashMap;
 @RequiredArgsConstructor
 public class MovementHistoryService {
 
-    // Thread-safe map to store history per detectionId
+   
     private final Map<String, LinkedList<Integer>> historyMap = new ConcurrentHashMap<>();
     
-    // Window size: Analyze the last 10 events (~1.5 to 2 seconds of video)
+   
     private static final int HISTORY_WINDOW_SIZE = 10;
 
     /**
@@ -38,13 +38,13 @@ public class MovementHistoryService {
     public void recordEvent(RawTrackingEvent event) {
         var id = event.detectionId();
         
-        // Get or create the history list for this object
+   
         var history = historyMap.computeIfAbsent(id, k -> new LinkedList<>());
         
-        // Add new data point to the head (LIFO access for recent checks)
+   
         history.addFirst(event.depthPosition());
         
-        // Maintain window size
+   
         while (history.size() > HISTORY_WINDOW_SIZE) {
             history.removeLast();
         }

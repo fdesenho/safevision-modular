@@ -31,16 +31,14 @@ public class AlertListener {
         log.debug("Alert payload: {}", event);
 
         try {
-            // Delegate to the service layer for persistence and notification logic
+            
             alertService.createAlert(event);
             
         } catch (Exception e) {
-            // Log the full stack trace for debugging purposes
+            
             log.error("❌ Error processing RabbitMQ alert: {}", e.getMessage(), e);
 
-            // Note: In a production environment with DLQ (Dead Letter Queue) configured,
-            // you might want to throw a specific AmqpRejectAndDontRequeueException here
-            // to move the failed message to the DLQ instead of losing it.
+            
         }
     }
 }

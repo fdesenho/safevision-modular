@@ -20,8 +20,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class VisionAgentListener {
 
-    // Injection of the Facade, adhering to the Facade Pattern to decouple
-    // infrastructure logic (RabbitMQ) from domain logic (Threat Analysis).
+    
     private final TrackingWorkflowFacade trackingWorkflow;
 
     /**
@@ -42,16 +41,14 @@ public class VisionAgentListener {
                 return;
             }
 
-            // Use 'debug' for high-frequency events to avoid log flooding in production
+           
             log.debug("🤖 [Recognition] Received raw event ID: {}", event.detectionId());
             
-            // Delegate to the Facade (Business Logic)
+           
             trackingWorkflow.processEvent(event);
             
         } catch (Exception e) {
-            // Error Handling Pattern: Log and suppress.
-            // We catch generic exceptions here to prevent the RabbitMQ listener container
-            // from entering an infinite retry loop for "poison pill" messages.
+           
             var eventId = (event != null) ? event.detectionId() : "unknown";
             log.error("❌ Error processing tracking event {}: {}", eventId, e.getMessage(), e);
         }

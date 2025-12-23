@@ -31,8 +31,7 @@ public record UserResponse(
             throw new IllegalArgumentException("Username cannot be null or empty");
         }
         
-        // Defensive copy: Ensures the Set inside the record cannot be modified externally later.
-        // Also handles null by defaulting to an empty set.
+       
         roles = (roles != null) ? Set.copyOf(roles) : Set.of();
     }
 }

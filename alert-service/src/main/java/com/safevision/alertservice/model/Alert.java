@@ -81,7 +81,7 @@ public class Alert {
     @Column(length = 500)
     private String address;
 
-    // --- STATE ---
+   
 
     @Builder.Default
     @Column(nullable = false)

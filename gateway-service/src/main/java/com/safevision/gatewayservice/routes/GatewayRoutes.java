@@ -27,11 +27,11 @@ import java.util.function.Function;
 @RequiredArgsConstructor
 public class GatewayRoutes {
 
-    // --- CONSTANTS ---
+    
     private static final String V3_API_DOCS = "/v3/api-docs";
     private static final String FALLBACK_URI = "forward:/fallback";
     
-    // Java 21 Text Block for readable JSON
+    
     private static final String FALLBACK_JSON = """
         {
             "error": "Service Unavailable",
@@ -39,7 +39,7 @@ public class GatewayRoutes {
         }
         """;
 
-    // --- INJECTED SERVICE URLS ---
+   
     @Value("${safevision.services.auth}")
     private String authServiceUrl;
 
@@ -125,7 +125,7 @@ public class GatewayRoutes {
                 .build();
     }
 
-    // --- HELPER METHODS (Clean Code / DRY) ---
+   
 
     /**
      * Applies the standard Circuit Breaker filter configuration.

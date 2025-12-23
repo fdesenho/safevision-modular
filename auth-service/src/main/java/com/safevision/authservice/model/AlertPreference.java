@@ -35,7 +35,7 @@ public class AlertPreference {
     @Column(length = 36, updatable = false, nullable = false)
     private String id;
 
-    // Many preferences can belong to a single user
+   
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;

@@ -88,7 +88,7 @@ public class UserService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         var user = getUserByUsername(username);
         
-        // Convert Set<String> roles to String[] for Spring Security
+        
         String[] roles = user.getRoles().toArray(new String[0]);
 
         return org.springframework.security.core.userdetails.User
@@ -114,12 +114,12 @@ public class UserService implements UserDetailsService {
 
        
 
-        // Partial Update Logic
+       
         if (updatedData.getUsername() != null) existingUser.setUsername(updatedData.getUsername());
         if (updatedData.getEmail() != null) existingUser.setEmail(updatedData.getEmail());
         if (updatedData.getPhoneNumber() != null) existingUser.setPhoneNumber(updatedData.getPhoneNumber());
 
-        // Check for Camera URL change
+       
         if (updatedData.getCameraConnectionUrl() != null) {
             String oldUrl = existingUser.getCameraConnectionUrl();
             String newUrl = updatedData.getCameraConnectionUrl();
@@ -129,7 +129,7 @@ public class UserService implements UserDetailsService {
                 
         }
 
-        // Update password if provided
+       
        
         var savedUser = repository.save(existingUser);
 
@@ -147,13 +147,9 @@ public class UserService implements UserDetailsService {
                 .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
     }
 
-    /**
-     * Valida integridade e persiste as alterações.
-     * NÃO realiza criptografia de senha (responsabilidade do Auth Service).
-     */
+    
     public User saveUser(User userToSave) {
-        // Validação de Integridade 1: E-mail Único
-        // Verifica se o email existe em ALGUM registro cujo ID NÃO SEJA o meu
+    
         if (userToSave.getEmail() != null) {
             boolean emailTaken = repository.existsByEmailAndIdNot(userToSave.getEmail(), userToSave.getId());
             if (emailTaken) {
@@ -161,7 +157,7 @@ public class UserService implements UserDetailsService {
             }
         }
 
-        // Validação de Integridade 2: Telefone Único (Opcional, mas recomendado)
+    
         if (userToSave.getPhoneNumber() != null) {
             boolean phoneTaken = repository.existsByPhoneNumberAndIdNot(userToSave.getPhoneNumber(), userToSave.getId());
             if (phoneTaken) {
@@ -169,8 +165,7 @@ public class UserService implements UserDetailsService {
             }
         }
 
-        // Salvamento Limpo
-        // O JPA detecta que o ID existe e faz um UPDATE
+    
         return repository.save(userToSave);
     }
 

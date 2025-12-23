@@ -17,7 +17,7 @@ import java.util.Base64;
 
 @Slf4j
 @Service
-@EnableConfigurationProperties(TelephonyProperties.class) // Habilita o uso do Record
+@EnableConfigurationProperties(TelephonyProperties.class) 
 public class TelephonyService {
 
     private final RestTemplate twilioClient;
@@ -43,10 +43,10 @@ public class TelephonyService {
 
         log.info("🚨 Initiating Critical SMS sequence for event: {}", alert.alertType());
 
-        // 1. Determine Target Phone Number
+        
         String targetPhone = resolveUserPhoneNumber(alert.userId());
         
-        // 2. Build Message
+        
         String messageBody = """
             ALERTA CRÍTICO SAFEVISION
             Tipo: %s
@@ -55,12 +55,12 @@ public class TelephonyService {
             AÇÃO IMEDIATA NECESSÁRIA!
             """.formatted(alert.alertType(), alert.description(), alert.cameraId());
 
-        // Debug Log (Mock)
-        logMockMessage(targetPhone, messageBody);
+        
+       // logMockMessage(targetPhone, messageBody);
 
-        // 3. Send Real SMS (Twilio)
-        //executeTwilioRequest(targetPhone, messageBody);
-        //sendSmsWithImage(targetPhone, messageBody, alert.snapshotUrl());
+        
+        executeTwilioRequest(targetPhone, messageBody);
+        sendSmsWithImage(targetPhone, messageBody, alert.snapshotUrl());
     }
 
     /**
@@ -136,10 +136,10 @@ public class TelephonyService {
 
         log.info("📸 Sending image MMS to user {} with image: {}", userId, imageUrl);
 
-        // 1. Resolve phone number
+       
         String targetPhone = resolveUserPhoneNumber(userId);
 
-        // 2. Build Twilio message
+       
         try {
             var headers = createTwilioHeaders();
 

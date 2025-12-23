@@ -25,14 +25,14 @@ import org.springframework.security.web.SecurityFilterChain;
 @Slf4j
 @Configuration
 @EnableWebSecurity
-@EnableMethodSecurity // Enables @PreAuthorize support
+@EnableMethodSecurity 
 @RequiredArgsConstructor
 @EnableConfigurationProperties(JwtProperties.class) // Enables the record
 public class SecurityConfig {
 
     private final JwtProperties jwtProperties;
 
-    // List of endpoints that do not require authentication
+    
     private static final String[] PUBLIC_ENDPOINTS = {
         "/v3/api-docs/**",
         "/swagger-ui/**",
@@ -47,22 +47,21 @@ public class SecurityConfig {
         log.info("Initializing Security Filter Chain for Recognition Service...");
 
         http
-            // Disable CSRF as we use stateless JWTs
+           
             .csrf(AbstractHttpConfigurer::disable)
             
             .authorizeHttpRequests(auth -> auth
-                // 1. Allow public endpoints (Swagger)
+           
                 .requestMatchers(PUBLIC_ENDPOINTS).permitAll()
                 
-                // 2. Block everything else.
-                // This ensures internal calls (e.g., /recognition/simulate) must carry a valid JWT.
+           
                 .anyRequest().authenticated()
             )
             
-            // Ensure stateless session management (no JSESSIONID)
+           
             .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             
-            // Configure Resource Server to accept JWTs
+           
             .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()));
 
         return http.build();
@@ -73,7 +72,7 @@ public class SecurityConfig {
      */
     @Bean
     public JwtDecoder jwtDecoder() {
-        // Uses the secret from the type-safe record
+
         byte[] keyBytes = jwtProperties.secret().getBytes();
         SecretKey originalKey = new SecretKeySpec(keyBytes, 0, keyBytes.length, "HmacSHA256");
         

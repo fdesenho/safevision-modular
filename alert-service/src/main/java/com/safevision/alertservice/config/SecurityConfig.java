@@ -38,7 +38,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Configuration
 @EnableWebSecurity
-@EnableMethodSecurity // Enables @PreAuthorize support at method level
+@EnableMethodSecurity 
 @RequiredArgsConstructor
 @EnableConfigurationProperties(JwtProperties.class)
 public class SecurityConfig {
@@ -53,7 +53,7 @@ public class SecurityConfig {
         "/v3/api-docs/**",
         "/swagger-ui/**",
         "/swagger-ui.html",
-        "/actuator/**", // Health checks
+        "/actuator/**", 
         "/ws/**",
         "/alert/ws/**"
     };
@@ -70,23 +70,15 @@ public class SecurityConfig {
         log.info("🔒 Initializing Security Filter Chain for Alert Service...");
 
         http
-            // 1. Disable CSRF (Not needed for stateless APIs)
+            
             .csrf(AbstractHttpConfigurer::disable)
-            
-            // 2. Enable CORS (Cross-Origin Resource Sharing)
-            // This is required because the Gateway/Frontend runs on a different port/origin logic
             .cors(AbstractHttpConfigurer::disable)
-            
-            // 3. Configure Stateless Session
             .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-            
-            // 4. Define Route Authorization
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers(PUBLIC_ENDPOINTS).permitAll() // Allow Handshake
-                .anyRequest().authenticated()                  // All other API calls need JWT
+                .requestMatchers(PUBLIC_ENDPOINTS).permitAll() 
+                .anyRequest().authenticated()                  
             )
             
-            // 5. Configure OAuth2 Resource Server (JWT)
             .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()));
 
         return http.build();
@@ -100,16 +92,16 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         
-        // Allow all origins (In production, replace "*" with specific Gateway URL)
+
         configuration.setAllowedOriginPatterns(List.of("*")); 
         
-        // Allow standard HTTP methods
+
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
         
-        // Allow all headers (Authorization, Content-Type, etc.)
+
         configuration.setAllowedHeaders(List.of("*"));
         
-        // Critical for WebSocket: Allow credentials (cookies/auth headers)
+
         configuration.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();

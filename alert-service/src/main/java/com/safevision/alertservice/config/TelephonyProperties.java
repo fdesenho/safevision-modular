@@ -11,6 +11,6 @@ public record TelephonyProperties(
     String accountSid,
     String authToken,
     String fromNumber,
-    String toNumber, // Fallback number
+    String toNumber, 
     String baseUrl
 ) {}

@@ -49,7 +49,7 @@ public class FeignGlobalConfig {
                 log.warn("Internal JWT Secret is missing! Service-to-Service calls may fail with 401.");
             }
 
-            // Using trace/debug level to avoid leaking sensitive data in production logs
+           
             log.trace("Injecting internal authentication header for request to: {}", template.url());
 
             template.header(INTERNAL_AUTH_HEADER, secretKey);

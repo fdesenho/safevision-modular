@@ -36,11 +36,10 @@ public class TrackingWorkflowFacade {
 
         log.debug("🔄 Starting workflow for Detection ID: {}", event.toString());
 
-        // Step 1: Record state history (Required for time-based rules like Loitering)
+        
         movementHistoryService.recordEvent(event);
 
-        // Step 2: Execute the Threat Analysis Engine (The "Brain")
-        // This checks all rules (Weapon, Stare, Loitering) and triggers alerts if necessary.
+        
         threatAnalysisService.analyze(event);
         
         log.trace("✅ Workflow completed for Detection ID: {}", event.detectionId());

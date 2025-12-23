@@ -90,12 +90,11 @@ public class AuthController {
     }
     @GetMapping("/camera-url")
     public ResponseEntity<Map<String, String>> getCameraUrl(Authentication authentication) {
-        // O Spring injeta o usuário logado automaticamente no objeto 'authentication'
+        
         String username = authentication.getName();
         
         String url = authenticationService.getUserCameraUrl(username);
         
-        // Retorna um JSON simples: { "cameraUrl": "http://..." }
         return ResponseEntity.ok(Map.of("cameraUrl", url != null ? url : ""));
     }
     

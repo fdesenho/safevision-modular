@@ -32,7 +32,7 @@ public class SecurityConfig {
 
     private final JwtProperties jwtProperties;
 
-    // List of public endpoints (Whitelist)
+    
     private static final String[] PUBLIC_ENDPOINTS = {
         "/swagger-ui.html",
         "/swagger-ui/**",
@@ -40,9 +40,9 @@ public class SecurityConfig {
         "/swagger-resources/**",
         "/auth/login",
         "/auth/register",
-        "/alert/event", // Allow internal/machine event push
+        "/alert/event", 
         "/alert/ws/**",
-        "/actuator/**", // Health checks
+        "/actuator/**", 
         "/ws/**",
         "/alert/ws/**"
     };
@@ -55,21 +55,21 @@ public class SecurityConfig {
         log.info("Initializing Reactive Security Filter Chain for Gateway...");
 
         http
-            // Enable CORS (Cross-Origin Resource Sharing) using global config
+            
             .cors(Customizer.withDefaults())
             
-            // Disable CSRF (Stateful protection not needed for stateless REST APIs)
+            
             .csrf(ServerHttpSecurity.CsrfSpec::disable)
             
             .authorizeExchange(exchanges -> exchanges
-                // 1. Allow whitelisted endpoints
+            
                 .pathMatchers(PUBLIC_ENDPOINTS).permitAll()
                 
-                // 2. Require authentication for everything else
+            
                 .anyExchange().authenticated()
             )
             
-            // Validate JWT Tokens (Resource Server)
+            
             .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()));
 
         return http.build();

@@ -36,7 +36,7 @@ public class SecurityConfig {
 
     private final JwtProperties jwtProperties;
 
-    // Removemos a linha 'private final SecretKey key;' pois ela não era um Bean.
+    
 
     private static final String[] PUBLIC_ENDPOINTS = {
         "/auth/login",
@@ -59,8 +59,7 @@ public class SecurityConfig {
             .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()))
             
-            // 🔥 CORREÇÃO: Usamos jwtProperties.secret() diretamente
-            // Isso passa a String "404E63..." para o filtro comparar
+            
             .addFilterBefore(
                 new InternalKeyFilter(jwtProperties.secret()), 
                 UsernamePasswordAuthenticationFilter.class
@@ -71,7 +70,7 @@ public class SecurityConfig {
 
     @Bean
     public JwtDecoder jwtDecoder() {
-        // Aqui criamos a chave manualmente apenas para o Decoder, sem precisar injetar de fora
+        
         byte[] keyBytes = jwtProperties.secret().getBytes();
         SecretKey originalKey = new SecretKeySpec(keyBytes, 0, keyBytes.length, "HmacSHA256");
         return NimbusJwtDecoder.withSecretKey(originalKey).build();

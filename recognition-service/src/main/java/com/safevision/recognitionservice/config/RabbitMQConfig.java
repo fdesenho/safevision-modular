@@ -21,9 +21,6 @@ public class RabbitMQConfig {
 
     private final RabbitQueueProperties queueProperties;
 
-    // -----------------------------------------------------------------------
-    // STRING BEANS (For usage in @RabbitListener via SpEL)
-    // -----------------------------------------------------------------------
 
     /**
      * Exposes the raw tracking queue name as a String Bean.
@@ -43,9 +40,7 @@ public class RabbitMQConfig {
         return queueProperties.alerts();
     }
 
-    // -----------------------------------------------------------------------
-    // INFRASTRUCTURE BEANS (Physical Queues)
-    // -----------------------------------------------------------------------
+
 
     /**
      * Declares the Raw Tracking Queue (Input).

@@ -29,7 +29,7 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 @RestController
-@RequestMapping("/alert") // Matches Gateway route predicate
+@RequestMapping("/alert")
 @RequiredArgsConstructor
 public class AlertController {
 

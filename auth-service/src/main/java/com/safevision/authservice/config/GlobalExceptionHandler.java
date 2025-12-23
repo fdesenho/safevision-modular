@@ -37,7 +37,7 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler({AuthenticationException.class, UsernameNotFoundException.class})
     public ResponseEntity<ErrorResponse> handleAuthException(Exception ex) {
-        // We log the specific error for debugging, but return a generic message to the user for security.
+       
         log.warn("⛔ Authentication Failed: {}", ex.getMessage());
 
         return ResponseEntity

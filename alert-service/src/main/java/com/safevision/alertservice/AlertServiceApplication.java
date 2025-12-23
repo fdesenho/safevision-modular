@@ -20,10 +20,7 @@ public class AlertServiceApplication {
         log.info("🚀 Alert Service started successfully!");
     }
 
-    /**
-     * Bean para comunicação HTTP síncrona.
-     * Utilizado pelo TelephonyService para conectar na Twilio.
-     */
+   
     @Bean
     public RestTemplate restTemplate() {
         return new RestTemplate();

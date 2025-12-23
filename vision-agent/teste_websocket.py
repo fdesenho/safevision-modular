@@ -16,7 +16,11 @@ payload = {
     "weaponType": "TESTE_WEBSOCKET",
     "weaponLocation": "Simulacao Manual",
     # URL de uma imagem que sabemos que funciona (do seu teste anterior)
-    "snapshotUrl": "http://192.168.112.1:9000/safevision-evidence/safe_1765430275_fa74f8.jpg"
+    "snapshotUrl": "http://192.168.112.1:9000/safevision-evidence/safe_1765430275_fa74f8.jpg",
+    
+    # 📍 Coordenadas de Florianópolis, SC, Brasil
+    "latitude": -27.5969, 
+    "longitude": -48.5495
 }
 
 print("🚀 Enviando simulação de arma para o RabbitMQ...")
@@ -32,8 +36,9 @@ try:
     elif hasattr(client, 'connection') and client.connection:
         client.connection.close()
         
-    print("✅ Mensagem enviada para a fila 'vision_events'!")
-    print("👀 OLHE PARA O SEU DASHBOARD AGORA (Pop-up deve aparecer).")
+    print(f"✅ Mensagem enviada para a fila 'vision_events'!")
+    print(f"📍 GPS enviado: Lat {payload['latitude']}, Lon {payload['longitude']}")
+    print("👀 OLHE PARA O SEU DASHBOARD AGORA (Pop-up deve aparecer com endereço).")
     
 except Exception as e:
     print(f"❌ Erro ao conectar no RabbitMQ: {e}")
