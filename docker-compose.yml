@@ -161,6 +161,22 @@ services:
     networks:
       - safevision-net
 
+  # 🟢 NOVO: Serviço Dedicado para Testes
+  vision-tests:
+    build: ./vision-agent  # Usa a mesma imagem/Dockerfile do agente!
+    container_name: vision-tests
+    volumes:
+      - ./vision-agent:/app # Mapeia o código local para dentro (Hot Reload)
+    environment:
+      <<: [*common-env, *python-opts] # Importante para manter compatibilidade
+      RABBITMQ_HOST: rabbitmq # Necessário se o teste integrar com fila
+    # Sobrescreve o comando de iniciar o app para rodar os testes
+    command: pytest -v 
+    depends_on:
+      - rabbitmq
+    networks:
+      - safevision-net
+
   auth-service:
     build: ./auth-service
     container_name: auth-service

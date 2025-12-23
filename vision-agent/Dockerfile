@@ -16,13 +16,12 @@ RUN apt-get update && apt-get install -y \
     ffmpeg \
     && rm -rf /var/lib/apt/lists/*
 
-# 2. Dependências Python (O PULO DO GATO ESTÁ AQUI)
-# Removemos qualquer protobuf existente e instalamos a versão 3.20.3
-# Essa versão é o "ponto de paz" entre o YOLO e o MediaPipe
+# 2. Dependências Python
+# Removemos conflito do protobuf (hack para MediaPipe + YOLO conviverem)
 RUN pip uninstall -y protobuf && \
     pip install --no-cache-dir protobuf==3.20.3
 
-# Instala o MediaPipe e as outras libs
+# Instala o MediaPipe, libs do sistema e DE TESTE
 RUN pip install --no-cache-dir \
     mediapipe==0.10.9 \
     pika \
@@ -31,10 +30,14 @@ RUN pip install --no-cache-dir \
     minio \
     requests \
     pyserial \
-    pynmea2
+    pynmea2 \
+    pytest \
+    pytest-mock
 
 # 3. Cópia dos Arquivos
 COPY . .
 
-# 4. Comando de Execução
-ENTRYPOINT ["python", "main.py"]
+# 4. Comando de Execução (MUDANÇA AQUI)
+# Usamos CMD em vez de ENTRYPOINT para permitir sobrescrita
+# Ex: docker-compose run --rm vision-tests
+CMD ["python", "main.py"]
