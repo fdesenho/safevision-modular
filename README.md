@@ -11,6 +11,7 @@
 [![Docker](https://img.shields.io/badge/Docker-Compose-2496ED?style=flat-square&logo=docker)](https://www.docker.com/)
 [![Architecture](https://img.shields.io/badge/Architecture-Docs-blueviolet?style=flat-square)](docs/adr/README.md)
 [![Project Status](https://img.shields.io/badge/Status-Phase_1:_Stabilization-2ea44f?style=flat-square)](https://github.com/users/fdesenho/projects/1)
+[![Testing Strategy](https://img.shields.io/badge/Testing_Strategy-Documentation-2ea44f?style=flat-square&logo=junit5)](TESTING.md)
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](LICENSE)
 
 ---
@@ -20,6 +21,57 @@
 O **SafeVision** é uma resposta de engenharia ao problema de latência em segurança pública. Em vez de transmitir streams pesados para a nuvem, movemos a inteligência para a borda (**Edge AI**).
 
 O sistema processa vídeo localmente (YOLOv8/MediaPipe), detecta ameaças em milissegundos e transmite apenas metadados e evidências criptografadas, garantindo eficiência de banda e resposta em tempo real.
+
+### Principais Funcionalidades
+* 🔫 **Detecção de Armas:** Identificação em tempo real de armas de fogo e armas brancas.
+* 👁️ **Análise Comportamental:** Detecção de "Stare" (olhar fixo persistente) e Loitering.
+* 📍 **Geolocalização:** Rastreamento GPS sincronizado com o evento de alerta.
+* ⚡ **Alertas Instantâneos:** Notificações via WebSocket (Dashboard), Telegram, SMS (Twilio) e E-mail.
+* 🛡️ **Evidência Segura:** Armazenamento de snapshots criptografados via Object Storage (MinIO).
+
+---
+
+## 🚀 Como Rodar o Projeto (Quick Start)
+
+Este projeto utiliza **Docker Compose** para orquestrar todos os microsserviços, banco de dados e frontend.
+
+### Pré-requisitos
+* [Docker](https://www.docker.com/products/docker-desktop) & Docker Compose instalados.
+* [Java JDK 21](https://adoptium.net/) (Opcional, apenas para desenvolvimento local fora do Docker).
+* 4GB de RAM livre (mínimo recomendado para subir a stack completa).
+
+### Passo a Passo
+
+1.  **Clone o repositório:**
+    ```bash
+    git clone [https://github.com/fdesenho/safevision-modular.git](https://github.com/fdesenho/safevision-modular.git)
+    cd safevision-modular
+    ```
+
+2.  **Configuração de Ambiente:**
+    Crie o arquivo `.env` na raiz baseado no exemplo (segredos não são versionados):
+    ```bash
+    cp .env.example .env
+    ```
+
+3.  **Build e Execução (Modo Infra + Apps):**
+    O comando abaixo irá compilar os JARs (via multi-stage build), construir as imagens e subir os containers.
+    ```bash
+    docker-compose up -d --build
+    ```
+    > *Nota: A primeira execução pode demorar alguns minutos para baixar as dependências do Maven e as imagens do YOLO.*
+
+4.  **Verifique os Serviços:**
+    Aguarde até que todos os containers estejam com status `Healthy`. Acesse os serviços principais:
+
+    | Serviço | URL de Acesso | Credenciais Padrão (Dev) |
+    | :--- | :--- | :--- |
+    | **Frontend Dashboard** | [http://localhost:4200](http://localhost:4200) | `admin` / `admin` |
+    | **API Gateway** | [http://localhost:8080](http://localhost:8080) | - |
+    | **Eureka Discovery** | [http://localhost:8761](http://localhost:8761) | - |
+    | **RabbitMQ Admin** | [http://localhost:15672](http://localhost:15672) | `guest` / `guest` |
+    | **MinIO Console** | [http://localhost:9001](http://localhost:9001) | `minioadmin` / `minioadmin` |
+    | **Zipkin Tracing** | [http://localhost:9411](http://localhost:9411) | - |
 
 ---
 
@@ -237,7 +289,7 @@ graph TD
 
     %% === AJUSTE DE LINKS (Layout) ===
     linkStyle 7,8,9 stroke:#663399,stroke-width:1px,stroke-dasharray: 4 2;
-```
+ ```
 
 ---
 
