@@ -1,8 +1,3 @@
----
-
-### ARQUIVO 2: `ROADMAP.md`
-
-```markdown
 # 🗺️ SafeVision Product Roadmap
 
 Este documento delineia a visão estratégica para a evolução do SafeVision, transformando-o de um protótipo funcional em uma plataforma de segurança pública de nível industrial.
@@ -22,8 +17,12 @@ Este documento delineia a visão estratégica para a evolução do SafeVision, t
 ---
 
 ## 🏗️ Fase 2: Otimização de Infraestrutura (Curto Prazo)
-**Foco:** Escalabilidade, CI/CD e preparação para deploy em ambientes hostis (Edge real).
+**Foco:** Segurança "Enterprise", Escalabilidade e preparação para ambientes hostis (Edge real).
 
+- [ ] **Gestão de Segredos (Secret Management):**
+    - Migrar configurações sensíveis (`.env`) para **Spring Cloud Vault**.
+    - Centralizar credenciais de Banco de Dados, RabbitMQ e Tokens (Twilio/Telegram).
+    - Implementar rotação de segredos e auditoria de acesso.
 - [ ] **Migração para Kubernetes:**
     - Criar manifestos Helm Charts para deploy em clusters K8s.
     - Adaptar o Vision Agent para rodar em **K3s** ou **MicroK8s** (Edge Computing).
