@@ -114,15 +114,15 @@ O desenvolvimento do SafeVision segue uma estratégia de evolução incremental,
 ### ✅ Fase 1: Estabilização (MVP)
 > **Status:** Parcialmente Concluído. Foco na entrega do Core Value e validação empírica da baixa latência.
 
-| Tarefa (Issue) | Prioridade | Status | Racional Técnico & ADR Link |
-| :--- | :---: | :---: | :--- |
-| **Core Architecture** | 🔥 Critical | ✅ Done | [ADR-001](docs/adr/001-microservices-architecture.md) - Fundação para escala independente. |
-| **Edge AI (YOLOv8)** | 🔥 Critical | ✅ Done | [ADR-002](docs/adr/002-edge-computing-strategy.md) - Processamento local (Edge First). |
-| **Async Comm (RabbitMQ)** | 🔥 Critical | ✅ Done | [ADR-003](docs/adr/003-async-communication-rabbitmq.md) - Desacoplamento e resiliência. |
-| **Frontend Dashboard** | 🟡 Medium | ✅ Done | [ADR-009](docs/adr/009-frontend-framework-angular.md) - Dashboard reativo com Angular 21. |
-| **Tests Coverage (80%)** | 🔥 Critical | 🚧 Doing | [ADR-010](docs/adr/010-testing-strategy-junit.md) - Qualidade via Testcontainers. |
-| **Performance Benchmark** | 🔥 Critical | 📅 Todo | [ADR-018](docs/adr/018-performance-benchmarking-strategy.md) - Validação de latência Cloud vs Edge. |
-| **API Docs (Swagger)** | 🟡 Medium | 📅 Todo | [ADR-011](docs/adr/011-api-documentation-openapi.md) - Contrato oficial OpenAPI 3.0. |
+| Tarefa (Issue) | Prioridade | Status | Data / Deadline | Racional Técnico & ADR Link |
+| :--- | :---: | :---: | :---: | :--- |
+| **Core Architecture** | 🔥 Critical | ✅ Done | **30/08/2025** | [ADR-001](docs/adr/001-microservices-architecture.md) - Fundação para escala independente. |
+| **Edge AI (YOLOv8)** | 🔥 Critical | ✅ Done | **15/09/2025** | [ADR-002](docs/adr/002-edge-computing-strategy.md) - Processamento local (Edge First). |
+| **Async Comm (RabbitMQ)** | 🔥 Critical | ✅ Done | **30/09/2025** | [ADR-003](docs/adr/003-async-communication-rabbitmq.md) - Desacoplamento e resiliência. |
+| **Frontend Dashboard** | 🟡 Medium | ✅ Done | **20/10/2025** | [ADR-009](docs/adr/009-frontend-framework-angular.md) - Dashboard reativo com Angular 21. |
+| **Tests Coverage (80%)** | 🔥 Critical | 🚧 Doing | **15/01/2026** | [ADR-010](docs/adr/010-testing-strategy-junit.md) - Qualidade via Testcontainers. |
+| **Performance Benchmark** | 🔥 Critical | 📅 Todo | **20/01/2026** | [ADR-018](docs/adr/018-performance-benchmarking-strategy.md) - Validação de latência Cloud vs Edge. |
+| **API Docs (Swagger)** | 🟡 Medium | 📅 Todo | **30/01/2026** | [ADR-011](docs/adr/011-api-documentation-openapi.md) - Contrato oficial OpenAPI 3.0. |
 
 ### 🏗️ Fase 2: Otimização de Infraestrutura
 > **Status:** Planejado. Transformação do MVP em um sistema resiliente, seguro e orquestrado.

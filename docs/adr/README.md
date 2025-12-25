@@ -34,6 +34,8 @@ As decisões estão organizadas por domínios técnicos para facilitar a navega�
 | [ADR-005](005-orchestration-k8s-k3s.md) | Orquestração Híbrida com K8s e K3s | 19/08/2025 | 📅 Planejado |
 | [ADR-012](012-cicd-pipeline-github-actions.md) | Pipeline de CI/CD com GitHub Actions | 23/08/2025 | ✅ Aceito |
 | [ADR-014](014-5g-integration-and-network-slicing.md) | Integração 5G e Network Slicing | 26/08/2025 | ✅ Aceito |
+| [ADR-019](019-chaos-engineering-strategy.md) | Estratégia de Chaos Engineering e Resiliência | 29/08/2025 | ✅ Aceito |
+| [ADR-020](020-devsecops-hardening-strategy.md) | Estratégia de DevSecOps e Hardening | 30/08/2025 | ✅ Aceito |
 
 ### 📊 5. Dados, Qualidade e Observabilidade
 | ID | Título | Data | Status |
@@ -42,6 +44,8 @@ As decisões estão organizadas por domínios técnicos para facilitar a navega�
 | [ADR-007](007-observability-stack.md) | Stack de Observabilidade (Prometheus/Loki/Grafana) | 19/08/2025 | 📅 Planejado |
 | [ADR-010](010-testing-strategy-junit.md) | Estratégia de Testes Automatizados e Qualidade | 21/08/2025 | ✅ Aceito |
 | [ADR-015](015-safevision-analytics-bi-architecture.md) | Arquitetura de SafeVision Analytics (BI) | 27/08/2025 | ✅ Aceito |
+| [ADR-018](018-performance-benchmarking-strategy.md) | Estratégia de Benchmarking de Performance | 28/08/2025 | ✅ Aceito |
+| [ADR-021](021-privacy-compliance-lgpd.md) | Conformidade com Privacidade (LGPD) e Ética | 31/08/2025 | ✅ Aceito |
 
 ---
 
