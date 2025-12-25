@@ -1,67 +1,63 @@
 # 🗺️ SafeVision Product Roadmap
 
-Este documento delineia a visão estratégica para a evolução do SafeVision, transformando-o de um protótipo funcional em uma plataforma de segurança pública de nível industrial.
+Este documento delineia a visão estratégica para a evolução do **SafeVision**, transformando-o de um protótipo funcional em uma plataforma de segurança pública de nível industrial, focada em baixa latência, resiliência e governança ética.
+
+> **Governança Técnica:** Todas as decisões marcadas com `[ADR-XXX]` possuem documentação detalhada no diretório `docs/adr/`, garantindo a rastreabilidade de cada escolha arquitetural.
 
 ---
 
 ## ✅ Fase 1: Estabilização (Atual / MVP)
-**Foco:** Garantir a robustez das funcionalidades principais e a confiabilidade da detecção.
+**Foco:** Garantir a robustez das funcionalidades principais e a validação empírica da baixa latência.
 
-- [x] **Core Architecture:** Implementação dos microsserviços (Auth, Alert, Recognition) e Gateway.
-- [x] **Edge AI:** Integração do YOLOv8 e MediaPipe para detecção de armas e análise de olhar.
-- [x] **Comunicação Assíncrona:** Pipeline completo via RabbitMQ.
-- [x] **Frontend Dashboard:** Visualização em tempo real, mapas e histórico de alertas.
-- [ ] **Cobertura de Testes:** Aumentar cobertura de testes unitários (JUnit/Mockito) para 80%.
-- [ ] **Documentação API:** Finalizar documentação Swagger/OpenAPI para todos os serviços.
+- [x] **Core Architecture:** Implementação de microsserviços e API Gateway distribuído. **[[ADR-001](docs/adr/001-microservices-architecture.md)]**
+- [x] **Edge AI Optimization:** Detecção de armas e análise comportamental local (Edge First). **[[ADR-002](docs/adr/002-edge-computing-strategy.md)]**
+- [x] **Comunicação Assíncrona:** Pipeline de eventos resiliente via RabbitMQ. **[[ADR-003](docs/adr/003-async-communication-rabbitmq.md)]**
+- [x] **Frontend Dashboard:** Interface reativa para monitoramento em tempo real. **[[ADR-009](docs/adr/009-frontend-framework-angular.md)]**
+- [ ] **Performance Benchmark:** Relatório comparativo de latência Cloud vs Edge para validação de KPI. **[[ADR-018](docs/adr/018-performance-benchmarking-strategy.md)]**
+- [ ] **Cobertura de Testes:** Elevar para 80% com JUnit 5 e Testcontainers. **[[ADR-010](docs/adr/010-testing-strategy-junit.md)]**
+- [ ] **Documentação API:** Contrato oficial via OpenAPI 3.0 / Swagger. **[[ADR-011](docs/adr/011-api-documentation-openapi.md)]**
 
 ---
 
 ## 🏗️ Fase 2: Otimização de Infraestrutura (Curto Prazo)
-**Foco:** Segurança "Enterprise", Escalabilidade e preparação para ambientes hostis (Edge real).
+**Foco:** Segurança "Enterprise Ready", Resiliência ao Caos e Orquestração Híbrida.
 
-- [ ] **Gestão de Segredos (Secret Management):**
-    - Migrar configurações sensíveis (`.env`) para **Spring Cloud Vault**.
-    - Centralizar credenciais de Banco de Dados, RabbitMQ e Tokens (Twilio/Telegram).
-    - Implementar rotação de segredos e auditoria de acesso.
-- [ ] **Migração para Kubernetes:**
-    - Criar manifestos Helm Charts para deploy em clusters K8s.
-    - Adaptar o Vision Agent para rodar em **K3s** ou **MicroK8s** (Edge Computing).
-- [ ] **Pipeline CI/CD:**
-    - Implementar GitHub Actions para build, teste e push automático de imagens Docker.
-    - Análise estática de código (SonarQube).
-- [ ] **Caching Distribuído:**
-    - Implementar **Redis** para cache de tokens JWT no Gateway e estados temporários no Recognition Service.
-- [ ] **Monitoramento Avançado:**
-    - Substituir logs básicos por stack ELK (Elasticsearch, Logstash, Kibana) ou Prometheus + Grafana.
+- [ ] **Gestão de Segredos (Vault):** Migração de segredos para HashiCorp Vault. **[[ADR-004](docs/adr/004-secret-management-vault.md)]**
+- [ ] **Pipeline CI/CD:** Automação completa de build/deploy via GitHub Actions. **[[ADR-012](docs/adr/012-cicd-pipeline-github-actions.md)]**
+- [ ] **Chaos Engineering:** Injeção de falhas controladas para validar failover e resiliência. **[[ADR-019](docs/adr/019-chaos-engineering-strategy.md)]**
+- [ ] **Hardening & DevSecOps:** Scans de vulnerabilidades (Trivy) e análise estática. **[[ADR-020](docs/adr/020-devsecops-hardening-strategy.md)]**
+- [ ] **Migração para Kubernetes:** Orquestração híbrida (K8s Cloud / K3s Edge). **[[ADR-005](docs/adr/005-orchestration-k8s-k3s.md)]**
+- [ ] **Monitoramento Avançado:** Stack de observabilidade total (Prometheus/Loki/Grafana). **[[ADR-007](docs/adr/007-observability-stack.md)]**
+- [ ] **Caching Distribuído:** Implementação de Redis para dados quentes e sessões. **[[ADR-006](docs/adr/006-distributed-caching-redis.md)]**
 
 ---
 
 ## 📱 Fase 3: Expansão de Recursos (Médio Prazo)
-**Foco:** Melhorar a experiência do oficial em campo e a capacidade de detecção.
+**Foco:** Mobilidade operacional e hardware especializado para oficiais em campo.
 
-- [ ] **App Mobile (Officer Companion):**
-    - Aplicativo (Flutter/React Native) para que oficiais próximos recebam alertas geolocalizados.
-    - Botão de pânico físico integrado ao hardware.
-- [ ] **Integração 5G & Network Slicing:**
-    - Otimização do protocolo de transmissão para redes 5G, garantindo QoS prioritário para alertas críticos.
-- [ ] **Visão Computacional Avançada:**
-    - Suporte a câmeras térmicas/infravermelho para operação noturna.
-    - Detecção de quedas (Man Down) usando análise de pose.
-    - Reconhecimento facial (opcional/configurável para listas de procurados).
+- [ ] **App Mobile (Officer Companion):** Aplicação Flutter para alertas geolocalizados. **[[ADR-008](docs/adr/008-mobile-framework-flutter.md)]**
+- [ ] **Integração 5G & Network Slicing:** QoS prioritário para alertas críticos. **[[ADR-014](docs/adr/014-5g-integration-and-network-slicing.md)]**
+- [ ] **Visão Computacional Avançada:** Suporte térmico e detecção postural (Man-down). **[[ADR-013](docs/adr/013-advanced-computer-vision-strategy.md)]**
 
 ---
 
 ## 📊 Fase 4: Intelligence & Analytics (Longo Prazo)
-**Foco:** Transformar dados históricos em inteligência preventiva.
+**Foco:** Inteligência preventiva, busca semântica e governança ética de dados.
 
-- [ ] **SafeVision Analytics:**
-    - Módulo de Business Intelligence para análise de tendências de criminalidade.
-    - Mapas de calor (Heatmaps) baseados em ocorrências históricas.
-- [ ] **Análise Forense:**
-    - Ferramentas para busca inteligente em vídeos armazenados (ex: "buscar pessoa com camisa vermelha").
-- [ ] **Federação de Dados:**
-    - Capacidade de interligar múltiplas instâncias do SafeVision (bairros/cidades diferentes).
+- [ ] **SafeVision Analytics:** Dashboards de BI para análise de manchas criminais. **[[ADR-015](docs/adr/015-safevision-analytics-bi-architecture.md)]**
+- [ ] **Análise Forense:** Busca vetorial semântica em vídeos históricos (pgvector). **[[ADR-016](docs/adr/016-semantic-video-forensic-search.md)]**
+- [ ] **Federação de Dados:** Arquitetura multi-tenant para interligar agências. **[[ADR-017](docs/adr/017-multi-tenant-data-federation.md)]**
+- [ ] **Privacy & LGPD Compliance:** Anonimização automática (blurring) e governança ética. **[[ADR-021](docs/adr/021-privacy-compliance-lgpd.md)]**
 
 ---
 
-> *Este roadmap é um documento vivo e pode evoluir com base no feedback da comunidade e avanços tecnológicos.*
+## 📈 Indicadores de Sucesso (KPIs)
+
+Para validar a evolução deste roadmap, o projeto monitora:
+1. **Latência de Alerta:** Tempo < 500ms entre detecção física e alerta no Dashboard.
+2. **Taxa de Resiliência:** Capacidade de processamento local durante 100% da queda de link externo.
+3. **Segurança:** Zero vulnerabilidades críticas em scans automatizados de imagens Docker.
+
+---
+
+> *Este roadmap é um documento vivo e evolui conforme as necessidades de segurança pública e os avanços em Edge AI.*

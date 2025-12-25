@@ -77,65 +77,84 @@ Este projeto utiliza **Docker Compose** para orquestrar todos os microsserviços
 
 ## 📐 Architecture Decision Records (ADR)
 
-Seguindo as boas práticas de arquitetura de software, todas as decisões estruturantes do projeto estão documentadas. Isso garante histórico, contexto e justificativa técnica para cada escolha.
+Seguindo as boas práticas de arquitetura de software, todas as decisões estruturantes do projeto estão documentadas. Isso garante o histórico, o contexto e a justificativa técnica para cada escolha de engenharia.
 
-> **[📂 Acessar Diretório de Documentação](docs/adr/README.md)**
+> **[📂 Acessar Diretório de Documentação Completo](docs/adr/README.md)**
 
 | ID | Decisão Arquitetural | Status | Contexto / Racional |
 | :--- | :--- | :---: | :--- |
 | [ADR-001](docs/adr/001-microservices-architecture.md) | **Microservices Architecture** | ✅ Aceito | Desacoplamento do *Core* (Java) e *Edge AI* (Python) para escala independente. |
-| [ADR-002](docs/adr/002-edge-computing-strategy.md) | **Edge Computing First** | ✅ Aceito | Processamento na origem para eliminar latência de rede e reduzir custos de banda 4G/5G. |
-| [ADR-003](docs/adr/003-async-communication-rabbitmq.md) | **Async Communication (RabbitMQ)** | ✅ Aceito | Garantia de entrega de alertas e resiliência em caso de falha de rede temporária. |
-| [ADR-004](docs/adr/004-secret-management-vault.md) | **Secret Management (Vault)** | 📅 Planejado | (Fase 2) Centralização de segredos e rotação automática para segurança Zero Trust. |
-| [ADR-005](docs/adr/005-orchestration-k8s-k3s.md) | **Orchestration (K8s & K3s)** | 📅 Planejado | (Fase 2) Gerenciamento unificado de containers na Cloud (K8s) e nos dispositivos Edge (K3s). |
-| [ADR-006](docs/adr/006-distributed-caching-redis.md) | **Distributed Caching (Redis)** | 📅 Planejado | (Fase 2) Otimização de performance para dados de sessão e configurações quentes. |
-| [ADR-007](docs/adr/007-observability-stack.md) | **Observability Stack (PLG)** | 📅 Planejado | (Fase 2) Adoção de Prometheus, Loki e Grafana para monitoramento integral. |
-| [ADR-008](docs/adr/008-mobile-framework-flutter.md) | **Mobile Framework (Flutter)** | 🔮 Futuro | (Fase 3) Desenvolvimento do *Officer Companion App* com base de código única (Android/iOS). |
+| [ADR-002](docs/adr/002-edge-computing-strategy.md) | **Edge Computing First** | ✅ Aceito | Processamento na origem para eliminar latência e reduzir custos de banda 4G/5G. |
+| [ADR-003](docs/adr/003-async-communication-rabbitmq.md) | **Async Communication** | ✅ Aceito | Garantia de entrega de alertas e resiliência via RabbitMQ. |
+| [ADR-004](docs/adr/004-secret-management-vault.md) | **Secret Management (Vault)** | 📅 Plan | (Fase 2) Centralização de segredos e segurança Zero Trust via HashiCorp Vault. |
+| [ADR-005](docs/adr/005-orchestration-k8s-k3s.md) | **Orchestration (K8s & K3s)** | 📅 Plan | (Fase 2) Gestão unificada de containers na Cloud (K8s) e dispositivos Edge (K3s). |
+| [ADR-006](docs/adr/006-distributed-caching-redis.md) | **Distributed Caching (Redis)** | 📅 Plan | (Fase 2) Otimização de performance para dados de sessão e estados globais. |
+| [ADR-007](docs/adr/007-observability-stack.md) | **Observability Stack (PLG)** | 📅 Plan | (Fase 2) Monitoramento integral com Prometheus, Loki e Grafana. |
+| [ADR-008](docs/adr/008-mobile-framework-flutter.md) | **Mobile Framework (Flutter)** | 🔮 Futuro | (Fase 3) App multi-plataforma para oficiais em campo com base de código única. |
+| [ADR-009](docs/adr/009-frontend-framework-angular.md) | **Frontend Framework** | ✅ Aceito | Dashboard reativo com Angular 21 + RxJS para alta densidade de eventos. |
+| [ADR-010](docs/adr/010-testing-strategy-junit.md) | **Testing Strategy** | ✅ Aceito | Qualidade via JUnit 5 e Testcontainers para validação de integração real. |
+| [ADR-011](docs/adr/011-api-documentation-openapi.md) | **API Documentation** | ✅ Aceito | Contrato oficial via OpenAPI 3.0 para integração consistente Front/Back/Mobile. |
+| [ADR-012](docs/adr/012-cicd-pipeline-github-actions.md) | **CI/CD Pipeline** | ✅ Aceito | Automação de build, teste e publicação de imagens via GitHub Actions. |
+| [ADR-013](docs/adr/013-advanced-computer-vision-strategy.md) | **Advanced AI Strategy** | ✅ Aceito | Visão térmica e Man-down utilizando modelos de Pose Estimation (YOLOv8). |
+| [ADR-014](docs/adr/014-5g-integration-and-network-slicing.md) | **5G & Network Slicing** | ✅ Aceito | Garantia de banda e latência mínima para tráfego de missão crítica. |
+| [ADR-015](docs/adr/015-safevision-analytics-bi-architecture.md) | **Analytics (BI)** | ✅ Aceito | Arquitetura Medallion para inteligência de dados e policiamento preditivo. |
+| [ADR-016](docs/adr/016-semantic-video-forensic-search.md) | **Forensic Search** | ✅ Aceito | Busca vetorial semântica em storage (pgvector) para celeridade investigativa. |
+| [ADR-017](docs/adr/017-multi-tenant-data-federation.md) | **Multi-tenancy & Federation** | ✅ Aceito | Isolamento lógico rigoroso e cooperação federada entre agências. |
+| [ADR-018](docs/adr/018-performance-benchmarking-strategy.md) | **Performance Benchmarking** | ✅ Aceito | Validação empírica da redução de latência Cloud vs Edge. |
+| [ADR-019](docs/adr/019-chaos-engineering-strategy.md) | **Chaos Engineering** | ✅ Aceito | Testes de resiliência e failover através de injeção de falhas controladas. |
+| [ADR-020](docs/adr/020-devsecops-hardening-strategy.md) | **DevSecOps & Hardening** | ✅ Aceito | Segurança da cadeia de suprimentos de software e scan de vulnerabilidades. |
+| [ADR-021](docs/adr/021-privacy-compliance-lgpd.md) | **Privacy & Ethics (LGPD)** | ✅ Aceito | Governança ética de dados e anonimização de imagens sensíveis. |
 
 ---
 
 ## 🗺️ Roadmap Estratégico & Sprint Planning
 
-O projeto segue um ciclo de vida iterativo. Abaixo, o status detalhado das fases de desenvolvimento, alinhado com o [Board do Projeto](https://github.com/users/fdesenho/projects/1).
+O desenvolvimento do SafeVision segue uma estratégia de evolução incremental, onde cada marco técnico é suportado por uma decisão arquitetural documentada e focado na validação de KPIs críticos.
 
 ### ✅ Fase 1: Estabilização (MVP)
-> **Status:** Parcialmente Concluído. Foco na redução de débito técnico e estabilidade do Core.
+> **Status:** Parcialmente Concluído. Foco na entrega do Core Value e validação empírica da baixa latência.
 
-| Tarefa (Issue) | Prioridade | Deadline | Status |
-| :--- | :---: | :---: | :---: |
-| **Core Architecture (Microservices)**<br>Discovery, Gateway, Auth | 🔥 Critical | 30/10/2025 | ✅ Done |
-| **Edge AI (YOLOv8 Integration)**<br>Detecção local de objetos | 🔥 Critical | 20/11/2025 | ✅ Done |
-| **Comunicação Assíncrona (RabbitMQ)**<br>Pipeline de eventos | 🔥 Critical | 05/12/2025 | ✅ Done |
-| **Frontend Dashboard**<br>Monitoramento em tempo real (Angular) | 🟡 Medium | 20/12/2025 | ✅ Done |
-| **Cobertura de Testes (80%)**<br>Unitários e Integração (JUnit 5) | 🔥 Critical | 20/01/2026 | 🚧 Doing |
-| **Documentação API (Swagger)**<br>OpenAPI 3.0 para consumo externo | 🟡 Medium | 30/01/2026 | 📅 Todo |
+| Tarefa (Issue) | Prioridade | Status | Racional Técnico & ADR Link |
+| :--- | :---: | :---: | :--- |
+| **Core Architecture** | 🔥 Critical | ✅ Done | [ADR-001](docs/adr/001-microservices-architecture.md) - Fundação para escala independente. |
+| **Edge AI (YOLOv8)** | 🔥 Critical | ✅ Done | [ADR-002](docs/adr/002-edge-computing-strategy.md) - Processamento local (Edge First). |
+| **Async Comm (RabbitMQ)** | 🔥 Critical | ✅ Done | [ADR-003](docs/adr/003-async-communication-rabbitmq.md) - Desacoplamento e resiliência. |
+| **Frontend Dashboard** | 🟡 Medium | ✅ Done | [ADR-009](docs/adr/009-frontend-framework-angular.md) - Dashboard reativo com Angular 21. |
+| **Tests Coverage (80%)** | 🔥 Critical | 🚧 Doing | [ADR-010](docs/adr/010-testing-strategy-junit.md) - Qualidade via Testcontainers. |
+| **Performance Benchmark** | 🔥 Critical | 📅 Todo | [ADR-018](docs/adr/018-performance-benchmarking-strategy.md) - Validação de latência Cloud vs Edge. |
+| **API Docs (Swagger)** | 🟡 Medium | 📅 Todo | [ADR-011](docs/adr/011-api-documentation-openapi.md) - Contrato oficial OpenAPI 3.0. |
 
 ### 🏗️ Fase 2: Otimização de Infraestrutura
-> **Status:** Planejado. Transformação do MVP em produto "Enterprise Ready".
+> **Status:** Planejado. Transformação do MVP em um sistema resiliente, seguro e orquestrado.
 
-| Tarefa (Issue) | Deadline | Racional Técnico (Linked ADR) |
+| Tarefa (Issue) | Deadline | Racional Técnico & ADR Link |
 | :--- | :---: | :--- |
-| **Gestão de Segredos (Vault)** | 14/02/2026 | Implementação conforme [ADR-004](docs/adr/004-secret-management-vault.md). |
-| **Pipeline CI/CD (GitHub Actions)** | 28/02/2026 | Automação do ciclo de build/deploy para suportar releases frequentes. |
-| **Migração para Kubernetes** | 25/03/2026 | Orquestração Híbrida conforme [ADR-005](docs/adr/005-orchestration-k8s-k3s.md). |
-| **Monitoramento Avançado (PLG)** | 10/04/2026 | Observabilidade total conforme [ADR-007](docs/adr/007-observability-stack.md). |
-| **Caching Distribuído (Redis)** | 20/04/2026 | Otimização de leitura conforme [ADR-006](docs/adr/006-distributed-caching-redis.md). |
+| **Gestão de Segredos** | 14/02/2026 | [ADR-004](docs/adr/004-secret-management-vault.md) - Vault para segurança Zero Trust. |
+| **Pipeline CI/CD** | 28/02/2026 | [ADR-012](docs/adr/012-cicd-pipeline-github-actions.md) - Automação total via GitHub Actions. |
+| **Chaos Engineering** | 15/03/2026 | [ADR-019](docs/adr/019-chaos-engineering-strategy.md) - Testes de resiliência e injeção de falhas. |
+| **Hardening & DevSecOps** | 30/03/2026 | [ADR-020](docs/adr/020-devsecops-hardening-strategy.md) - Scan de imagens e análise estática. |
+| **Migração Kubernetes** | 25/03/2026 | [ADR-005](docs/adr/005-orchestration-k8s-k3s.md) - Orquestração Híbrida (K8s/K3s). |
+| **Monitoramento (PLG)** | 10/04/2026 | [ADR-007](docs/adr/007-observability-stack.md) - Observabilidade total (Grafana Stack). |
+| **Caching (Redis)** | 20/04/2026 | [ADR-006](docs/adr/006-distributed-caching-redis.md) - Alta performance para dados quentes. |
 
 ### 📱 Fase 3: Expansão de Recursos
-> **Status:** Backlog. Foco na experiência do oficial em campo e hardware.
+> **Status:** Backlog. Foco na mobilidade operacional e hardware de visão avançada.
 
-| Tarefa (Issue) | Previsão | Escopo |
+| Tarefa (Issue) | Previsão | Escopo & ADR Link |
 | :--- | :---: | :--- |
-| **App Mobile (Officer Companion)** | Jun/2026 | App Flutter conforme [ADR-008](docs/adr/008-mobile-framework-flutter.md). |
-| **Visão Computacional Avançada** | Jun/2026 | Detecção Térmica e "Man-down" (queda do oficial). Paralelo ao Mobile. |
-| **Integração 5G & Network Slicing** | Jul/2026 | Otimização de QoS de rede para cenários de alta densidade. |
+| **App Mobile** | Jun/2026 | [ADR-008](docs/adr/008-mobile-framework-flutter.md) - Companion App para oficiais. |
+| **Visão Avançada** | Jun/2026 | [ADR-013](docs/adr/013-advanced-computer-vision-strategy.md) - Térmica e Pose Estimation. |
+| **Integração 5G** | Jul/2026 | [ADR-014](docs/adr/014-5g-integration-and-network-slicing.md) - QoS via Network Slicing. |
 
 ### 📊 Fase 4: Intelligence & Analytics
-> **Status:** Visão de Longo Prazo. Monetização de dados.
+> **Status:** Visão de Longo Prazo. Foco em inteligência preditiva e governança ética de dados.
 
-* 📅 **Ago/2026:** SafeVision Analytics (BI) - Dashboards gerenciais.
-* 📅 **Set/2026:** Análise Forense de Vídeo - Busca semântica em storage (MinIO).
-* 📅 **Out/2026:** Federação de Dados - Arquitetura multi-tenant.
+| Tarefa (Issue) | Previsão | Racional Estratégico & ADR Link |
+| :--- | :---: | :--- |
+| **SafeVision Analytics** | Ago/2026 | [ADR-015](docs/adr/015-safevision-analytics-bi-architecture.md) - Dashboards BI (Medallion Arch). |
+| **Análise Forense** | Set/2026 | [ADR-016](docs/adr/016-semantic-video-forensic-search.md) - Busca vetorial semântica. |
+| **Federação de Dados** | Out/2026 | [ADR-017](docs/adr/017-multi-tenant-data-federation.md) - Arquitetura multi-tenant federada. |
+| **Privacy & LGPD** | Nov/2026 | [ADR-021](docs/adr/021-privacy-compliance-lgpd.md) - Anonimização ética e proteção de dados. |
 
 ---
 
