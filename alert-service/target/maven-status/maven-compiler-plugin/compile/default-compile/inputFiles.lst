@@ -13,6 +13,7 @@ C:\Users\work\eclipse-workspace\safevision-modular\alert-service\src\main\java\c
 C:\Users\work\eclipse-workspace\safevision-modular\alert-service\src\main\java\com\safevision\alertservice\dto\AlertEventDTO.java
 C:\Users\work\eclipse-workspace\safevision-modular\alert-service\src\main\java\com\safevision\alertservice\dto\AlertResponse.java
 C:\Users\work\eclipse-workspace\safevision-modular\alert-service\src\main\java\com\safevision\alertservice\dto\UserContactDTO.java
+C:\Users\work\eclipse-workspace\safevision-modular\alert-service\src\main\java\com\safevision\alertservice\integration\AlertIntegrationTest.java
 C:\Users\work\eclipse-workspace\safevision-modular\alert-service\src\main\java\com\safevision\alertservice\listener\AlertListener.java
 C:\Users\work\eclipse-workspace\safevision-modular\alert-service\src\main\java\com\safevision\alertservice\model\Alert.java
 C:\Users\work\eclipse-workspace\safevision-modular\alert-service\src\main\java\com\safevision\alertservice\repository\AlertRepository.java

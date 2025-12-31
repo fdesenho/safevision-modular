@@ -44,7 +44,9 @@ public class SecurityConfig {
         "/alert/ws/**",
         "/actuator/**", 
         "/ws/**",
-        "/alert/ws/**"
+        "/alert/ws/**",
+        "/webjars/**",
+        "/aggregate/**"
     };
 
     /**

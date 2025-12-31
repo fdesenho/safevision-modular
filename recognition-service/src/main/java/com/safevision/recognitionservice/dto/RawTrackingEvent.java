@@ -1,56 +1,53 @@
 package com.safevision.recognitionservice.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.math.BigDecimal;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
-/**
- * Data Transfer Object (DTO) representing the raw telemetry received from the Vision Agent.
- * <p>
- * This Java Record serves as an immutable carrier for the data coming from RabbitMQ.
- * It includes behavioral analysis, threat detection, and geolocation metadata.
- * </p>
- *
- * @param detectionId    Unique UUID for the detection session.
- * @param timestamp      Unix timestamp of capture.
- * @param cameraId       Identifier of the recording device.
- * @param userId         The user associated with the device.
- * @param isFacingCamera Behavioral flag: is the subject looking at the lens?
- * @param gazeDirection  Estimated direction of gaze.
- * @param depthPosition  Proximity score.
- * @param hasWeapon      Threat flag: was a weapon detected?
- * @param weaponType     Classification of the weapon (e.g., KNIFE).
- * @param weaponLocation Relative location of the weapon (e.g., HAND).
- * @param snapshotUrl    MinIO URL for the evidence image.
- * @param latitude       GPS Latitude (nullable if no signal).
- * @param longitude      GPS Longitude (nullable if no signal).
- */
+@Schema(description = "Raw telemetry from the Vision Agent (Edge Computing)")
 @JsonIgnoreProperties(ignoreUnknown = true)
 public record RawTrackingEvent(
+    @Schema(description = "Unique ID for the AI detection session")
     String detectionId,
+    
+    @Schema(description = "Unix timestamp of the capture")
     long timestamp,
+    
+    @Schema(description = "Hardware ID of the camera")
     String cameraId,
+    
+    @Schema(description = "Owner of the monitoring device")
     String userId,
+    
+    @Schema(description = "True if subject is staring at the camera lens")
     boolean isFacingCamera,
+    
+    @Schema(description = "Estimated eye-gaze direction", example = "LEFT")
     String gazeDirection,
+    
+    @Schema(description = "Proximity index (0-100)")
     int depthPosition,
+    
+    @Schema(description = "Threat flag: Weapon detection status")
     boolean hasWeapon,
+    
+    @Schema(description = "Type of weapon if detected", example = "FIREARM")
     String weaponType,
+    
+    @Schema(description = "Weapon placement relative to the body", example = "RIGHT_HAND")
     String weaponLocation,
+    
+    @Schema(description = "Evidence image URL")
     String snapshotUrl,
+    
+    @Schema(description = "Edge GPS Latitude")
     BigDecimal latitude,
+    
+    @Schema(description = "Edge GPS Longitude")
     BigDecimal longitude
 ) {
-    /**
-     * Validation constructor.
-     * Ensures critical identity fields are present.
-     */
     public RawTrackingEvent {
-        if (detectionId == null || detectionId.isBlank()) {
-            throw new IllegalArgumentException("Detection ID cannot be null");
-        }
-        if (userId == null || userId.isBlank()) {
-            throw new IllegalArgumentException("User ID cannot be null");
-        }
+        if (detectionId == null || detectionId.isBlank()) throw new IllegalArgumentException("Detection ID cannot be null");
+        if (userId == null || userId.isBlank()) throw new IllegalArgumentException("User ID cannot be null");
     }
 }
