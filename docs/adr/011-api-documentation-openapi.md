@@ -39,3 +39,20 @@ Para viabilizar a agregação, foi decidido flexibilizar as regras de segurança
 * **URL Central:** `http://localhost:8080/swagger-ui.html`
 * **Padrão de Agregação:** Configurado via `springdoc.swagger-ui.urls` no `application.yml` do Gateway.
 * **Governança Frontend:** Dashboard disponível via `npm run doc:generate`.
+### Negativas
+* **Sobrecarga de Manutenção:** Exige disciplina contínua para manter anotações de código e esquemas de dados sincronizados com a evolução da API.
+
+## 📊 Estimativa de Esforço e Custos (Referência: Fabio Desenho)
+**Taxa Horária:** $60.00/h (Especialista em Eng. de Software)
+
+| Atividade | Estimativa (h) | Custo ($) |
+| :--- | :---: | :---: |
+| Configuração springdoc (Java 21) | 2h | $120.00 |
+| Instrumentação de Controllers | 4h | $240.00 |
+| Documentação de Schemas DTO | 4h | $240.00 |
+| Validação e Testes (Swagger) | 2h | $120.00 |
+| **TOTAL** | **12h** | **$720.00** |
+
+**Notas de Governança:**
+- **Estimated execution:** 12h
+- **Actual execution:** 5h 
