@@ -1,37 +1,29 @@
 package com.safevision.authservice.dto;
 
-import java.util.Set;
-
-/**
- * Data Transfer Object (DTO) for User Registration.
- * <p>
- * Defines the contract for the incoming JSON payload when creating a new account.
- * It leverages Java Records for immutability and concise syntax.
- * </p>
- *
- * @param username    The unique identifier for login.
- * @param password    The raw password (will be encrypted by the service).
- * @param email       The contact email for notifications and recovery.
- * @param phoneNumber The mobile number formatted for SMS alerts (Twilio, e.g., +55...).
- * @param cameraUrl   The connection string (RTSP/HTTP) for the Vision Agent.
- * @param roles       The set of permissions (e.g., "ADMIN", "USER"). Can be null (defaults to USER).
- */
-
-
 import com.safevision.common.enums.AlertType;
-
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.Set;
 
-/**
- * RegisterRequest record - immutable DTO for registration payload.
- */
+@Schema(description = "User registration request payload")
 public record RegisterRequest(
+    @Schema(required = true, example = "fdesenho")
     String username,
+    
+    @Schema(required = true, example = "strongpassword123")
     String password,
+    
+    @Schema(required = true, example = "fabio@safevision.com")
     String email,
+    
+    @Schema(example = "+5548991234567")
     String phoneNumber,
+    
+    @Schema(description = "The streaming URL for the vision agent", example = "rtsp://admin:123@192.168.1.50:554")
     String cameraUrl,
+    
+    @Schema(description = "Requested roles (Admin approval may be required)")
     Set<String> roles,
+    
+    @Schema(description = "Initial alert notification types")
     Set<AlertType> alertTypes  
 ) {}
-

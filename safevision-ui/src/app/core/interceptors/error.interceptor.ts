@@ -1,54 +1,58 @@
 import { HttpErrorResponse, HttpInterceptorFn } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { catchError, throwError } from 'rxjs';
-// Importa o SnackBar do Material diretamente
 import { MatSnackBar } from '@angular/material/snack-bar';
 
+/**
+ * Global HTTP Error Interceptor.
+ * Captures all failed requests and displays a Material SnackBar notification.
+ * Handles specific status codes to provide contextual feedback.
+ */
 export const errorInterceptor: HttpInterceptorFn = (req, next) => {
-  // Injeta o componente de notificação do Material
   const snackBar = inject(MatSnackBar);
 
   return next(req).pipe(
     catchError((error: HttpErrorResponse) => {
-      let errorMessage = 'Ocorreu um erro desconhecido.';
+      let errorMessage = 'An unknown error occurred.';
 
-      // Lógica de identificação do erro
-	  if (typeof ErrorEvent !== 'undefined' && error.error instanceof ErrorEvent) {
-          
-          errorMessage = `Erro: ${error.error.message}`;
+      if (error.error instanceof ErrorEvent) {
+        // Client-side or network error
+        errorMessage = `Client Error: ${error.error.message}`;
       } else {
-        // Erro do lado do servidor
+        // Server-side error codes logic
         switch (error.status) {
           case 0:
-            errorMessage = 'Servidor indisponível. Verifique sua conexão.';
+            errorMessage = 'Server is unreachable. Please check your connection.';
             break;
           case 400:
-            errorMessage = error.error?.error || 'Dados inválidos.';
+            errorMessage = error.error?.message || 'Invalid data provided.';
             break;
           case 401:
-            errorMessage = 'Sessão expirada. Faça login novamente.';
+            // 401 is handled by AuthInterceptor for redirects, 
+            // but we define the message here for consistency.
+            errorMessage = 'Session expired. Please login again.';
             break;
           case 403:
-            errorMessage = 'Acesso negado.';
+            errorMessage = 'Access denied. You do not have permission.';
             break;
           case 404:
-            errorMessage = 'Recurso não encontrado.';
+            errorMessage = 'The requested resource was not found.';
             break;
           case 500:
-            errorMessage = 'Erro interno no servidor.';
+            errorMessage = 'Internal server error. Please try again later.';
             break;
           default:
-            errorMessage = `Erro (${error.status}): ${error.statusText}`;
+            errorMessage = `Error (${error.status}): ${error.statusText}`;
         }
       }
 
-      // Exibe o SnackBar se não for um erro de sessão (o AuthInterceptor já trata redirects)
+      // Display notification if it's not a session expiration (handled by AuthInterceptor)
       if (error.status !== 401) {
-        snackBar.open(errorMessage, 'FECHAR', {
+        snackBar.open(errorMessage, 'CLOSE', {
           duration: 5000,
           horizontalPosition: 'right',
           verticalPosition: 'top',
-          panelClass: ['snackbar-error'] // Usa a classe vermelha definida no styles.scss
+          panelClass: ['snackbar-error']
         });
       }
 

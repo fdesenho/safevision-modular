@@ -1,121 +1,76 @@
 package com.safevision.alertservice.controller;
 
-import java.util.List;
-
+import com.safevision.alertservice.dto.AlertEventDTO;
+import com.safevision.alertservice.dto.AlertResponse;
+import com.safevision.alertservice.service.AlertService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import com.safevision.alertservice.dto.AlertEventDTO;
-import com.safevision.alertservice.dto.AlertResponse;
-import com.safevision.alertservice.service.AlertService;
+import java.util.List;
 
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-
-/**
- * REST Controller for managing Alerts.
- * Exposed via API Gateway.
- * Handles both machine-generated events (fallback/testing) and user interactions.
- */
 @Slf4j
 @RestController
 @RequestMapping("/alert")
 @RequiredArgsConstructor
+@Tag(name = "Alert Management", description = "Endpoints for managing security alerts and notification history")
 public class AlertController {
 
     private final AlertService alertService;
 
-    /**
-     * Endpoint for internal services or testing tools to push alerts via HTTP.
-     * Note: In production, the primary flow is asynchronous via RabbitMQ.
-     *
-     * @param event The alert data.
-     * @return 201 Created if successful, 400 Bad Request if invalid.
-     */
+    @Operation(summary = "Push HTTP Event", description = "Manual entry point for alert events (Fallback for RabbitMQ).")
     @PostMapping("/event")
     public ResponseEntity<Void> receiveEvent(@RequestBody AlertEventDTO event) {
-        log.debug("Received HTTP alert event request: {}", event);
-
         if (isValidEvent(event)) {
-            log.warn("Rejected invalid HTTP alert event: Missing required fields.");
             return ResponseEntity.badRequest().build();
         }
-
         alertService.createAlert(event);
-        log.info("Alert created successfully via HTTP for user: {}", event.userId());
-
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    /**
-     * Retrieves alerts for the authenticated user.
-     *
-     * @param authentication The security context token.
-     * @param unreadOnly     Query param to filter only unread alerts.
-     * @return List of alerts.
-     */
+    @Operation(summary = "List User Alerts", description = "Retrieves all security alerts for the currently authenticated user.")
     @GetMapping("/user/{username}")
     public ResponseEntity<List<AlertResponse>> getMyAlerts(
-            Authentication authentication,
-            @RequestParam(defaultValue = "false") boolean unreadOnly) {
-
+            @Parameter(hidden = true) Authentication authentication,
+            @Parameter(description = "Filter only unread alerts") @RequestParam(defaultValue = "false") boolean unreadOnly) {
         var userId = authentication.getName();
-        log.debug("Fetching alerts for user: {} [UnreadOnly: {}]", userId, unreadOnly);
-
-        var alerts = alertService.getUserAlerts(userId, unreadOnly);
-
-        return ResponseEntity.ok(alerts);
+        return ResponseEntity.ok(alertService.getUserAlerts(userId, unreadOnly));
     }
 
-    /**
-     * Marks a specific alert as acknowledged (read).
-     *
-     * @param id             The Alert UUID.
-     * @param authentication The security context token.
-     * @return 204 No Content if successful, 404 if not found or unauthorized.
-     */
+    @Operation(summary = "Acknowledge Alert", description = "Marks a specific alert as read/resolved.")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "204", description = "Alert acknowledged"),
+        @ApiResponse(responseCode = "404", description = "Alert not found or unauthorized")
+    })
     @PatchMapping("/{id}/ack")
     public ResponseEntity<Void> acknowledgeAlert(
             @PathVariable String id,
-            Authentication authentication) {
-
+            @Parameter(hidden = true) Authentication authentication) {
         var userId = authentication.getName();
-        log.debug("Request to acknowledge alert ID: {} by user: {}", id, userId);
-
-        boolean success = alertService.acknowledgeAlert(id, userId);
-
-        if (success) {
-            log.info("Alert {} acknowledged by user {}", id, userId);
-            return ResponseEntity.noContent().build();
-        } else {
-            log.warn("Failed to acknowledge alert {}. Not found or permission denied.", id);
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
+        return alertService.acknowledgeAlert(id, userId) 
+                ? ResponseEntity.noContent().build() 
+                : ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
-    /**
-     * Helper method to validate the incoming event DTO.
-     */
-    private boolean isValidEvent(AlertEventDTO event) {
-        return event == null || event.userId() == null || event.alertType() == null;
-    }
-    
+    @Operation(summary = "Get Alert History", description = "Paginated history of security events for a user.")
     @GetMapping("/history/{userId}")
     public ResponseEntity<Page<AlertResponse>> getHistory(
             @PathVariable String userId,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size
-    ) {
+            @RequestParam(defaultValue = "10") int size) {
         return ResponseEntity.ok(alertService.getUserAlertsPaginated(userId, page, size));
+    }
+
+    private boolean isValidEvent(AlertEventDTO event) {
+        return event == null || event.userId() == null || event.alertType() == null;
     }
 }

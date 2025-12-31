@@ -1,25 +1,44 @@
-# ADR 011: Documentação API-First com OpenAPI/Swagger
+# ADR 011: Governança de APIs e Documentação Centralizada (OpenAPI/Swagger)
 
-* **Status:** Aceito
-* **Data:** 2025-12-25
+* **Status:** Implementado
+* **Data:** 2025-12-31 (Atualizado)
 * **Decisores:** Fabio Desenho (Software Architect), Integration Lead
+* **Issue Vinculada:** #11
 
-## Contexto e Problema
-O SafeVision possui múltiplos consumidores (Frontend Web, futuro App Mobile e integrações externas). A ausência de um contrato formal de API gera:
-1. **Desalinhamento entre Times:** Premissas conflitantes sobre payloads de entrada e saída.
-2. **Onboarding Lento:** Dificuldade para novos desenvolvedores compreenderem os recursos disponíveis nos microsserviços.
-3. **Inconsistência de Interface:** Endpoints com diferentes padrões de nomenclatura e tratamento de erros.
+## 1. Contexto e Problema
+O SafeVision opera numa arquitetura de microsserviços distribuídos com múltiplos consumidores (Frontend Angular, Mobile e Integrações). A ausência de contratos formais e centralizados gera:
+1.  **Fragmentação de Conhecimento:** Desenvolvedores precisam conhecer a URL e porta específica de cada serviço para consultar sua API.
+2.  **Problemas de CORS:** O consumo direto das APIs dos microsserviços pelo Frontend (para documentação) viola as políticas de *Same-Origin*, exigindo configurações de segurança frágeis.
+3.  **Desalinhamento Frontend-Backend:** Risco de *drift* (divergência) entre os DTOs Java e as Interfaces TypeScript.
 
-## Decisão
-Adotar a especificação **OpenAPI 3.0** como a "Única Fonte de Verdade" para as interfaces de comunicação REST.
-* **Ferramenta:** Uso de **SpringDoc OpenAPI** para geração dinâmica de documentação e exposição via Swagger UI.
-* **Abordagem:** *Contract-First* para novos recursos, garantindo que o design da API preceda a implementação.
+## 2. Decisão Arquitetural
+Adotar a especificação **OpenAPI 3.0** como a "Única Fonte de Verdade", implementada através do padrão **API Gateway Aggregation**.
 
-## Consequências
-### Positivas
-* **Interatividade:** Possibilidade de testar endpoints e fluxos de dados em tempo real via Swagger UI sem ferramentas externas.
-* **Produtividade:** Permite a geração automática de clientes (SDKs) para o frontend Angular e futuro aplicativo Flutter.
+### 2.1. Componentes da Solução
+* **Backend (Microserviços):** Uso de `springdoc-openapi-starter-webmvc-ui` para expor os contratos JSON (`/v3/api-docs`) em cada serviço de domínio (Auth, Alert, Recognition).
+* **Edge (API Gateway):** Configuração do Spring Cloud Gateway como **Agregador de Documentação**. O Gateway centraliza a interface visual (Swagger UI) e roteia as chamadas para os JSONs dos serviços internos via Service Discovery (Eureka).
+* **Frontend (Angular):** Adoção de **Compodoc/TSDoc** para governança de código e espelhamento estrito dos DTOs do Backend nas Interfaces TypeScript.
 
+### 2.2. Estratégia de Segurança e CORS
+Para viabilizar a agregação, foi decidido flexibilizar as regras de segurança especificamente para rotas de metadados, mantendo a proteção nos endpoints de negócio:
+* **Gateway (WebFlux):** Configuração global de CORS (`CorsGlobalConfig`) permitindo origens controladas e liberação de rotas `/aggregate/**` e `/webjars/**` no `SecurityWebFilterChain`.
+* **Serviços (MVC):** Liberação dos endpoints `/v3/api-docs` na `SecurityFilterChain` para permitir que o Gateway consuma os contratos sem necessidade de token de serviço.
+
+## 3. Consequências
+
+### ✅ Positivas
+* **Ponto Único de Acesso:** Desenvolvedores acessam `gateway:8080/swagger-ui.html` e navegam por todos os serviços via menu *dropdown*, sem precisar saber portas internas.
+* **Rastreabilidade End-to-End:** O fluxo `Controller Java (Swagger) -> Gateway (Aggregator) -> Frontend (TSDoc)` garante que a mudança em um DTO seja visível em toda a cadeia.
+* **Isolamento de Segurança:** O Frontend interage apenas com o Gateway, simplificando a gestão de certificados e tokens JWT.
+
+### ⚠️ Negativas / Riscos Mitigados
+* **Complexidade de Dependências:** Exige gerenciamento cuidadoso no Maven (`dependencyManagement`) para evitar conflitos entre bibliotecas Reativas (Gateway/Netty) e Imperativas (Serviços/Tomcat).
+* **Exposição de Metadados:** As rotas de documentação são públicas. Em ambiente produtivo, deve-se avaliar o bloqueio externo dessas rotas via Firewall ou perfil de Spring (`@Profile("!prod")`).
+
+## 4. Referências Técnicas
+* **URL Central:** `http://localhost:8080/swagger-ui.html`
+* **Padrão de Agregação:** Configurado via `springdoc.swagger-ui.urls` no `application.yml` do Gateway.
+* **Governança Frontend:** Dashboard disponível via `npm run doc:generate`.
 ### Negativas
 * **Sobrecarga de Manutenção:** Exige disciplina contínua para manter anotações de código e esquemas de dados sincronizados com a evolução da API.
 
@@ -36,4 +55,4 @@ Adotar a especificação **OpenAPI 3.0** como a "Única Fonte de Verdade" para a
 
 **Notas de Governança:**
 - **Estimated execution:** 12h
-- **Actual execution:** 0h (Aguardando implementação)
+- **Actual execution:** 5h 

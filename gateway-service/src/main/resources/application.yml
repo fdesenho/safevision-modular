@@ -19,15 +19,15 @@ spring:
 
       # --- FILTROS PADRÃO (Aplicados a todas as rotas) ---
       default-filters:
-        # 👇 1. LIMPEZA DE CORS DUPLICADO (Novo)
-        # Remove cabeçalhos duplicados vindos dos microsserviços para evitar conflito com sua classe Java
+        # 👇 MANTIDO: Limpeza de CORS Duplicado
+        # Essencial quando você usa SecurityConfig Java + Gateway. 
+        # Ele remove headers vindos dos microserviços (downstream) para garantir que valha APENAS a sua config Java do Gateway.
         - DedupeResponseHeader=Access-Control-Allow-Origin Access-Control-Allow-Credentials, RETAIN_FIRST
         
-        # 👇 2. RETRY (Ajustado)
+        # 👇 2. RETRY
         - name: Retry
           args:
             retries: 3
-            # Sem NOT_FOUND para login rápido
             statuses: BAD_GATEWAY,GATEWAY_TIMEOUT,INTERNAL_SERVER_ERROR,SERVICE_UNAVAILABLE
             methods: GET,POST,PUT,DELETE,PATCH,OPTIONS
             backoff:
@@ -67,7 +67,6 @@ spring:
           filters:
             - RewritePath=/alert/ws/(?<segment>.*), /ws/${segment}
             - SaveSession
-            # Headers essenciais para o Handshake WebSocket passar pelo Gateway
             - SetRequestHeader=Upgrade, websocket
             - SetRequestHeader=Connection, Upgrade
 
@@ -113,6 +112,21 @@ spring:
               args:
                 name: recognitionServiceCircuitBreaker
                 fallbackUri: forward:/fallback
+
+# 👇 Configuração do Menu do Swagger UI (Agregador)
+springdoc:
+  api-docs:
+    enabled: true
+  swagger-ui:
+    enabled: true
+    path: /swagger-ui.html
+    urls:
+      - name: 🔐 Auth Service
+        url: /aggregate/auth-service/v3/api-docs
+      - name: 🚨 Alert Service
+        url: /aggregate/alert-service/v3/api-docs
+      - name: 👁️ Recognition Service
+        url: /aggregate/recognition-service/v3/api-docs
 
 eureka:
   client:

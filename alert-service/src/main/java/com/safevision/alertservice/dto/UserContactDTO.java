@@ -1,20 +1,18 @@
 package com.safevision.alertservice.dto;
 
-/**
- * Data Transfer Object (DTO) representing User Contact Information.
- * <p>
- * This record is used to transport user details (specifically contact info like phone and email)
- * fetched from the **Auth Service** to be used by the **Alert Service** for notifications (Twilio/Email).
- * </p>
- *
- * @param id          The unique UUID of the user.
- * @param username    The user's login username.
- * @param phoneNumber The user's mobile number (formatted for Twilio, e.g., +55...).
- * @param email       The user's email address for notifications.
- */
+import io.swagger.v3.oas.annotations.media.Schema;
+
+@Schema(description = "Internal DTO for user contact mapping within the Alert Service")
 public record UserContactDTO(
+    @Schema(description = "Unique identifier of the user", example = "550e8400-e29b-41d4-a716-446655440000")
     String id,
+    
+    @Schema(description = "Username for identifying the notification recipient", example = "johndoe")
     String username,
+    
+    @Schema(description = "E.164 formatted phone number for SMS/Twilio/TELEGRAM", example = "+5548999999999")
     String phoneNumber,
+    
+    @Schema(description = "User's email for alert delivery", example = "john@safevision.com")
     String email
 ) {}
