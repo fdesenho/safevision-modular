@@ -1,0 +1,2023 @@
+<!doctype html>
+<html class="no-js" lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>safevision-ui documentation</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="icon" type="image/x-icon" href="../images/favicon.ico">
+	   <link rel="stylesheet" href="../styles/style.css">
+        <link rel="stylesheet" href="../styles/dark.css">
+    </head>
+    <body>
+          <script>
+               // Blocking script to avoid flickering dark mode
+               // Dark mode toggle button
+               var useDark = window.matchMedia('(prefers-color-scheme: dark)');
+               var darkModeState = useDark.matches;
+               var $darkModeToggleSwitchers = document.querySelectorAll('.dark-mode-switch input');
+               var $darkModeToggles = document.querySelectorAll('.dark-mode-switch');
+               var darkModeStateLocal = localStorage.getItem('compodoc_darkmode-state');
+
+               function checkToggle(check) {
+                    for (var i = 0; i < $darkModeToggleSwitchers.length; i++) {
+                         $darkModeToggleSwitchers[i].checked = check;
+                    }
+               }
+
+               function toggleDarkMode(state) {
+                    if (window.localStorage) {
+                         localStorage.setItem('compodoc_darkmode-state', state);
+                    }
+
+                    checkToggle(state);
+
+                    const hasClass = document.body.classList.contains('dark');
+
+                    if (state) {
+                         for (var i = 0; i < $darkModeToggles.length; i++) {
+                              $darkModeToggles[i].classList.add('dark');
+                         }
+                         if (!hasClass) {
+                              document.body.classList.add('dark');
+                         }
+                    } else {
+                         for (var i = 0; i < $darkModeToggles.length; i++) {
+                              $darkModeToggles[i].classList.remove('dark');
+                         }
+                         if (hasClass) {
+                              document.body.classList.remove('dark');
+                         }
+                    }
+               }
+
+               useDark.addEventListener('change', function (evt) {
+                    toggleDarkMode(evt.matches);
+               });
+               if (darkModeStateLocal) {
+                    darkModeState = darkModeStateLocal === 'true';
+               }
+               toggleDarkMode(darkModeState);
+          </script>
+          <script>
+              // --- Iframe navigation tracking for Template Playground ---
+              function sendCurrentUrlToParent() {
+                  if (window.parent && window.parent !== window) {
+                      window.parent.postMessage({
+                          type: 'compodoc-iframe-navigate',
+                          url: window.location.pathname + window.location.hash
+                      }, '*');
+                  }
+              }
+              window.addEventListener('hashchange', sendCurrentUrlToParent, false);
+              window.addEventListener('popstate', sendCurrentUrlToParent, false);
+              window.addEventListener('DOMContentLoaded', sendCurrentUrlToParent, false);
+          </script>
+
+        <div class="navbar navbar-default navbar-fixed-top d-md-none p-0">
+               <div class="d-flex">
+                    <a href="../" class="navbar-brand">safevision-ui documentation</a>
+                    <button type="button" class="btn btn-default btn-menu ion-ios-menu" id="btn-menu"></button>
+               </div>
+        </div>
+
+        <div class="xs-menu menu" id="mobile-menu">
+                <div id="book-search-input" role="search"><input type="text" placeholder="Type to search"></div>            <compodoc-menu></compodoc-menu>
+        </div>
+
+        <div class="container-fluid main">
+           <div class="row main">
+               <div class="d-none d-md-block menu">
+                   <compodoc-menu mode="normal"></compodoc-menu>
+               </div>
+               <!-- START CONTENT -->
+               <div class="content component">
+                   <div class="content-data">
+
+
+
+
+
+
+
+
+<ol class="breadcrumb">
+  <li class="breadcrumb-item">Components</li>
+  <li class="breadcrumb-item"
+  >
+  DashboardComponent</li>
+</ol>
+
+<ul class="nav nav-tabs" role="tablist">
+        <li class="nav-item">
+            <a href="#info" class="nav-link active"
+                role="tab" id="info-tab" data-bs-toggle="tab" data-link="info">Info</a>
+        </li>
+        <li class="nav-item">
+            <a href="#source" class="nav-link"
+                role="tab" id="source-tab" data-bs-toggle="tab" data-link="source">Source</a>
+        </li>
+        <li class="nav-item">
+            <a href="#templateData" class="nav-link"
+                role="tab" id="templateData-tab" data-bs-toggle="tab" data-link="template">Template</a>
+        </li>
+        <li class="nav-item">
+            <a href="#styleData" class="nav-link"
+                role="tab" id="styleData-tab" data-bs-toggle="tab" data-link="style">Styles</a>
+        </li>
+        <li class="nav-item">
+            <a href="#tree" class="nav-link"
+                role="tab" id="tree-tab" data-bs-toggle="tab" data-link="dom-tree">DOM Tree</a>
+        </li>
+</ul>
+
+<div class="tab-content">
+    <div class="tab-pane fade active in" id="info"><p class="comment">
+    <h3>File</h3>
+</p>
+<p class="comment">
+    <code>src/app/features/dashboard/dashboard.component.ts</code>
+</p>
+
+
+
+
+    <p class="comment">
+        <h3>Implements</h3>
+    </p>
+    <p class="comment">
+                <code>OnInit</code>
+    </p>
+
+
+<section data-compodoc="block-metadata">
+    <h3>Metadata</h3>
+    <table class="table table-sm table-hover metadata">
+        <tbody>
+
+            <tr>
+                <td class="col-md-3">changeDetection</td>
+                <td class="col-md-9"><code>ChangeDetectionStrategy.OnPush</code></td>
+            </tr>
+
+
+
+
+
+
+
+
+
+            <tr>
+                <td class="col-md-3">providers</td>
+                <td class="col-md-9">
+                                <code><a href="../injectables/WebSocketService.html" target="_self" >WebSocketService</a></code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-3">selector</td>
+                <td class="col-md-9"><code>app-dashboard</code></td>
+            </tr>
+
+            <tr>
+                <td class="col-md-3">standalone</td>
+                <td class="col-md-9"><code>true</code></td>
+            </tr>
+
+            <tr>
+                <td class="col-md-3">imports</td>
+                <td class="col-md-9">
+                            <code>CommonModule</code>
+                            <code>MatToolbarModule</code>
+                            <code>MatButtonModule</code>
+                            <code>MatIconModule</code>
+                            <code>MatCardModule</code>
+                            <code>MatProgressSpinnerModule</code>
+                            <code>MatChipsModule</code>
+                            <code>MatTooltipModule</code>
+                                <code><a href="../components/HeaderComponent.html" target="_self" >HeaderComponent</a></code>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="col-md-3">styleUrls</td>
+                <td class="col-md-9"><code>./dashboard.component.scss</code></td>
+            </tr>
+
+
+
+            <tr>
+                <td class="col-md-3">templateUrl</td>
+                <td class="col-md-9"><code>./dashboard.component.html</code></td>
+            </tr>
+
+
+
+
+
+
+
+
+        </tbody>
+    </table>
+</section>
+
+    <section data-compodoc="block-index">
+    <h3 id="index">Index</h3>
+    <table class="table table-sm table-bordered index-table">
+        <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <h6><b>Properties</b></h6>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <ul class="index-list">
+                            <li>
+                                <a href="#alerts" >alerts</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Private</span>
+                                <a href="#alertService" >alertService</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Public</span>
+                                <a href="#auth" >auth</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Private</span>
+                                <a href="#destroyRef" >destroyRef</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Private</span>
+                                <a href="#dialog" >dialog</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Private</span>
+                                <a href="#http" >http</a>
+                            </li>
+                            <li>
+                                <a href="#isCameraActive" >isCameraActive</a>
+                            </li>
+                            <li>
+                                <a href="#isLoading" >isLoading</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Private</span>
+                                <a href="#notifier" >notifier</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Private</span>
+                                <a href="#router" >router</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Private</span>
+                                <a href="#sanitizer" >sanitizer</a>
+                            </li>
+                            <li>
+                                <a href="#videoStreamUrl" >videoStreamUrl</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Private</span>
+                                <a href="#visionService" >visionService</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Private</span>
+                                <a href="#webSocketService" >webSocketService</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="col-md-4">
+                        <h6><b>Methods</b></h6>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <ul class="index-list">
+                            <li>
+                                <a href="#ack" >ack</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Private</span>
+                                <a href="#generateVideoUrl" >generateVideoUrl</a>
+                            </li>
+                            <li>
+                                <a href="#goToHistory" >goToHistory</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Private</span>
+                                <a href="#initWebSocket" >initWebSocket</a>
+                            </li>
+                            <li>
+                                <a href="#loadAlerts" >loadAlerts</a>
+                            </li>
+                            <li>
+                                <a href="#ngOnInit" >ngOnInit</a>
+                            </li>
+                            <li>
+                                <a href="#onVideoError" >onVideoError</a>
+                            </li>
+                            <li>
+                                <a href="#openLocation" >openLocation</a>
+                            </li>
+                            <li>
+                                <a href="#toggleSystem" >toggleSystem</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+
+
+
+
+
+        </tbody>
+    </table>
+</section>
+
+
+
+
+
+
+    <section data-compodoc="block-methods">
+    
+    <h3 id="methods">
+        Methods
+    </h3>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="ack"></a>
+                    <span class="name">
+                        <span ><b>ack</b></span>
+                        <a href="#ack"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>ack(id: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="151"
+                                    class="link-to-prism">src/app/features/dashboard/dashboard.component.ts:151</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>id</td>
+                                            <td>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="generateVideoUrl"></a>
+                    <span class="name">
+                            <span class="modifier">Private</span>
+                        <span ><b>generateVideoUrl</b></span>
+                        <a href="#generateVideoUrl"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>generateVideoUrl(username: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="129"
+                                    class="link-to-prism">src/app/features/dashboard/dashboard.component.ts:129</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>username</td>
+                                            <td>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="goToHistory"></a>
+                    <span class="name">
+                        <span ><b>goToHistory</b></span>
+                        <a href="#goToHistory"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>goToHistory()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="180"
+                                    class="link-to-prism">src/app/features/dashboard/dashboard.component.ts:180</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="initWebSocket"></a>
+                    <span class="name">
+                            <span class="modifier">Private</span>
+                        <span ><b>initWebSocket</b></span>
+                        <a href="#initWebSocket"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>initWebSocket()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="75"
+                                    class="link-to-prism">src/app/features/dashboard/dashboard.component.ts:75</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="loadAlerts"></a>
+                    <span class="name">
+                        <span ><b>loadAlerts</b></span>
+                        <a href="#loadAlerts"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>loadAlerts()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="141"
+                                    class="link-to-prism">src/app/features/dashboard/dashboard.component.ts:141</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="ngOnInit"></a>
+                    <span class="name">
+                        <span ><b>ngOnInit</b></span>
+                        <a href="#ngOnInit"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>ngOnInit()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="70"
+                                    class="link-to-prism">src/app/features/dashboard/dashboard.component.ts:70</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="onVideoError"></a>
+                    <span class="name">
+                        <span ><b>onVideoError</b></span>
+                        <a href="#onVideoError"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>onVideoError()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="134"
+                                    class="link-to-prism">src/app/features/dashboard/dashboard.component.ts:134</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="openLocation"></a>
+                    <span class="name">
+                        <span ><b>openLocation</b></span>
+                        <a href="#openLocation"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>openLocation(alert: <a href="../interfaces/Alert.html" target="_self">Alert</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="159"
+                                    class="link-to-prism">src/app/features/dashboard/dashboard.component.ts:159</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>alert</td>
+                                            <td>
+                                                            <code><a href="../interfaces/Alert.html" target="_self" >Alert</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="toggleSystem"></a>
+                    <span class="name">
+                        <span ><b>toggleSystem</b></span>
+                        <a href="#toggleSystem"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>toggleSystem(turnOn: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/boolean" target="_blank">boolean</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="92"
+                                    class="link-to-prism">src/app/features/dashboard/dashboard.component.ts:92</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>turnOn</td>
+                                            <td>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/boolean" target="_blank" >boolean</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</section>
+    <section data-compodoc="block-properties">
+    
+    <h3 id="inputs">
+        Properties
+    </h3>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="alerts"></a>
+                    <span class="name">
+                        <span ><b>alerts</b></span>
+                        <a href="#alerts"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>unknown</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>signal&lt;Alert[]&gt;([])</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="65" class="link-to-prism">src/app/features/dashboard/dashboard.component.ts:65</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="alertService"></a>
+                    <span class="name">
+                            <span class="modifier">Private</span>
+                        <span ><b>alertService</b></span>
+                        <a href="#alertService"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>unknown</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>inject(AlertService)</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="54" class="link-to-prism">src/app/features/dashboard/dashboard.component.ts:54</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="auth"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>auth</b></span>
+                        <a href="#auth"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>unknown</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>inject(AuthService)</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="53" class="link-to-prism">src/app/features/dashboard/dashboard.component.ts:53</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="destroyRef"></a>
+                    <span class="name">
+                            <span class="modifier">Private</span>
+                        <span ><b>destroyRef</b></span>
+                        <a href="#destroyRef"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>unknown</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>inject(DestroyRef)</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="59" class="link-to-prism">src/app/features/dashboard/dashboard.component.ts:59</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="dialog"></a>
+                    <span class="name">
+                            <span class="modifier">Private</span>
+                        <span ><b>dialog</b></span>
+                        <a href="#dialog"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>unknown</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>inject(MatDialog)</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="61" class="link-to-prism">src/app/features/dashboard/dashboard.component.ts:61</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="http"></a>
+                    <span class="name">
+                            <span class="modifier">Private</span>
+                        <span ><b>http</b></span>
+                        <a href="#http"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>unknown</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>inject(HttpClient)</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="60" class="link-to-prism">src/app/features/dashboard/dashboard.component.ts:60</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="isCameraActive"></a>
+                    <span class="name">
+                        <span ><b>isCameraActive</b></span>
+                        <a href="#isCameraActive"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>unknown</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>signal(false)</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="67" class="link-to-prism">src/app/features/dashboard/dashboard.component.ts:67</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="isLoading"></a>
+                    <span class="name">
+                        <span ><b>isLoading</b></span>
+                        <a href="#isLoading"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>unknown</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>signal(false)</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="66" class="link-to-prism">src/app/features/dashboard/dashboard.component.ts:66</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="notifier"></a>
+                    <span class="name">
+                            <span class="modifier">Private</span>
+                        <span ><b>notifier</b></span>
+                        <a href="#notifier"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>unknown</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>inject(NotificationService)</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="57" class="link-to-prism">src/app/features/dashboard/dashboard.component.ts:57</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="router"></a>
+                    <span class="name">
+                            <span class="modifier">Private</span>
+                        <span ><b>router</b></span>
+                        <a href="#router"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>unknown</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>inject(Router)</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="62" class="link-to-prism">src/app/features/dashboard/dashboard.component.ts:62</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="sanitizer"></a>
+                    <span class="name">
+                            <span class="modifier">Private</span>
+                        <span ><b>sanitizer</b></span>
+                        <a href="#sanitizer"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>unknown</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>inject(DomSanitizer)</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="58" class="link-to-prism">src/app/features/dashboard/dashboard.component.ts:58</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="videoStreamUrl"></a>
+                    <span class="name">
+                        <span ><b>videoStreamUrl</b></span>
+                        <a href="#videoStreamUrl"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>unknown</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>signal&lt;SafeUrl | null&gt;(null)</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="68" class="link-to-prism">src/app/features/dashboard/dashboard.component.ts:68</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="visionService"></a>
+                    <span class="name">
+                            <span class="modifier">Private</span>
+                        <span ><b>visionService</b></span>
+                        <a href="#visionService"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>unknown</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>inject(VisionService)</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="55" class="link-to-prism">src/app/features/dashboard/dashboard.component.ts:55</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="webSocketService"></a>
+                    <span class="name">
+                            <span class="modifier">Private</span>
+                        <span ><b>webSocketService</b></span>
+                        <a href="#webSocketService"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>unknown</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>inject(WebSocketService)</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="56" class="link-to-prism">src/app/features/dashboard/dashboard.component.ts:56</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+</section>
+
+</div>
+
+
+    <div class="tab-pane fade  tab-source-code" id="source">
+        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { Component, inject, OnInit, DestroyRef, signal, ChangeDetectionStrategy } from &#x27;@angular/core&#x27;;
+import { CommonModule } from &#x27;@angular/common&#x27;;
+import { HttpClient } from &#x27;@angular/common/http&#x27;;
+import { takeUntilDestroyed } from &#x27;@angular/core/rxjs-interop&#x27;;
+import { DomSanitizer, SafeUrl } from &#x27;@angular/platform-browser&#x27;;
+import { switchMap, throwError } from &#x27;rxjs&#x27;;
+import { Router } from &#x27;@angular/router&#x27;; // 📍 1. IMPORT NECESSÁRIO
+
+// Services
+import { AlertService } from &#x27;../../core/services/alert.service&#x27;;
+import { AuthService } from &#x27;../../core/services/auth.service&#x27;;
+import { VisionService } from &#x27;../../core/services/vision.service&#x27;;
+import { WebSocketService } from &#x27;../../core/services/websocket.service&#x27;;
+import { NotificationService } from &#x27;../../core/services/notification.service&#x27;;
+import { Alert } from &#x27;../../core/models/app.models&#x27;;
+import { environment } from &#x27;../../../environments/environment&#x27;;
+
+// Material Components
+import { MatToolbarModule } from &#x27;@angular/material/toolbar&#x27;;
+import { MatButtonModule } from &#x27;@angular/material/button&#x27;;
+import { MatIconModule } from &#x27;@angular/material/icon&#x27;;
+import { MatCardModule } from &#x27;@angular/material/card&#x27;;
+import { MatProgressSpinnerModule } from &#x27;@angular/material/progress-spinner&#x27;;
+import { MatChipsModule } from &#x27;@angular/material/chips&#x27;;
+import { MatTooltipModule } from &#x27;@angular/material/tooltip&#x27;;
+import { MatDialog } from &#x27;@angular/material/dialog&#x27;;
+import { MapDialogComponent } from &#x27;../../shared/components/map_dialog/map-dialog.component&#x27;;
+import { HeaderComponent } from &#x27;../../shared/components/header/header.component&#x27;; // 👈 Importar
+
+
+@Component({
+  selector: &#x27;app-dashboard&#x27;,
+  standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [
+    CommonModule,
+    MatToolbarModule,
+    MatButtonModule,
+    MatIconModule,
+    MatCardModule,
+    MatProgressSpinnerModule,
+    MatChipsModule,
+    MatTooltipModule,
+	HeaderComponent
+  ],
+  providers: [WebSocketService],
+  templateUrl: &#x27;./dashboard.component.html&#x27;,
+  styleUrls: [&#x27;./dashboard.component.scss&#x27;]
+})
+export class DashboardComponent implements OnInit {
+
+  // --- INJEÇÃO DE DEPENDÊNCIAS ---
+  public auth &#x3D; inject(AuthService);
+  private alertService &#x3D; inject(AlertService);
+  private visionService &#x3D; inject(VisionService);
+  private webSocketService &#x3D; inject(WebSocketService);
+  private notifier &#x3D; inject(NotificationService);
+  private sanitizer &#x3D; inject(DomSanitizer);
+  private destroyRef &#x3D; inject(DestroyRef);
+  private http &#x3D; inject(HttpClient);
+  private dialog &#x3D; inject(MatDialog);
+  private router &#x3D; inject(Router); // 📍 2. INJEÇÃO QUE FALTAVA
+
+  // --- SIGNALS (ESTADO) ---
+  alerts &#x3D; signal&lt;Alert[]&gt;([]);
+  isLoading &#x3D; signal(false);
+  isCameraActive &#x3D; signal(false);
+  videoStreamUrl &#x3D; signal&lt;SafeUrl | null&gt;(null);
+
+  ngOnInit() {
+    this.loadAlerts();
+    this.initWebSocket();
+  }
+
+  private initWebSocket() {
+    const user &#x3D; this.auth.currentUser();
+    if (!user?.username) return;
+
+    const userTopic &#x3D; &#x60;/topic/alert/${user.username}&#x60;;
+
+    this.webSocketService.watchAlerts(userTopic)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (newAlert: Alert) &#x3D;&gt; {
+          this.alerts.update(list &#x3D;&gt; [newAlert, ...list]);
+          this.notifier.showError(&#x60;Ameaça Detectada: ${newAlert.alertType}&#x60;);
+        },
+        error: (err: any) &#x3D;&gt; console.error(&#x27;WebSocket Error:&#x27;, err)
+      });
+  }
+
+  toggleSystem(turnOn: boolean) {
+    const user &#x3D; this.auth.currentUser();
+    if (!user?.username) return;
+
+    this.isLoading.set(true);
+    let request$;
+
+    if (turnOn) {
+      request$ &#x3D; this.http.get&lt;{ cameraUrl: string }&gt;(&#x60;${environment.apiUrl}/auth/camera-url&#x60;).pipe(
+        switchMap(res &#x3D;&gt; {
+          if (!res.cameraUrl) return throwError(() &#x3D;&gt; new Error(&#x27;NO_CAMERA_URL&#x27;));
+          return this.visionService.startDetection(user.username, res.cameraUrl);
+        })
+      );
+    } else {
+      request$ &#x3D; this.visionService.stopDetection(user.username);
+    }
+
+    request$.subscribe({
+      next: () &#x3D;&gt; {
+        this.isLoading.set(false);
+        this.isCameraActive.set(turnOn);
+        if (turnOn) {
+          this.generateVideoUrl(user.username);
+          this.notifier.showSuccess(&#x27;Monitoramento Ativado&#x27;);
+        } else {
+          this.videoStreamUrl.set(null);
+        }
+      },
+      error: (err) &#x3D;&gt; {
+        this.isLoading.set(false);
+        if (turnOn) this.isCameraActive.set(false);
+        this.notifier.showError(&#x27;Erro ao comunicar com a câmera.&#x27;);
+      }
+    });
+  }
+
+  private generateVideoUrl(username: string) {
+    const rawUrl &#x3D; &#x60;${environment.visionAgentUrl}/video_feed/${username}?t&#x3D;${Date.now()}&#x60;;
+    this.videoStreamUrl.set(this.sanitizer.bypassSecurityTrustUrl(rawUrl));
+  }
+
+  onVideoError() {
+    if (this.isCameraActive()) {
+      this.isCameraActive.set(false);
+      this.notifier.showError(&#x27;Sinal de vídeo perdido.&#x27;);
+    }
+  }
+
+  loadAlerts() {
+    const user &#x3D; this.auth.currentUser();
+    if (user?.username) {
+      this.alertService.getRecentAlerts(user.username).subscribe({
+        next: (data) &#x3D;&gt; this.alerts.set(data),
+        error: (err) &#x3D;&gt; this.notifier.showError(&#x27;Erro ao carregar histórico.&#x27;)
+      });
+    }
+  }
+
+  ack(id: string) {
+    this.alertService.acknowledge(id).subscribe(() &#x3D;&gt; {
+      this.alerts.update(list &#x3D;&gt; list.map(a &#x3D;&gt;
+        a.id &#x3D;&#x3D;&#x3D; id ? { ...a, acknowledged: true } : a
+      ));
+    });
+  }
+
+  openLocation(alert: Alert) {
+    if (!alert.latitude || !alert.longitude) {
+      this.notifier.showError(&#x27;GPS indisponível para este evento.&#x27;);
+      return;
+    }
+
+    this.dialog.open(MapDialogComponent, {
+      width: &#x27;800px&#x27;,
+      maxWidth: &#x27;95vw&#x27;,
+      panelClass: &#x27;glass-dialog&#x27;,
+      data: {
+        lat: alert.latitude,
+        lng: alert.longitude,
+        label: alert.alertType,
+        timestamp: alert.createdAt,
+        address: alert.address
+      }
+    });
+  }
+
+  // 📍 3. AGORA ESTA FUNÇÃO VAI FUNCIONAR
+  goToHistory() {
+    this.router.navigate([&#x27;/history&#x27;]);
+  }
+}
+</code></pre>
+    </div>
+
+    <div class="tab-pane fade " id="templateData">
+        <pre class="line-numbers"><code class="language-html">&lt;app-header&gt;&lt;/app-header&gt;
+&lt;div class&#x3D;&quot;dashboard-content&quot;&gt;
+
+  &lt;div class&#x3D;&quot;panel-left&quot;&gt;
+    &lt;mat-card class&#x3D;&quot;video-card&quot;&gt;
+
+      &lt;mat-card-header&gt;
+        &lt;mat-card-title&gt;Monitoramento em Tempo Real&lt;/mat-card-title&gt;
+
+        &lt;div class&#x3D;&quot;status-badge&quot; [class.online]&#x3D;&quot;isCameraActive()&quot;&gt;
+          &lt;div class&#x3D;&quot;indicator&quot;&gt;&lt;/div&gt;
+          &lt;span&gt;{{ isCameraActive() ? &#x27;ONLINE&#x27; : &#x27;OFFLINE&#x27; }}&lt;/span&gt;
+        &lt;/div&gt;
+      &lt;/mat-card-header&gt;
+
+      &lt;mat-card-content&gt;
+        &lt;div class&#x3D;&quot;video-wrapper&quot;&gt;
+
+          @if (isCameraActive() &amp;&amp; videoStreamUrl()) {
+            &lt;img
+              [src]&#x3D;&quot;videoStreamUrl()&quot;
+              alt&#x3D;&quot;Transmissão ao Vivo&quot;
+              class&#x3D;&quot;live-feed&quot;
+              (error)&#x3D;&quot;onVideoError()&quot;
+            &gt;
+          }
+
+          @else if (isLoading() &amp;&amp; !isCameraActive()) {
+            &lt;div class&#x3D;&quot;overlay loading&quot;&gt;
+              &lt;mat-spinner diameter&#x3D;&quot;50&quot; color&#x3D;&quot;accent&quot;&gt;&lt;/mat-spinner&gt;
+              &lt;p&gt;Conectando à câmera...&lt;/p&gt;
+            &lt;/div&gt;
+          }
+
+          @else {
+            &lt;div class&#x3D;&quot;overlay offline&quot;&gt;
+              &lt;mat-icon class&#x3D;&quot;large-icon&quot;&gt;videocam_off&lt;/mat-icon&gt;
+              &lt;h3&gt;Sistema Desativado&lt;/h3&gt;
+              &lt;p&gt;Clique em &quot;ATIVAR&quot; para iniciar o monitoramento.&lt;/p&gt;
+            &lt;/div&gt;
+          }
+        &lt;/div&gt;
+      &lt;/mat-card-content&gt;
+
+      &lt;mat-card-actions align&#x3D;&quot;end&quot; class&#x3D;&quot;control-actions&quot;&gt;
+        &lt;button
+          mat-stroked-button
+          color&#x3D;&quot;warn&quot;
+          (click)&#x3D;&quot;toggleSystem(false)&quot;
+          [disabled]&#x3D;&quot;!isCameraActive() || isLoading()&quot;&gt;
+            @if (isLoading() &amp;&amp; isCameraActive()) {
+                &lt;mat-spinner diameter&#x3D;&quot;20&quot; color&#x3D;&quot;warn&quot;&gt;&lt;/mat-spinner&gt;
+            } @else {
+                &lt;span class&#x3D;&quot;btn-label&quot;&gt;
+                    &lt;mat-icon&gt;stop_circle&lt;/mat-icon&gt;
+                    &lt;span&gt;DESATIVAR&lt;/span&gt;
+                &lt;/span&gt;
+            }
+        &lt;/button&gt;
+
+        &lt;button
+          mat-flat-button
+          color&#x3D;&quot;primary&quot;
+          (click)&#x3D;&quot;toggleSystem(true)&quot;
+          [disabled]&#x3D;&quot;isCameraActive() || isLoading()&quot;&gt;
+            @if (isLoading() &amp;&amp; !isCameraActive()) {
+                &lt;mat-spinner diameter&#x3D;&quot;20&quot; color&#x3D;&quot;accent&quot;&gt;&lt;/mat-spinner&gt;
+            } @else {
+                &lt;span class&#x3D;&quot;btn-label&quot;&gt;
+                    &lt;mat-icon&gt;play_circle&lt;/mat-icon&gt;
+                    &lt;span&gt;ATIVAR&lt;/span&gt;
+                &lt;/span&gt;
+            }
+        &lt;/button&gt;
+      &lt;/mat-card-actions&gt;
+    &lt;/mat-card&gt;
+  &lt;/div&gt;
+
+  &lt;div class&#x3D;&quot;panel-right&quot;&gt;
+	&lt;div class&#x3D;&quot;alerts-header&quot;&gt;
+	      &lt;h2&gt;🚨 Últimos Alertas&lt;/h2&gt;
+	      
+	      &lt;div class&#x3D;&quot;actions&quot;&gt;
+			
+			
+			  &lt;button mat-icon-button (click)&#x3D;&quot;goToHistory()&quot; matTooltip&#x3D;&quot;Ver histórico completo&quot;&gt;
+		            &lt;mat-icon&gt;event_note&lt;/mat-icon&gt;
+	          &lt;/button&gt;
+	          &lt;button mat-icon-button (click)&#x3D;&quot;loadAlerts()&quot; matTooltip&#x3D;&quot;Atualizar lista&quot;&gt;
+	            &lt;mat-icon&gt;refresh&lt;/mat-icon&gt;
+	          &lt;/button&gt;
+	      &lt;/div&gt;
+	    &lt;/div&gt;
+
+    &lt;div class&#x3D;&quot;alerts-list&quot;&gt;
+      @for (alert of alerts(); track alert.id) {
+        &lt;mat-card class&#x3D;&quot;alert-item&quot; [class.critical]&#x3D;&quot;alert.severity &#x3D;&#x3D;&#x3D; &#x27;CRITICAL&#x27;&quot;&gt;
+
+          &lt;div class&#x3D;&quot;alert-row&quot;&gt;
+            &lt;div class&#x3D;&quot;alert-icon&quot;&gt;
+                &lt;mat-icon [class.warn-icon]&#x3D;&quot;alert.severity &#x3D;&#x3D;&#x3D; &#x27;CRITICAL&#x27;&quot;&gt;
+                    {{ alert.severity &#x3D;&#x3D;&#x3D; &#x27;CRITICAL&#x27; ? &#x27;warning&#x27; : &#x27;info&#x27; }}
+                &lt;/mat-icon&gt;
+            &lt;/div&gt;
+
+            &lt;div class&#x3D;&quot;alert-content&quot;&gt;
+                &lt;div class&#x3D;&quot;alert-top&quot;&gt;
+                    &lt;span class&#x3D;&quot;type&quot;&gt;{{ alert.alertType }}&lt;/span&gt;
+                    &lt;span class&#x3D;&quot;time&quot;&gt;{{ alert.createdAt | date:&#x27;HH:mm:ss&#x27; }}&lt;/span&gt;
+                &lt;/div&gt;
+
+                &lt;p class&#x3D;&quot;desc&quot;&gt;{{ alert.description }}&lt;/p&gt;
+
+                @if (alert.snapshotUrl) {
+                    &lt;div class&#x3D;&quot;evidence-wrapper&quot;&gt;
+                        &lt;img [src]&#x3D;&quot;alert.snapshotUrl&quot; alt&#x3D;&quot;Evidência&quot; loading&#x3D;&quot;lazy&quot;&gt;
+                    &lt;/div&gt;
+                }
+
+                @if (alert.latitude &amp;&amp; alert.longitude) {
+                    &lt;div class&#x3D;&quot;geo-tag-bar&quot;&gt;
+                        &lt;div class&#x3D;&quot;coords-info&quot;&gt;
+                            &lt;mat-icon&gt;place&lt;/mat-icon&gt;
+                            @if (alert.address) {
+                                &lt;span class&#x3D;&quot;address-text&quot; [matTooltip]&#x3D;&quot;alert.address&quot;&gt;{{ alert.address }}&lt;/span&gt;
+                            } @else {
+                                &lt;span class&#x3D;&quot;raw-coords&quot;&gt;{{ alert.latitude | number:&#x27;1.4-4&#x27; }}, {{ alert.longitude | number:&#x27;1.4-4&#x27; }}&lt;/span&gt;
+                            }
+                        &lt;/div&gt;
+						
+                        &lt;button mat-stroked-button color&#x3D;&quot;accent&quot; class&#x3D;&quot;btn-map-small&quot; (click)&#x3D;&quot;openLocation(alert)&quot;&gt;
+                            Localização
+                        &lt;/button&gt;
+                    &lt;/div&gt;
+                }
+            &lt;/div&gt;
+
+            &lt;div class&#x3D;&quot;alert-action&quot;&gt;
+                @if (alert.acknowledged) {
+                    &lt;mat-icon class&#x3D;&quot;check-icon&quot; matTooltip&#x3D;&quot;Lido&quot;&gt;check_circle&lt;/mat-icon&gt;
+                } @else {
+                    &lt;button mat-icon-button color&#x3D;&quot;primary&quot; (click)&#x3D;&quot;ack(alert.id)&quot; matTooltip&#x3D;&quot;Marcar como lido&quot;&gt;
+                        &lt;mat-icon&gt;mark_email_read&lt;/mat-icon&gt;
+                    &lt;/button&gt;
+                }
+            &lt;/div&gt;
+          &lt;/div&gt;
+
+        &lt;/mat-card&gt;
+      }
+      @empty {
+        &lt;div class&#x3D;&quot;empty-state&quot;&gt;
+          &lt;mat-icon&gt;notifications_none&lt;/mat-icon&gt;
+          &lt;p&gt;Tudo seguro. Nenhum alerta recente.&lt;/p&gt;
+        &lt;/div&gt;
+      }
+    &lt;/div&gt;
+  &lt;/div&gt;
+
+&lt;/div&gt;</code></pre>
+    </div>
+
+    <div class="tab-pane fade " id="styleData">
+                <p class="comment">
+                    <code>./dashboard.component.scss</code>
+                </p>
+                <pre class="line-numbers"><code class="language-scss">/* &#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;
+   SAFE VISION — Dashboard Style
+   &#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D; */
+@use &quot;sass:color&quot;;
+
+// Variáveis Locais
+$primary: #d63384;
+$warn: #f44336;
+$success: #2e7d32;
+$glass-border: rgba(255, 255, 255, 0.18);
+$shadow-hard: 0 18px 45px rgba(0, 0, 0, 0.55);
+
+// Toolbar e Layout
+.dashboard-toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: rgba(0, 0, 0, 0.6) !important;
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+  display: flex;
+  align-items: center;
+
+  .brand { font-weight: 700; letter-spacing: 1px; font-size: 1.2rem; }
+  .spacer { flex: 1 1 auto; }
+  .user-info {
+    display: flex;
+    align-items: center;
+    .username { margin-right: 12px; font-weight: 600; }
+    button { color: rgba(255, 255, 255, 0.9); }
+  }
+}
+
+.dashboard-content {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 24px;
+  padding: 24px;
+  max-width: 1600px;
+  margin: 0 auto;
+  height: calc(100vh - 64px);
+
+  @media (max-width: 900px) {
+    grid-template-columns: 1fr;
+    height: auto;
+  }
+}
+
+// Card de Vídeo
+.video-card {
+  background: rgba(255, 255, 255, 0.05) !important;
+  backdrop-filter: blur(16px) !important;
+  border: 1px solid $glass-border !important;
+  border-radius: 16px;
+  box-shadow: $shadow-hard !important;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+
+  mat-card-header {
+    padding: 16px 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    mat-card-title { color: #fff; font-size: 1.2rem; letter-spacing: 0.5px; }
+
+    .status-badge {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: rgba(255, 255, 255, 0.6);
+      background: rgba(255, 255, 255, 0.1);
+      padding: 6px 12px;
+      border-radius: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      transition: all 0.3s ease;
+
+      .indicator {
+        width: 8px; height: 8px; border-radius: 50%;
+        background-color: #ff5252; box-shadow: 0 0 5px rgba(255, 82, 82, 0.4);
+      }
+
+      &amp;.online {
+        color: #fff;
+        background: rgba(0, 230, 118, 0.15);
+        border: 1px solid rgba(0, 230, 118, 0.3);
+        .indicator {
+            background-color: #00e676;
+            box-shadow: 0 0 10px #00e676;
+            animation: pulse 2s infinite;
+        }
+      }
+    }
+  }
+
+  mat-card-content {
+    flex-grow: 1; padding: 0; position: relative;
+    background: #000; display: flex; align-items: center; justify-content: center;
+  }
+
+  .video-wrapper {
+    width: 100%; height: 100%; position: relative;
+    display: flex; align-items: center; justify-content: center;
+
+    .live-feed { width: 100%; height: 100%; object-fit: contain; display: block; }
+
+    .overlay {
+      position: absolute; inset: 0;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      color: white; text-align: center; background: rgba(0, 0, 0, 0.7); z-index: 10;
+      
+      &amp;.offline {
+        .large-icon { font-size: 64px; width: 64px; height: 64px; opacity: 0.4; margin-bottom: 16px; }
+        h3 { margin: 0; font-size: 1.5rem; font-weight: 600; }
+      }
+    }
+  }
+
+  mat-card-actions {
+    padding: 16px 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(0, 0, 0, 0.2);
+    gap: 12px;
+    button { height: 44px; font-weight: 600; min-width: 140px; border-radius: 8px; }
+  }
+}
+
+// Painel de Alertas
+.panel-right {
+  display: flex; flex-direction: column; overflow: hidden;
+
+  .alerts-header {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 16px; padding: 0 4px;
+    h2 { margin: 0; font-weight: 700; color: #fff; font-size: 1.2rem; }
+    button { color: rgba(255, 255, 255, 0.8); }
+  }
+
+  .alerts-list {
+    flex-grow: 1; overflow-y: auto; padding-right: 6px;
+    display: flex; flex-direction: column; gap: 16px;
+
+    &amp;::-webkit-scrollbar { width: 6px; }
+    &amp;::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.05); }
+    &amp;::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.2); border-radius: 3px; }
+
+    .alert-item {
+      background: rgba(255, 255, 255, 0.05) !important;
+      backdrop-filter: blur(8px) !important;
+      border: 1px solid rgba(255, 255, 255, 0.1) !important;
+      border-radius: 12px; padding: 16px; color: #fff;
+      transition: transform 0.2s;
+
+      &amp;:hover { background: rgba(255, 255, 255, 0.08) !important; transform: translateY(-2px); }
+      &amp;.critical { border-left: 4px solid $warn !important; background: linear-gradient(90deg, rgba(244, 67, 54, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%) !important; }
+
+      .alert-row { display: flex; gap: 16px; }
+      .alert-icon {
+        padding-top: 2px;
+        mat-icon { color: rgba(255, 255, 255, 0.7); }
+        .warn-icon { color: $warn; }
+      }
+
+      .alert-content {
+        flex: 1; min-width: 0;
+
+        .alert-top {
+          display: flex; justify-content: space-between; margin-bottom: 6px;
+          .type { font-weight: 700; font-size: 0.95rem; }
+          .time { font-size: 0.8rem; opacity: 0.6; }
+        }
+
+        .desc { margin: 0 0 10px 0; font-size: 0.9rem; opacity: 0.8; line-height: 1.4; }
+
+        .evidence-wrapper {
+          position: relative; overflow: hidden;
+          border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.1); margin-bottom: 12px;
+          img { width: 100%; display: block; transition: transform 0.3s; cursor: zoom-in; &amp;:hover { transform: scale(1.05); } }
+        }
+
+        /* 📍 ESTILO DA BARRA DE GPS (NOVO) */
+        .geo-tag-bar {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 8px 12px;
+            background: rgba(0, 0, 0, 0.25);
+            border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.05);
+            margin-top: 8px;
+
+            .coords-info {
+                display: flex; align-items: center; gap: 8px;
+                font-size: 0.85rem; overflow: hidden;
+                
+                mat-icon { font-size: 18px; width: 18px; height: 18px; color: $primary; }
+
+                .address-text {
+                    font-weight: 500; color: #fff;
+                    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+                    max-width: 180px;
+                }
+
+                .raw-coords {
+                    color: rgba(255, 255, 255, 0.7);
+                    font-family: &#x27;Roboto Mono&#x27;, monospace; font-size: 0.8rem;
+                }
+            }
+
+			.btn-map-small {
+			    /* 1. Trava as dimensões do container do botão */
+			    height: 26px !important;
+			    min-height: 26px !important;
+			    max-height: 26px !important;
+			    padding: 0 12px !important; // Espaçamento lateral menor
+			    min-width: auto !important;
+			    border-radius: 13px !important; // Metade da altura para ficar redondo
+			    
+			    /* 2. Ajustes de Fonte */
+			    font-size: 0.65rem !important;
+			    font-weight: 700 !important;
+			    letter-spacing: 0.5px;
+			    text-transform: uppercase;
+
+			    /* 3. Centralização do Host */
+			    display: inline-flex !important;
+			    align-items: center !important;
+			    justify-content: center !important;
+			    
+			    /* 4. Hack para matar o line-height padrão do Material */
+			    line-height: 0 !important; 
+
+			    /* 5. Acessa a estrutura interna do Angular Material (Label) */
+			    &amp; ::ng-deep .mdc-button__label {
+			        display: flex !important;
+			        align-items: center !important;
+			        justify-content: center !important;
+			        line-height: normal !important; /* Restaura line-height só para o texto */
+			        height: 100%;
+			        margin-top: 1px; /* Ajuste fino ótico vertical */
+			    }
+
+			    /* Caso você adicione ícone no futuro, garante que não quebre */
+			    &amp; ::ng-deep mat-icon {
+			        font-size: 14px !important;
+			        width: 14px !important;
+			        height: 14px !important;
+			        margin-right: 4px;
+			    }
+			}
+        }
+      }
+
+      .alert-action {
+        display: flex; flex-direction: column; justify-content: center;
+        .check-icon { color: $success; }
+      }
+    }
+
+    .empty-state {
+      text-align: center; padding: 40px; opacity: 0.5;
+      mat-icon { font-size: 48px; width: 48px; height: 48px; margin-bottom: 12px; }
+    }
+  }
+}
+
+// Botões Ovais
+button[mat-stroked-button], button[mat-flat-button] {
+  height: 45px; border-radius: 50px !important; min-width: 140px; padding: 0 24px;
+  &amp;:not(.btn-map-small) {
+      .btn-label { display: flex; align-items: center; justify-content: center; line-height: 1; 
+        mat-icon { margin-right: 8px; }
+        span { display: inline-block; padding-top: 2px; }
+      }
+  }
+}
+
+@keyframes pulse {
+  0% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(1.1); }
+  100% { opacity: 1; transform: scale(1); }
+}</code></pre>
+    </div>
+
+    <div class="tab-pane fade " id="tree">
+        <div id="tree-container"></div>
+        <div class="tree-legend">
+            <div class="title">
+                <b>Legend</b>
+            </div>
+            <div>
+                <div class="color htmlelement"></div><span>Html element</span>
+            </div>
+            <div>
+                <div class="color component"></div><span>Component</span>
+            </div>
+            <div>
+                <div class="color directive"></div><span>Html element with directive</span>
+            </div>
+        </div>
+    </div>
+
+    
+</div>
+
+<script src="../js/libs/vis-network.min.js"></script>
+<script src="../js/libs/htmlparser.js"></script>
+<script src="../js/libs/deep-iterator.js"></script>
+<script>
+        var COMPONENT_TEMPLATE = '<div><app-header></app-header><div class="dashboard-content">  <div class="panel-left">    <mat-card class="video-card">      <mat-card-header>        <mat-card-title>Monitoramento em Tempo Real</mat-card-title>        <div class="status-badge" [class.online]="isCameraActive()">          <div class="indicator"></div>          <span>{{ isCameraActive() ? \'ONLINE\' : \'OFFLINE\' }}</span>        </div>      </mat-card-header>      <mat-card-content>        <div class="video-wrapper">          @if (isCameraActive() && videoStreamUrl()) {            <img              [src]="videoStreamUrl()"              alt="Transmissão ao Vivo"              class="live-feed"              (error)="onVideoError()"            >          }          @else if (isLoading() && !isCameraActive()) {            <div class="overlay loading">              <mat-spinner diameter="50" color="accent"></mat-spinner>              <p>Conectando à câmera...</p>            </div>          }          @else {            <div class="overlay offline">              <mat-icon class="large-icon">videocam_off</mat-icon>              <h3>Sistema Desativado</h3>              <p>Clique em "ATIVAR" para iniciar o monitoramento.</p>            </div>          }        </div>      </mat-card-content>      <mat-card-actions align="end" class="control-actions">        <button          mat-stroked-button          color="warn"          (click)="toggleSystem(false)"          [disabled]="!isCameraActive() || isLoading()">            @if (isLoading() && isCameraActive()) {                <mat-spinner diameter="20" color="warn"></mat-spinner>            } @else {                <span class="btn-label">                    <mat-icon>stop_circle</mat-icon>                    <span>DESATIVAR</span>                </span>            }        </button>        <button          mat-flat-button          color="primary"          (click)="toggleSystem(true)"          [disabled]="isCameraActive() || isLoading()">            @if (isLoading() && !isCameraActive()) {                <mat-spinner diameter="20" color="accent"></mat-spinner>            } @else {                <span class="btn-label">                    <mat-icon>play_circle</mat-icon>                    <span>ATIVAR</span>                </span>            }        </button>      </mat-card-actions>    </mat-card>  </div>  <div class="panel-right">	<div class="alerts-header">	      <h2>🚨 Últimos Alertas</h2>	      	      <div class="actions">									  <button mat-icon-button (click)="goToHistory()" matTooltip="Ver histórico completo">		            <mat-icon>event_note</mat-icon>	          </button>	          <button mat-icon-button (click)="loadAlerts()" matTooltip="Atualizar lista">	            <mat-icon>refresh</mat-icon>	          </button>	      </div>	    </div>    <div class="alerts-list">      @for (alert of alerts(); track alert.id) {        <mat-card class="alert-item" [class.critical]="alert.severity === \'CRITICAL\'">          <div class="alert-row">            <div class="alert-icon">                <mat-icon [class.warn-icon]="alert.severity === \'CRITICAL\'">                    {{ alert.severity === \'CRITICAL\' ? \'warning\' : \'info\' }}                </mat-icon>            </div>            <div class="alert-content">                <div class="alert-top">                    <span class="type">{{ alert.alertType }}</span>                    <span class="time">{{ alert.createdAt | date:\'HH:mm:ss\' }}</span>                </div>                <p class="desc">{{ alert.description }}</p>                @if (alert.snapshotUrl) {                    <div class="evidence-wrapper">                        <img [src]="alert.snapshotUrl" alt="Evidência" loading="lazy">                    </div>                }                @if (alert.latitude && alert.longitude) {                    <div class="geo-tag-bar">                        <div class="coords-info">                            <mat-icon>place</mat-icon>                            @if (alert.address) {                                <span class="address-text" [matTooltip]="alert.address">{{ alert.address }}</span>                            } @else {                                <span class="raw-coords">{{ alert.latitude | number:\'1.4-4\' }}, {{ alert.longitude | number:\'1.4-4\' }}</span>                            }                        </div>						                        <button mat-stroked-button color="accent" class="btn-map-small" (click)="openLocation(alert)">                            Localização                        </button>                    </div>                }            </div>            <div class="alert-action">                @if (alert.acknowledged) {                    <mat-icon class="check-icon" matTooltip="Lido">check_circle</mat-icon>                } @else {                    <button mat-icon-button color="primary" (click)="ack(alert.id)" matTooltip="Marcar como lido">                        <mat-icon>mark_email_read</mat-icon>                    </button>                }            </div>          </div>        </mat-card>      }      @empty {        <div class="empty-state">          <mat-icon>notifications_none</mat-icon>          <p>Tudo seguro. Nenhum alerta recente.</p>        </div>      }    </div>  </div></div></div>'
+    var COMPONENTS = [{'name': 'AlertHistoryComponent', 'selector': 'app-alert-history'},{'name': 'App', 'selector': 'app-root'},{'name': 'DashboardComponent', 'selector': 'app-dashboard'},{'name': 'HeaderComponent', 'selector': 'app-header'},{'name': 'ImagePreviewDialogComponent', 'selector': 'app-image-preview-dialog'},{'name': 'LoginComponent', 'selector': 'app-login'},{'name': 'MapDialogComponent', 'selector': 'app-map-dialog'},{'name': 'RegisterComponent', 'selector': 'app-register'},{'name': 'Settings', 'selector': 'app-settings'},{'name': 'UserProfileDialogComponent', 'selector': 'app-user-profile-dialog'}];
+    var DIRECTIVES = [{'name': 'PhoneMaskDirective', 'selector': '[appPhoneMask]'}];
+    var ACTUAL_COMPONENT = {'name': 'DashboardComponent'};
+</script>
+<script src="../js/tree.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                   </div><div class="search-results">
+    <div class="has-results">
+        <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+        <ul class="search-results-list"></ul>
+    </div>
+    <div class="no-results">
+        <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+    </div>
+</div>
+</div>
+               <!-- END CONTENT -->
+           </div>
+       </div>
+
+          <label class="dark-mode-switch">
+               <input type="checkbox">
+               <span class="slider">
+                    <svg class="slider-icon" viewBox="0 0 24 24" fill="none" height="20" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" width="20" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path>
+                    </svg>
+               </span>
+          </label>
+
+       <script>
+            var COMPODOC_CURRENT_PAGE_DEPTH = 1;
+            var COMPODOC_CURRENT_PAGE_CONTEXT = 'component';
+            var COMPODOC_CURRENT_PAGE_URL = 'DashboardComponent.html';
+            var MAX_SEARCH_RESULTS = 15;
+       </script>
+
+       <script>
+               $darkModeToggleSwitchers = document.querySelectorAll('.dark-mode-switch input');
+               checkToggle(darkModeState);
+               if ($darkModeToggleSwitchers.length > 0) {
+                    for (var i = 0; i < $darkModeToggleSwitchers.length; i++) {
+                         $darkModeToggleSwitchers[i].addEventListener('change', function (event) {
+                              darkModeState = !darkModeState;
+                              toggleDarkMode(darkModeState);
+                         });
+                    }
+               }
+          </script>
+
+       <script src="../js/libs/custom-elements.min.js"></script>
+       <script src="../js/libs/lit-html.js"></script>
+
+       <script src="../js/menu-wc.js" defer></script>
+       <script nomodule src="../js/menu-wc_es5.js" defer></script>
+
+       <script src="../js/libs/bootstrap-native.js"></script>
+
+       <script src="../js/libs/es6-shim.min.js"></script>
+       <script src="../js/libs/EventDispatcher.js"></script>
+       <script src="../js/libs/promise.min.js"></script>
+
+       <script src="../js/compodoc.js"></script>
+
+       <script src="../js/tabs.js"></script>
+       <script src="../js/menu.js"></script>
+       <script src="../js/libs/clipboard.min.js"></script>
+       <script src="../js/libs/prism.js"></script>
+       <script src="../js/sourceCode.js"></script>
+          <script src="../js/search/search.js"></script>
+          <script src="../js/search/lunr.min.js"></script>
+          <script src="../js/search/search-lunr.js"></script>
+          <script src="../js/search/search_index.js"></script>
+       <script src="../js/lazy-load-graphs.js"></script>
+
+
+    </body>
+</html>

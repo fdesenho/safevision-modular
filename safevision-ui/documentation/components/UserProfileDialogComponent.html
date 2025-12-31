@@ -1,0 +1,1473 @@
+<!doctype html>
+<html class="no-js" lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>safevision-ui documentation</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="icon" type="image/x-icon" href="../images/favicon.ico">
+	   <link rel="stylesheet" href="../styles/style.css">
+        <link rel="stylesheet" href="../styles/dark.css">
+    </head>
+    <body>
+          <script>
+               // Blocking script to avoid flickering dark mode
+               // Dark mode toggle button
+               var useDark = window.matchMedia('(prefers-color-scheme: dark)');
+               var darkModeState = useDark.matches;
+               var $darkModeToggleSwitchers = document.querySelectorAll('.dark-mode-switch input');
+               var $darkModeToggles = document.querySelectorAll('.dark-mode-switch');
+               var darkModeStateLocal = localStorage.getItem('compodoc_darkmode-state');
+
+               function checkToggle(check) {
+                    for (var i = 0; i < $darkModeToggleSwitchers.length; i++) {
+                         $darkModeToggleSwitchers[i].checked = check;
+                    }
+               }
+
+               function toggleDarkMode(state) {
+                    if (window.localStorage) {
+                         localStorage.setItem('compodoc_darkmode-state', state);
+                    }
+
+                    checkToggle(state);
+
+                    const hasClass = document.body.classList.contains('dark');
+
+                    if (state) {
+                         for (var i = 0; i < $darkModeToggles.length; i++) {
+                              $darkModeToggles[i].classList.add('dark');
+                         }
+                         if (!hasClass) {
+                              document.body.classList.add('dark');
+                         }
+                    } else {
+                         for (var i = 0; i < $darkModeToggles.length; i++) {
+                              $darkModeToggles[i].classList.remove('dark');
+                         }
+                         if (hasClass) {
+                              document.body.classList.remove('dark');
+                         }
+                    }
+               }
+
+               useDark.addEventListener('change', function (evt) {
+                    toggleDarkMode(evt.matches);
+               });
+               if (darkModeStateLocal) {
+                    darkModeState = darkModeStateLocal === 'true';
+               }
+               toggleDarkMode(darkModeState);
+          </script>
+          <script>
+              // --- Iframe navigation tracking for Template Playground ---
+              function sendCurrentUrlToParent() {
+                  if (window.parent && window.parent !== window) {
+                      window.parent.postMessage({
+                          type: 'compodoc-iframe-navigate',
+                          url: window.location.pathname + window.location.hash
+                      }, '*');
+                  }
+              }
+              window.addEventListener('hashchange', sendCurrentUrlToParent, false);
+              window.addEventListener('popstate', sendCurrentUrlToParent, false);
+              window.addEventListener('DOMContentLoaded', sendCurrentUrlToParent, false);
+          </script>
+
+        <div class="navbar navbar-default navbar-fixed-top d-md-none p-0">
+               <div class="d-flex">
+                    <a href="../" class="navbar-brand">safevision-ui documentation</a>
+                    <button type="button" class="btn btn-default btn-menu ion-ios-menu" id="btn-menu"></button>
+               </div>
+        </div>
+
+        <div class="xs-menu menu" id="mobile-menu">
+                <div id="book-search-input" role="search"><input type="text" placeholder="Type to search"></div>            <compodoc-menu></compodoc-menu>
+        </div>
+
+        <div class="container-fluid main">
+           <div class="row main">
+               <div class="d-none d-md-block menu">
+                   <compodoc-menu mode="normal"></compodoc-menu>
+               </div>
+               <!-- START CONTENT -->
+               <div class="content component">
+                   <div class="content-data">
+
+
+
+
+
+
+
+
+<ol class="breadcrumb">
+  <li class="breadcrumb-item">Components</li>
+  <li class="breadcrumb-item"
+  >
+  UserProfileDialogComponent</li>
+</ol>
+
+<ul class="nav nav-tabs" role="tablist">
+        <li class="nav-item">
+            <a href="#info" class="nav-link active"
+                role="tab" id="info-tab" data-bs-toggle="tab" data-link="info">Info</a>
+        </li>
+        <li class="nav-item">
+            <a href="#source" class="nav-link"
+                role="tab" id="source-tab" data-bs-toggle="tab" data-link="source">Source</a>
+        </li>
+        <li class="nav-item">
+            <a href="#templateData" class="nav-link"
+                role="tab" id="templateData-tab" data-bs-toggle="tab" data-link="template">Template</a>
+        </li>
+        <li class="nav-item">
+            <a href="#styleData" class="nav-link"
+                role="tab" id="styleData-tab" data-bs-toggle="tab" data-link="style">Styles</a>
+        </li>
+        <li class="nav-item">
+            <a href="#tree" class="nav-link"
+                role="tab" id="tree-tab" data-bs-toggle="tab" data-link="dom-tree">DOM Tree</a>
+        </li>
+</ul>
+
+<div class="tab-content">
+    <div class="tab-pane fade active in" id="info"><p class="comment">
+    <h3>File</h3>
+</p>
+<p class="comment">
+    <code>src/app/features/user-profile-dialog/user-profile-dialog.component.ts</code>
+</p>
+
+
+
+
+    <p class="comment">
+        <h3>Implements</h3>
+    </p>
+    <p class="comment">
+                <code>OnInit</code>
+    </p>
+
+
+<section data-compodoc="block-metadata">
+    <h3>Metadata</h3>
+    <table class="table table-sm table-hover metadata">
+        <tbody>
+
+
+
+
+
+
+
+
+
+
+
+
+            <tr>
+                <td class="col-md-3">selector</td>
+                <td class="col-md-9"><code>app-user-profile-dialog</code></td>
+            </tr>
+
+            <tr>
+                <td class="col-md-3">standalone</td>
+                <td class="col-md-9"><code>true</code></td>
+            </tr>
+
+            <tr>
+                <td class="col-md-3">imports</td>
+                <td class="col-md-9">
+                            <code>CommonModule</code>
+                            <code>ReactiveFormsModule</code>
+                            <code>MatDialogModule</code>
+                            <code>MatButtonModule</code>
+                            <code>MatFormFieldModule</code>
+                            <code>MatInputModule</code>
+                            <code>MatIconModule</code>
+                            <code>MatChipsModule</code>
+                            <code>MatProgressBarModule</code>
+                                <code><a href="../directives/PhoneMaskDirective.html" target="_self" >PhoneMaskDirective</a></code>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="col-md-3">styleUrls</td>
+                <td class="col-md-9"><code>./user-profile-dialog.component.scss</code></td>
+            </tr>
+
+
+
+            <tr>
+                <td class="col-md-3">templateUrl</td>
+                <td class="col-md-9"><code>./user-profile-dialog.component.html</code></td>
+            </tr>
+
+
+
+
+
+
+
+
+        </tbody>
+    </table>
+</section>
+
+    <section data-compodoc="block-index">
+    <h3 id="index">Index</h3>
+    <table class="table table-sm table-bordered index-table">
+        <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <h6><b>Properties</b></h6>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <ul class="index-list">
+                            <li>
+                                <a href="#alertOptions" >alertOptions</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Private</span>
+                                <a href="#authService" >authService</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Public</span>
+                                <a href="#dialogRef" >dialogRef</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Private</span>
+                                <a href="#fb" >fb</a>
+                            </li>
+                            <li>
+                                <a href="#isLoading" >isLoading</a>
+                            </li>
+                            <li>
+                                <a href="#profileForm" >profileForm</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Private</span>
+                                <a href="#snackBar" >snackBar</a>
+                            </li>
+                            <li>
+                                <a href="#username" >username</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="col-md-4">
+                        <h6><b>Methods</b></h6>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <ul class="index-list">
+                            <li>
+                                <a href="#loadFullUserData" >loadFullUserData</a>
+                            </li>
+                            <li>
+                                <a href="#ngOnInit" >ngOnInit</a>
+                            </li>
+                            <li>
+                                <a href="#onSubmit" >onSubmit</a>
+                            </li>
+                            <li>
+                                <a href="#passwordMatchValidator" >passwordMatchValidator</a>
+                            </li>
+                            <li>
+                                <a href="#toggleAlert" >toggleAlert</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+
+
+
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <h6><b>Accessors</b></h6>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="col-md-4">
+                            <ul class="index-list">
+                                <li>
+                                    <a href="#alertPreferencesControl" >alertPreferencesControl</a>
+                                </li>
+                            </ul>
+                        </td>
+                    </tr>
+        </tbody>
+    </table>
+</section>
+
+    <section data-compodoc="block-constructor">
+    <h3 id="constructor">Constructor</h3>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+<code>constructor()</code>
+                    </td>
+                </tr>
+                        <tr>
+                            <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="52" class="link-to-prism">src/app/features/user-profile-dialog/user-profile-dialog.component.ts:52</a></div>
+                            </td>
+                        </tr>
+
+            </tbody>
+        </table>
+</section>
+
+
+
+
+
+    <section data-compodoc="block-methods">
+    
+    <h3 id="methods">
+        Methods
+    </h3>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="loadFullUserData"></a>
+                    <span class="name">
+                        <span ><b>loadFullUserData</b></span>
+                        <a href="#loadFullUserData"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>loadFullUserData(username: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="106"
+                                    class="link-to-prism">src/app/features/user-profile-dialog/user-profile-dialog.component.ts:106</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>username</td>
+                                            <td>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="ngOnInit"></a>
+                    <span class="name">
+                        <span ><b>ngOnInit</b></span>
+                        <a href="#ngOnInit"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>ngOnInit()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="86"
+                                    class="link-to-prism">src/app/features/user-profile-dialog/user-profile-dialog.component.ts:86</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="onSubmit"></a>
+                    <span class="name">
+                        <span ><b>onSubmit</b></span>
+                        <a href="#onSubmit"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>onSubmit()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="130"
+                                    class="link-to-prism">src/app/features/user-profile-dialog/user-profile-dialog.component.ts:130</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="passwordMatchValidator"></a>
+                    <span class="name">
+                        <span ><b>passwordMatchValidator</b></span>
+                        <a href="#passwordMatchValidator"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>passwordMatchValidator(g: FormGroup)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="75"
+                                    class="link-to-prism">src/app/features/user-profile-dialog/user-profile-dialog.component.ts:75</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>g</td>
+                                            <td>
+                                                        <code>FormGroup</code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>    <code>{ mismatch: boolean; }</code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="toggleAlert"></a>
+                    <span class="name">
+                        <span ><b>toggleAlert</b></span>
+                        <a href="#toggleAlert"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>toggleAlert(value: <a href="../undefineds/AlertType.html" target="_self">AlertType</a>, isChecked: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/boolean" target="_blank">boolean</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="94"
+                                    class="link-to-prism">src/app/features/user-profile-dialog/user-profile-dialog.component.ts:94</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>value</td>
+                                            <td>
+                                                            <code><a href="../miscellaneous/enumerations.html#AlertType" target="_self" >AlertType</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                        <tr>
+                                                <td>isChecked</td>
+                                            <td>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/boolean" target="_blank" >boolean</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</section>
+    <section data-compodoc="block-properties">
+    
+    <h3 id="inputs">
+        Properties
+    </h3>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="alertOptions"></a>
+                    <span class="name">
+                        <span ><b>alertOptions</b></span>
+                        <a href="#alertOptions"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>[]</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>[
+    { label: &#x27;Telegram&#x27;, value: AlertType.TELEGRAM, icon: &#x27;send&#x27; },
+    { label: &#x27;E-mail&#x27;, value: AlertType.EMAIL, icon: &#x27;email&#x27; },
+    { label: &#x27;SMS&#x27;, value: AlertType.SMS, icon: &#x27;sms&#x27; }
+  ]</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="48" class="link-to-prism">src/app/features/user-profile-dialog/user-profile-dialog.component.ts:48</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="authService"></a>
+                    <span class="name">
+                            <span class="modifier">Private</span>
+                        <span ><b>authService</b></span>
+                        <a href="#authService"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>unknown</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>inject(AuthService)</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="40" class="link-to-prism">src/app/features/user-profile-dialog/user-profile-dialog.component.ts:40</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="dialogRef"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>dialogRef</b></span>
+                        <a href="#dialogRef"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>unknown</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>inject(MatDialogRef&lt;UserProfileDialogComponent&gt;)</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="42" class="link-to-prism">src/app/features/user-profile-dialog/user-profile-dialog.component.ts:42</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="fb"></a>
+                    <span class="name">
+                            <span class="modifier">Private</span>
+                        <span ><b>fb</b></span>
+                        <a href="#fb"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>unknown</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>inject(FormBuilder)</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="39" class="link-to-prism">src/app/features/user-profile-dialog/user-profile-dialog.component.ts:39</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="isLoading"></a>
+                    <span class="name">
+                        <span ><b>isLoading</b></span>
+                        <a href="#isLoading"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>unknown</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>false</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="45" class="link-to-prism">src/app/features/user-profile-dialog/user-profile-dialog.component.ts:45</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="profileForm"></a>
+                    <span class="name">
+                        <span ><b>profileForm</b></span>
+                        <a href="#profileForm"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>FormGroup</code>
+
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="44" class="link-to-prism">src/app/features/user-profile-dialog/user-profile-dialog.component.ts:44</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="snackBar"></a>
+                    <span class="name">
+                            <span class="modifier">Private</span>
+                        <span ><b>snackBar</b></span>
+                        <a href="#snackBar"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>unknown</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>inject(MatSnackBar)</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="41" class="link-to-prism">src/app/features/user-profile-dialog/user-profile-dialog.component.ts:41</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="username"></a>
+                    <span class="name">
+                        <span ><b>username</b></span>
+                        <a href="#username"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>&#x27;&#x27;</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="46" class="link-to-prism">src/app/features/user-profile-dialog/user-profile-dialog.component.ts:46</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+</section>
+
+    <section data-compodoc="block-accessors">
+    <h3 id="accessors">
+        Accessors
+    </h3>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <a name="alertPreferencesControl"></a>
+                        <span class="name"><b>alertPreferencesControl</b><a href="#alertPreferencesControl"><span class="icon ion-ios-link"></span></a></span>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="col-md-4">
+                        <span class="accessor"><b>get</b><code>alertPreferencesControl()</code></span>
+                    </td>
+                </tr>
+                            <tr>
+                                <td class="col-md-4">
+                                    <div class="io-line">Defined in <a href="" data-line="69" class="link-to-prism">src/app/features/user-profile-dialog/user-profile-dialog.component.ts:69</a></div>
+                                </td>
+                            </tr>
+
+            </tbody>
+        </table>
+</section>
+</div>
+
+
+    <div class="tab-pane fade  tab-source-code" id="source">
+        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { Component, inject, OnInit } from &#x27;@angular/core&#x27;;
+import { CommonModule } from &#x27;@angular/common&#x27;;
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators, FormControl } from &#x27;@angular/forms&#x27;;
+import { MatDialogRef, MatDialogModule } from &#x27;@angular/material/dialog&#x27;;
+import { MatButtonModule } from &#x27;@angular/material/button&#x27;;
+import { MatFormFieldModule } from &#x27;@angular/material/form-field&#x27;;
+import { MatInputModule } from &#x27;@angular/material/input&#x27;;
+import { MatIconModule } from &#x27;@angular/material/icon&#x27;;
+import { MatSnackBar } from &#x27;@angular/material/snack-bar&#x27;;
+import { MatProgressBarModule } from &#x27;@angular/material/progress-bar&#x27;;
+import { MatChipsModule } from &#x27;@angular/material/chips&#x27;;
+
+// Imports do Projeto
+import { AuthService } from &#x27;../../core/services/auth.service&#x27;;
+import { AlertType, UserUpdateRequest } from &#x27;../../core/models/app.models&#x27;;
+import { PhoneMaskDirective } from &#x27;../../shared/directives/phone-mask.directive&#x27;;
+
+
+
+@Component({
+  selector: &#x27;app-user-profile-dialog&#x27;,
+  standalone: true,
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    MatDialogModule,
+    MatButtonModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatIconModule,
+    MatChipsModule,
+    MatProgressBarModule,
+    PhoneMaskDirective // 📍 Adicione aqui
+  ],
+  templateUrl: &#x27;./user-profile-dialog.component.html&#x27;,
+  styleUrls: [&#x27;./user-profile-dialog.component.scss&#x27;]
+})
+export class UserProfileDialogComponent implements OnInit {
+  private fb &#x3D; inject(FormBuilder);
+  private authService &#x3D; inject(AuthService);
+  private snackBar &#x3D; inject(MatSnackBar);
+  public dialogRef &#x3D; inject(MatDialogRef&lt;UserProfileDialogComponent&gt;);
+
+  profileForm: FormGroup;
+  isLoading &#x3D; false;
+  username: string &#x3D; &#x27;&#x27;;
+
+  alertOptions &#x3D; [
+    { label: &#x27;Telegram&#x27;, value: AlertType.TELEGRAM, icon: &#x27;send&#x27; },
+    { label: &#x27;E-mail&#x27;, value: AlertType.EMAIL, icon: &#x27;email&#x27; },
+    { label: &#x27;SMS&#x27;, value: AlertType.SMS, icon: &#x27;sms&#x27; }
+  ];
+
+  constructor() {
+    this.profileForm &#x3D; this.fb.group({
+      email: [&#x27;&#x27;, [Validators.required, Validators.email]], // 📍 Obrigatório
+      phoneNumber: [&#x27;&#x27;, [Validators.required]],             // 📍 Obrigatório
+      telegramChatId: [&#x27;&#x27;],
+      cameraConnectionUrl: [&#x27;&#x27;],
+
+      // Senha e Confirmação
+      password: [&#x27;&#x27;, [Validators.minLength(6)]],
+      confirmPassword: [&#x27;&#x27;],
+
+      alertPreferences: [[]]
+    }, { validators: this.passwordMatchValidator }); // 📍 Validador de grupo
+  }
+
+  get alertPreferencesControl(): FormControl {
+    return this.profileForm.get(&#x27;alertPreferences&#x27;) as FormControl;
+  }
+
+  // 📍 Lógica de Validação de Senha
+  // Só exige confirmação se o campo &#x27;password&#x27; estiver preenchido
+  passwordMatchValidator(g: FormGroup) {
+    const pass &#x3D; g.get(&#x27;password&#x27;)?.value;
+    const confirm &#x3D; g.get(&#x27;confirmPassword&#x27;)?.value;
+
+    // Se senha estiver vazia, não valida nada (usuário não quer mudar)
+    if (!pass) return null;
+
+    // Se senha tem valor, confirmação deve ser igual
+    return pass &#x3D;&#x3D;&#x3D; confirm ? null : { mismatch: true };
+  }
+
+  ngOnInit(): void {
+    const currentUser &#x3D; this.authService.currentUser();
+    if (currentUser) {
+      this.username &#x3D; currentUser.username;
+      this.loadFullUserData(this.username);
+    }
+  }
+
+  toggleAlert(value: AlertType, isChecked: boolean) {
+    const currentValues &#x3D; this.alertPreferencesControl.value as AlertType[];
+    if (isChecked) {
+      if (!currentValues.includes(value)) {
+        this.alertPreferencesControl.setValue([...currentValues, value]);
+      }
+    } else {
+      this.alertPreferencesControl.setValue(currentValues.filter(item &#x3D;&gt; item !&#x3D;&#x3D; value));
+    }
+    this.alertPreferencesControl.markAsTouched();
+  }
+
+  loadFullUserData(username: string) {
+    this.isLoading &#x3D; true;
+    this.profileForm.disable();
+
+    this.authService.getUserProfile(username).subscribe({
+      next: (profile) &#x3D;&gt; {
+        this.profileForm.patchValue({
+          email: profile.email,
+          phoneNumber: profile.phoneNumber,
+          cameraConnectionUrl: profile.cameraConnectionUrl,
+          alertPreferences: profile.alertPreferences || []
+        });
+        this.isLoading &#x3D; false;
+        this.profileForm.enable();
+      },
+      error: (err) &#x3D;&gt; {
+        console.error(err);
+        this.snackBar.open(&#x27;Erro ao carregar dados do perfil.&#x27;, &#x27;Fechar&#x27;);
+        this.isLoading &#x3D; false;
+        this.profileForm.enable();
+      }
+    });
+  }
+
+  onSubmit() {
+    if (this.profileForm.invalid) return;
+
+    this.isLoading &#x3D; true;
+    this.profileForm.disable();
+
+    // 📍 Remove confirmPassword e telegramChatId (se backend não suportar ainda)
+    // Extraímos apenas o que o DTO UserUpdateRequest espera
+    const { confirmPassword, telegramChatId, ...formData } &#x3D; this.profileForm.value;
+
+    const updateData: UserUpdateRequest &#x3D; {
+      email: formData.email,
+      phoneNumber: formData.phoneNumber,
+      cameraConnectionUrl: formData.cameraConnectionUrl,
+      password: formData.password || null,
+      alertPreferences: formData.alertPreferences
+    };
+
+    this.authService.updateUser(updateData).subscribe({
+      next: () &#x3D;&gt; {
+        this.snackBar.open(&#x27;Perfil atualizado com sucesso!&#x27;, &#x27;OK&#x27;, { duration: 3000 });
+        this.dialogRef.close(true);
+      },
+      error: () &#x3D;&gt; {
+        
+        this.isLoading &#x3D; false;
+        this.profileForm.enable();
+      }
+    });
+  }
+}
+</code></pre>
+    </div>
+
+    <div class="tab-pane fade " id="templateData">
+        <pre class="line-numbers"><code class="language-html">&lt;h2 mat-dialog-title&gt;
+  &lt;div class&#x3D;&quot;title-wrapper&quot;&gt;
+      &lt;mat-icon class&#x3D;&quot;title-icon&quot;&gt;manage_accounts&lt;/mat-icon&gt;
+      Configurações do Usuário
+  &lt;/div&gt;
+&lt;/h2&gt;
+
+&lt;mat-dialog-content class&#x3D;&quot;custom-scrollbar&quot;&gt;
+  @if (isLoading) {
+    &lt;mat-progress-bar mode&#x3D;&quot;indeterminate&quot; class&#x3D;&quot;top-loader&quot;&gt;&lt;/mat-progress-bar&gt;
+  }
+
+  &lt;form [formGroup]&#x3D;&quot;profileForm&quot; class&#x3D;&quot;profile-form&quot;&gt;
+
+    &lt;div class&#x3D;&quot;info-text&quot;&gt;
+      Editando: &lt;strong&gt;{{ username }}&lt;/strong&gt;
+    &lt;/div&gt;
+
+    &lt;mat-form-field appearance&#x3D;&quot;outline&quot; class&#x3D;&quot;full-width&quot;&gt;
+      &lt;mat-label&gt;URL da Câmera (RTSP/HTTP)&lt;/mat-label&gt;
+      &lt;input matInput formControlName&#x3D;&quot;cameraConnectionUrl&quot; placeholder&#x3D;&quot;rtsp://192.168...&quot;&gt;
+      &lt;mat-icon matSuffix&gt;videocam&lt;/mat-icon&gt;
+    &lt;/mat-form-field&gt;
+
+    &lt;div class&#x3D;&quot;alert-selection-container&quot;&gt;
+        &lt;label class&#x3D;&quot;label-header&quot;&gt;Canais de Notificação&lt;/label&gt;
+        &lt;mat-chip-listbox aria-label&#x3D;&quot;Seleção de Alertas&quot; multiple&gt;
+            @for (opt of alertOptions; track opt.value) {
+            &lt;mat-chip-option
+                color&#x3D;&quot;accent&quot;
+                [selected]&#x3D;&quot;alertPreferencesControl.value.includes(opt.value)&quot;
+                (selectionChange)&#x3D;&quot;toggleAlert(opt.value, $event.selected)&quot;&gt;
+                &lt;mat-icon matChipAvatar&gt;{{ opt.icon }}&lt;/mat-icon&gt;
+                {{ opt.label }}
+            &lt;/mat-chip-option&gt;
+            }
+        &lt;/mat-chip-listbox&gt;
+        &lt;mat-hint class&#x3D;&quot;chip-hint&quot;&gt;Selecione onde deseja receber alertas&lt;/mat-hint&gt;
+    &lt;/div&gt;
+
+
+    &lt;div class&#x3D;&quot;row&quot;&gt;
+      &lt;mat-form-field appearance&#x3D;&quot;outline&quot; class&#x3D;&quot;half-width&quot;&gt;
+        &lt;mat-label&gt;E-mail *&lt;/mat-label&gt;
+        &lt;input matInput formControlName&#x3D;&quot;email&quot; type&#x3D;&quot;email&quot;&gt;
+        &lt;mat-icon matSuffix&gt;email&lt;/mat-icon&gt;
+        @if (profileForm.get(&#x27;email&#x27;)?.hasError(&#x27;required&#x27;)) {
+            &lt;mat-error&gt;E-mail é obrigatório&lt;/mat-error&gt;
+        }
+        @if (profileForm.get(&#x27;email&#x27;)?.hasError(&#x27;email&#x27;)) {
+            &lt;mat-error&gt;E-mail inválido&lt;/mat-error&gt;
+        }
+      &lt;/mat-form-field&gt;
+
+      &lt;mat-form-field appearance&#x3D;&quot;outline&quot; class&#x3D;&quot;half-width&quot;&gt;
+        &lt;mat-label&gt;Celular *&lt;/mat-label&gt;
+        &lt;input matInput formControlName&#x3D;&quot;phoneNumber&quot; type&#x3D;&quot;tel&quot; appPhoneMask placeholder&#x3D;&quot;+55 48 99999-9999&quot;&gt;
+        &lt;mat-icon matSuffix&gt;smartphone&lt;/mat-icon&gt;
+        @if (profileForm.get(&#x27;phoneNumber&#x27;)?.hasError(&#x27;required&#x27;)) {
+            &lt;mat-error&gt;Celular é obrigatório&lt;/mat-error&gt;
+        }
+      &lt;/mat-form-field&gt;
+    &lt;/div&gt;
+
+    &lt;div class&#x3D;&quot;password-section&quot;&gt;
+        &lt;mat-form-field appearance&#x3D;&quot;outline&quot; class&#x3D;&quot;full-width warn-field&quot;&gt;
+            &lt;mat-label&gt;Nova Senha&lt;/mat-label&gt;
+            &lt;input matInput formControlName&#x3D;&quot;password&quot; type&#x3D;&quot;password&quot; autocomplete&#x3D;&quot;new-password&quot; placeholder&#x3D;&quot;Preencha apenas se quiser alterar&quot;&gt;
+            &lt;mat-icon matSuffix&gt;lock&lt;/mat-icon&gt;
+            @if (profileForm.get(&#x27;password&#x27;)?.hasError(&#x27;minlength&#x27;)) {
+                &lt;mat-error&gt;Mínimo de 6 caracteres&lt;/mat-error&gt;
+            }
+        &lt;/mat-form-field&gt;
+
+        @if (profileForm.get(&#x27;password&#x27;)?.value) {
+            &lt;mat-form-field appearance&#x3D;&quot;outline&quot; class&#x3D;&quot;full-width warn-field animation-fade&quot;&gt;
+                &lt;mat-label&gt;Confirmar Nova Senha&lt;/mat-label&gt;
+                &lt;input matInput formControlName&#x3D;&quot;confirmPassword&quot; type&#x3D;&quot;password&quot; placeholder&#x3D;&quot;Repita a nova senha&quot;&gt;
+                &lt;mat-icon matSuffix&gt;lock_reset&lt;/mat-icon&gt;
+            &lt;/mat-form-field&gt;
+
+            @if (profileForm.hasError(&#x27;mismatch&#x27;) &amp;&amp; profileForm.get(&#x27;confirmPassword&#x27;)?.touched) {
+                &lt;div class&#x3D;&quot;password-error&quot;&gt;
+                    &lt;mat-icon&gt;error_outline&lt;/mat-icon&gt;
+                    As senhas não coincidem
+                &lt;/div&gt;
+            }
+        }
+    &lt;/div&gt;
+
+  &lt;/form&gt;
+&lt;/mat-dialog-content&gt;
+
+&lt;mat-dialog-actions align&#x3D;&quot;end&quot;&gt;
+  &lt;button mat-button mat-dialog-close [disabled]&#x3D;&quot;isLoading&quot;&gt;Cancelar&lt;/button&gt;
+  &lt;button mat-flat-button color&#x3D;&quot;primary&quot; (click)&#x3D;&quot;onSubmit()&quot; [disabled]&#x3D;&quot;profileForm.invalid || isLoading&quot;&gt;
+    Salvar Alterações
+  &lt;/button&gt;
+&lt;/mat-dialog-actions&gt;
+</code></pre>
+    </div>
+
+    <div class="tab-pane fade " id="styleData">
+                <p class="comment">
+                    <code>./user-profile-dialog.component.scss</code>
+                </p>
+                <pre class="line-numbers"><code class="language-scss">@use &quot;sass:color&quot;;
+
+/* &#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;
+   DESIGN SYSTEM (Baseado no RegisterComponent)
+   &#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D; */
+$primary: #d63384;
+$accent: #00bcd4;
+$error-text: #ff5252;
+$glass-bg: rgba(23, 23, 23, 0.95); // Fundo sólido para modal
+
+/* &#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;
+   LAYOUT
+   &#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D; */
+
+:host {
+    display: block;
+    background: $glass-bg;
+    color: #fff;
+}
+
+.title-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1.4rem;
+    font-weight: 300;
+}
+
+.top-loader {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    z-index: 10;
+}
+
+.profile-form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding-top: 10px;
+    min-width: 450px;
+}
+
+.info-text {
+    margin-bottom: 8px;
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 0.9rem;
+    padding-bottom: 12px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+
+    strong { color: $primary; }
+}
+
+.full-width {
+    width: 100%;
+}
+
+.row {
+    display: flex;
+    gap: 16px;
+    .half-width { flex: 1; }
+}
+
+/* &#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;
+   CHIPS SECTION (Igual Register)
+   &#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D; */
+.alert-selection-container {
+    margin: 8px 0 16px 0;
+    padding: 12px;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+
+    .label-header {
+        display: block;
+        margin-bottom: 10px;
+        color: rgba(255, 255, 255, 0.8);
+        font-size: 0.9rem;
+        font-weight: 500;
+    }
+
+    .chip-hint {
+        display: block;
+        margin-top: 8px;
+        font-size: 0.75rem;
+        color: rgba(255, 255, 255, 0.4);
+    }
+}
+
+// Animação para o campo do Telegram
+.telegram-field {
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-5px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* &#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;
+   MATERIAL OVERRIDES (Estilo Dark/Glass)
+   &#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D; */
+
+::ng-deep .mat-mdc-form-field {
+    .mdc-text-field--filled {
+        background-color: rgba(255, 255, 255, 0.05) !important;
+        border-radius: 8px;
+    }
+
+    .mdc-text-field__input {
+        color: #fff !important;
+        caret-color: $primary !important;
+    }
+
+    .mdc-floating-label { color: rgba(255, 255, 255, 0.6) !important; }
+    .mdc-floating-label--float-above { color: $primary !important; }
+    .mat-icon { color: rgba(255, 255, 255, 0.7); }
+
+    .mdc-line-ripple::before { border-bottom-color: rgba(255, 255, 255, 0.3) !important; }
+    .mdc-line-ripple::after { border-bottom-color: $primary !important; }
+}
+
+// Estilo para o campo de senha (aviso sutil)
+.warn-field {
+    margin-top: 8px;
+    .mat-icon { color: #ffb74d !important; }
+}
+
+/* Mobile */
+@media (max-width: 600px) {
+    .profile-form { min-width: auto; }
+    .row { flex-direction: column; gap: 0; }
+}
+
+
+// ... estilos anteriores ...
+
+.password-section {
+    display: flex;
+    flex-direction: column;
+}
+
+.password-error {
+    color: #ff5252;
+    font-size: 12px;
+    margin-top: -10px;
+    margin-bottom: 15px;
+    margin-left: 4px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(255, 82, 82, 0.1);
+    padding: 8px;
+    border-radius: 6px;
+
+    mat-icon {
+        font-size: 16px;
+        height: 16px;
+        width: 16px;
+    }
+}
+
+.animation-fade {
+    animation: fadeIn 0.3s ease-out;
+}
+</code></pre>
+    </div>
+
+    <div class="tab-pane fade " id="tree">
+        <div id="tree-container"></div>
+        <div class="tree-legend">
+            <div class="title">
+                <b>Legend</b>
+            </div>
+            <div>
+                <div class="color htmlelement"></div><span>Html element</span>
+            </div>
+            <div>
+                <div class="color component"></div><span>Component</span>
+            </div>
+            <div>
+                <div class="color directive"></div><span>Html element with directive</span>
+            </div>
+        </div>
+    </div>
+
+    
+</div>
+
+<script src="../js/libs/vis-network.min.js"></script>
+<script src="../js/libs/htmlparser.js"></script>
+<script src="../js/libs/deep-iterator.js"></script>
+<script>
+        var COMPONENT_TEMPLATE = '<div><h2 mat-dialog-title>  <div class="title-wrapper">      <mat-icon class="title-icon">manage_accounts</mat-icon>      Configurações do Usuário  </div></h2><mat-dialog-content class="custom-scrollbar">  @if (isLoading) {    <mat-progress-bar mode="indeterminate" class="top-loader"></mat-progress-bar>  }  <form [formGroup]="profileForm" class="profile-form">    <div class="info-text">      Editando: <strong>{{ username }}</strong>    </div>    <mat-form-field appearance="outline" class="full-width">      <mat-label>URL da Câmera (RTSP/HTTP)</mat-label>      <input matInput formControlName="cameraConnectionUrl" placeholder="rtsp://192.168...">      <mat-icon matSuffix>videocam</mat-icon>    </mat-form-field>    <div class="alert-selection-container">        <label class="label-header">Canais de Notificação</label>        <mat-chip-listbox aria-label="Seleção de Alertas" multiple>            @for (opt of alertOptions; track opt.value) {            <mat-chip-option                color="accent"                [selected]="alertPreferencesControl.value.includes(opt.value)"                (selectionChange)="toggleAlert(opt.value, $event.selected)">                <mat-icon matChipAvatar>{{ opt.icon }}</mat-icon>                {{ opt.label }}            </mat-chip-option>            }        </mat-chip-listbox>        <mat-hint class="chip-hint">Selecione onde deseja receber alertas</mat-hint>    </div>    <div class="row">      <mat-form-field appearance="outline" class="half-width">        <mat-label>E-mail *</mat-label>        <input matInput formControlName="email" type="email">        <mat-icon matSuffix>email</mat-icon>        @if (profileForm.get(\'email\')?.hasError(\'required\')) {            <mat-error>E-mail é obrigatório</mat-error>        }        @if (profileForm.get(\'email\')?.hasError(\'email\')) {            <mat-error>E-mail inválido</mat-error>        }      </mat-form-field>      <mat-form-field appearance="outline" class="half-width">        <mat-label>Celular *</mat-label>        <input matInput formControlName="phoneNumber" type="tel" appPhoneMask placeholder="+55 48 99999-9999">        <mat-icon matSuffix>smartphone</mat-icon>        @if (profileForm.get(\'phoneNumber\')?.hasError(\'required\')) {            <mat-error>Celular é obrigatório</mat-error>        }      </mat-form-field>    </div>    <div class="password-section">        <mat-form-field appearance="outline" class="full-width warn-field">            <mat-label>Nova Senha</mat-label>            <input matInput formControlName="password" type="password" autocomplete="new-password" placeholder="Preencha apenas se quiser alterar">            <mat-icon matSuffix>lock</mat-icon>            @if (profileForm.get(\'password\')?.hasError(\'minlength\')) {                <mat-error>Mínimo de 6 caracteres</mat-error>            }        </mat-form-field>        @if (profileForm.get(\'password\')?.value) {            <mat-form-field appearance="outline" class="full-width warn-field animation-fade">                <mat-label>Confirmar Nova Senha</mat-label>                <input matInput formControlName="confirmPassword" type="password" placeholder="Repita a nova senha">                <mat-icon matSuffix>lock_reset</mat-icon>            </mat-form-field>            @if (profileForm.hasError(\'mismatch\') && profileForm.get(\'confirmPassword\')?.touched) {                <div class="password-error">                    <mat-icon>error_outline</mat-icon>                    As senhas não coincidem                </div>            }        }    </div>  </form></mat-dialog-content><mat-dialog-actions align="end">  <button mat-button mat-dialog-close [disabled]="isLoading">Cancelar</button>  <button mat-flat-button color="primary" (click)="onSubmit()" [disabled]="profileForm.invalid || isLoading">    Salvar Alterações  </button></mat-dialog-actions></div>'
+    var COMPONENTS = [{'name': 'AlertHistoryComponent', 'selector': 'app-alert-history'},{'name': 'App', 'selector': 'app-root'},{'name': 'DashboardComponent', 'selector': 'app-dashboard'},{'name': 'HeaderComponent', 'selector': 'app-header'},{'name': 'ImagePreviewDialogComponent', 'selector': 'app-image-preview-dialog'},{'name': 'LoginComponent', 'selector': 'app-login'},{'name': 'MapDialogComponent', 'selector': 'app-map-dialog'},{'name': 'RegisterComponent', 'selector': 'app-register'},{'name': 'Settings', 'selector': 'app-settings'},{'name': 'UserProfileDialogComponent', 'selector': 'app-user-profile-dialog'}];
+    var DIRECTIVES = [{'name': 'PhoneMaskDirective', 'selector': '[appPhoneMask]'}];
+    var ACTUAL_COMPONENT = {'name': 'UserProfileDialogComponent'};
+</script>
+<script src="../js/tree.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                   </div><div class="search-results">
+    <div class="has-results">
+        <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+        <ul class="search-results-list"></ul>
+    </div>
+    <div class="no-results">
+        <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+    </div>
+</div>
+</div>
+               <!-- END CONTENT -->
+           </div>
+       </div>
+
+          <label class="dark-mode-switch">
+               <input type="checkbox">
+               <span class="slider">
+                    <svg class="slider-icon" viewBox="0 0 24 24" fill="none" height="20" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" width="20" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path>
+                    </svg>
+               </span>
+          </label>
+
+       <script>
+            var COMPODOC_CURRENT_PAGE_DEPTH = 1;
+            var COMPODOC_CURRENT_PAGE_CONTEXT = 'component';
+            var COMPODOC_CURRENT_PAGE_URL = 'UserProfileDialogComponent.html';
+            var MAX_SEARCH_RESULTS = 15;
+       </script>
+
+       <script>
+               $darkModeToggleSwitchers = document.querySelectorAll('.dark-mode-switch input');
+               checkToggle(darkModeState);
+               if ($darkModeToggleSwitchers.length > 0) {
+                    for (var i = 0; i < $darkModeToggleSwitchers.length; i++) {
+                         $darkModeToggleSwitchers[i].addEventListener('change', function (event) {
+                              darkModeState = !darkModeState;
+                              toggleDarkMode(darkModeState);
+                         });
+                    }
+               }
+          </script>
+
+       <script src="../js/libs/custom-elements.min.js"></script>
+       <script src="../js/libs/lit-html.js"></script>
+
+       <script src="../js/menu-wc.js" defer></script>
+       <script nomodule src="../js/menu-wc_es5.js" defer></script>
+
+       <script src="../js/libs/bootstrap-native.js"></script>
+
+       <script src="../js/libs/es6-shim.min.js"></script>
+       <script src="../js/libs/EventDispatcher.js"></script>
+       <script src="../js/libs/promise.min.js"></script>
+
+       <script src="../js/compodoc.js"></script>
+
+       <script src="../js/tabs.js"></script>
+       <script src="../js/menu.js"></script>
+       <script src="../js/libs/clipboard.min.js"></script>
+       <script src="../js/libs/prism.js"></script>
+       <script src="../js/sourceCode.js"></script>
+          <script src="../js/search/search.js"></script>
+          <script src="../js/search/lunr.min.js"></script>
+          <script src="../js/search/search-lunr.js"></script>
+          <script src="../js/search/search_index.js"></script>
+       <script src="../js/lazy-load-graphs.js"></script>
+
+
+    </body>
+</html>

@@ -1,0 +1,1746 @@
+<!doctype html>
+<html class="no-js" lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>safevision-ui documentation</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="icon" type="image/x-icon" href="../images/favicon.ico">
+	   <link rel="stylesheet" href="../styles/style.css">
+        <link rel="stylesheet" href="../styles/dark.css">
+    </head>
+    <body>
+          <script>
+               // Blocking script to avoid flickering dark mode
+               // Dark mode toggle button
+               var useDark = window.matchMedia('(prefers-color-scheme: dark)');
+               var darkModeState = useDark.matches;
+               var $darkModeToggleSwitchers = document.querySelectorAll('.dark-mode-switch input');
+               var $darkModeToggles = document.querySelectorAll('.dark-mode-switch');
+               var darkModeStateLocal = localStorage.getItem('compodoc_darkmode-state');
+
+               function checkToggle(check) {
+                    for (var i = 0; i < $darkModeToggleSwitchers.length; i++) {
+                         $darkModeToggleSwitchers[i].checked = check;
+                    }
+               }
+
+               function toggleDarkMode(state) {
+                    if (window.localStorage) {
+                         localStorage.setItem('compodoc_darkmode-state', state);
+                    }
+
+                    checkToggle(state);
+
+                    const hasClass = document.body.classList.contains('dark');
+
+                    if (state) {
+                         for (var i = 0; i < $darkModeToggles.length; i++) {
+                              $darkModeToggles[i].classList.add('dark');
+                         }
+                         if (!hasClass) {
+                              document.body.classList.add('dark');
+                         }
+                    } else {
+                         for (var i = 0; i < $darkModeToggles.length; i++) {
+                              $darkModeToggles[i].classList.remove('dark');
+                         }
+                         if (hasClass) {
+                              document.body.classList.remove('dark');
+                         }
+                    }
+               }
+
+               useDark.addEventListener('change', function (evt) {
+                    toggleDarkMode(evt.matches);
+               });
+               if (darkModeStateLocal) {
+                    darkModeState = darkModeStateLocal === 'true';
+               }
+               toggleDarkMode(darkModeState);
+          </script>
+          <script>
+              // --- Iframe navigation tracking for Template Playground ---
+              function sendCurrentUrlToParent() {
+                  if (window.parent && window.parent !== window) {
+                      window.parent.postMessage({
+                          type: 'compodoc-iframe-navigate',
+                          url: window.location.pathname + window.location.hash
+                      }, '*');
+                  }
+              }
+              window.addEventListener('hashchange', sendCurrentUrlToParent, false);
+              window.addEventListener('popstate', sendCurrentUrlToParent, false);
+              window.addEventListener('DOMContentLoaded', sendCurrentUrlToParent, false);
+          </script>
+
+        <div class="navbar navbar-default navbar-fixed-top d-md-none p-0">
+               <div class="d-flex">
+                    <a href="../" class="navbar-brand">safevision-ui documentation</a>
+                    <button type="button" class="btn btn-default btn-menu ion-ios-menu" id="btn-menu"></button>
+               </div>
+        </div>
+
+        <div class="xs-menu menu" id="mobile-menu">
+                <div id="book-search-input" role="search"><input type="text" placeholder="Type to search"></div>            <compodoc-menu></compodoc-menu>
+        </div>
+
+        <div class="container-fluid main">
+           <div class="row main">
+               <div class="d-none d-md-block menu">
+                   <compodoc-menu mode="normal"></compodoc-menu>
+               </div>
+               <!-- START CONTENT -->
+               <div class="content component">
+                   <div class="content-data">
+
+
+
+
+
+
+
+
+<ol class="breadcrumb">
+  <li class="breadcrumb-item">Components</li>
+  <li class="breadcrumb-item"
+  >
+  AlertHistoryComponent</li>
+</ol>
+
+<ul class="nav nav-tabs" role="tablist">
+        <li class="nav-item">
+            <a href="#info" class="nav-link active"
+                role="tab" id="info-tab" data-bs-toggle="tab" data-link="info">Info</a>
+        </li>
+        <li class="nav-item">
+            <a href="#source" class="nav-link"
+                role="tab" id="source-tab" data-bs-toggle="tab" data-link="source">Source</a>
+        </li>
+        <li class="nav-item">
+            <a href="#templateData" class="nav-link"
+                role="tab" id="templateData-tab" data-bs-toggle="tab" data-link="template">Template</a>
+        </li>
+        <li class="nav-item">
+            <a href="#styleData" class="nav-link"
+                role="tab" id="styleData-tab" data-bs-toggle="tab" data-link="style">Styles</a>
+        </li>
+        <li class="nav-item">
+            <a href="#tree" class="nav-link"
+                role="tab" id="tree-tab" data-bs-toggle="tab" data-link="dom-tree">DOM Tree</a>
+        </li>
+</ul>
+
+<div class="tab-content">
+    <div class="tab-pane fade active in" id="info"><p class="comment">
+    <h3>File</h3>
+</p>
+<p class="comment">
+    <code>src/app/features/alert-history/alert-history.component.ts</code>
+</p>
+
+
+
+
+    <p class="comment">
+        <h3>Implements</h3>
+    </p>
+    <p class="comment">
+                <code>AfterViewInit</code>
+    </p>
+
+
+<section data-compodoc="block-metadata">
+    <h3>Metadata</h3>
+    <table class="table table-sm table-hover metadata">
+        <tbody>
+
+
+
+
+
+
+
+
+
+
+
+
+            <tr>
+                <td class="col-md-3">selector</td>
+                <td class="col-md-9"><code>app-alert-history</code></td>
+            </tr>
+
+            <tr>
+                <td class="col-md-3">standalone</td>
+                <td class="col-md-9"><code>true</code></td>
+            </tr>
+
+            <tr>
+                <td class="col-md-3">imports</td>
+                <td class="col-md-9">
+                            <code>CommonModule</code>
+                                <code><a href="../components/HeaderComponent.html" target="_self" >HeaderComponent</a></code>
+                            <code>MatTableModule</code>
+                            <code>MatPaginatorModule</code>
+                            <code>MatSortModule</code>
+                            <code>MatIconModule</code>
+                            <code>MatButtonModule</code>
+                            <code>MatTooltipModule</code>
+                            <code>MatProgressSpinnerModule</code>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="col-md-3">styleUrls</td>
+                <td class="col-md-9"><code>./alert-history.component.scss</code></td>
+            </tr>
+
+
+
+            <tr>
+                <td class="col-md-3">templateUrl</td>
+                <td class="col-md-9"><code>./alert-history.component.html</code></td>
+            </tr>
+
+
+
+
+
+
+
+
+        </tbody>
+    </table>
+</section>
+
+    <section data-compodoc="block-index">
+    <h3 id="index">Index</h3>
+    <table class="table table-sm table-bordered index-table">
+        <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <h6><b>Properties</b></h6>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <ul class="index-list">
+                            <li>
+                                    <span class="modifier">Private</span>
+                                <a href="#alertService" >alertService</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Private</span>
+                                <a href="#auth" >auth</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Private</span>
+                                <a href="#cdr" >cdr</a>
+                            </li>
+                            <li>
+                                <a href="#dataSource" >dataSource</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Private</span>
+                                <a href="#destroyRef" >destroyRef</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Private</span>
+                                <a href="#dialog" >dialog</a>
+                            </li>
+                            <li>
+                                <a href="#displayedColumns" >displayedColumns</a>
+                            </li>
+                            <li>
+                                <a href="#isLoading" >isLoading</a>
+                            </li>
+                            <li>
+                                    <span class="modifier"></span>
+                                <a href="#paginator" >paginator</a>
+                            </li>
+                            <li>
+                                <a href="#resultsLength" >resultsLength</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Private</span>
+                                <a href="#router" >router</a>
+                            </li>
+                            <li>
+                                    <span class="modifier"></span>
+                                <a href="#sort" >sort</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="col-md-4">
+                        <h6><b>Methods</b></h6>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <ul class="index-list">
+                            <li>
+                                <a href="#goBack" >goBack</a>
+                            </li>
+                            <li>
+                                <a href="#markAsRead" >markAsRead</a>
+                            </li>
+                            <li>
+                                <a href="#ngAfterViewInit" >ngAfterViewInit</a>
+                            </li>
+                            <li>
+                                <a href="#openImage" >openImage</a>
+                            </li>
+                            <li>
+                                <a href="#openMap" >openMap</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+
+
+
+
+
+        </tbody>
+    </table>
+</section>
+
+
+
+
+
+
+    <section data-compodoc="block-methods">
+    
+    <h3 id="methods">
+        Methods
+    </h3>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="goBack"></a>
+                    <span class="name">
+                        <span ><b>goBack</b></span>
+                        <a href="#goBack"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>goBack()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="147"
+                                    class="link-to-prism">src/app/features/alert-history/alert-history.component.ts:147</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="markAsRead"></a>
+                    <span class="name">
+                        <span ><b>markAsRead</b></span>
+                        <a href="#markAsRead"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>markAsRead(alert: <a href="../interfaces/Alert.html" target="_self">Alert</a>, event: Event)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="167"
+                                    class="link-to-prism">src/app/features/alert-history/alert-history.component.ts:167</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>alert</td>
+                                            <td>
+                                                            <code><a href="../interfaces/Alert.html" target="_self" >Alert</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                        <tr>
+                                                <td>event</td>
+                                            <td>
+                                                        <code>Event</code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="ngAfterViewInit"></a>
+                    <span class="name">
+                        <span ><b>ngAfterViewInit</b></span>
+                        <a href="#ngAfterViewInit"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>ngAfterViewInit()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="72"
+                                    class="link-to-prism">src/app/features/alert-history/alert-history.component.ts:72</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="openImage"></a>
+                    <span class="name">
+                        <span ><b>openImage</b></span>
+                        <a href="#openImage"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>openImage(alert: <a href="../interfaces/Alert.html" target="_self">Alert</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="150"
+                                    class="link-to-prism">src/app/features/alert-history/alert-history.component.ts:150</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>alert</td>
+                                            <td>
+                                                            <code><a href="../interfaces/Alert.html" target="_self" >Alert</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="openMap"></a>
+                    <span class="name">
+                        <span ><b>openMap</b></span>
+                        <a href="#openMap"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>openMap(alert: <a href="../interfaces/Alert.html" target="_self">Alert</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="130"
+                                    class="link-to-prism">src/app/features/alert-history/alert-history.component.ts:130</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>alert</td>
+                                            <td>
+                                                            <code><a href="../interfaces/Alert.html" target="_self" >Alert</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</section>
+    <section data-compodoc="block-properties">
+    
+    <h3 id="inputs">
+        Properties
+    </h3>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="alertService"></a>
+                    <span class="name">
+                            <span class="modifier">Private</span>
+                        <span ><b>alertService</b></span>
+                        <a href="#alertService"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>unknown</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>inject(AlertService)</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="46" class="link-to-prism">src/app/features/alert-history/alert-history.component.ts:46</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="auth"></a>
+                    <span class="name">
+                            <span class="modifier">Private</span>
+                        <span ><b>auth</b></span>
+                        <a href="#auth"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>unknown</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>inject(AuthService)</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="47" class="link-to-prism">src/app/features/alert-history/alert-history.component.ts:47</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="cdr"></a>
+                    <span class="name">
+                            <span class="modifier">Private</span>
+                        <span ><b>cdr</b></span>
+                        <a href="#cdr"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>unknown</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>inject(ChangeDetectorRef)</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="51" class="link-to-prism">src/app/features/alert-history/alert-history.component.ts:51</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="dataSource"></a>
+                    <span class="name">
+                        <span ><b>dataSource</b></span>
+                        <a href="#dataSource"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="../interfaces/Alert.html" target="_self" >Alert[]</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>[]</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="65" class="link-to-prism">src/app/features/alert-history/alert-history.component.ts:65</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="destroyRef"></a>
+                    <span class="name">
+                            <span class="modifier">Private</span>
+                        <span ><b>destroyRef</b></span>
+                        <a href="#destroyRef"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>unknown</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>inject(DestroyRef)</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="50" class="link-to-prism">src/app/features/alert-history/alert-history.component.ts:50</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="dialog"></a>
+                    <span class="name">
+                            <span class="modifier">Private</span>
+                        <span ><b>dialog</b></span>
+                        <a href="#dialog"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>unknown</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>inject(MatDialog)</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="48" class="link-to-prism">src/app/features/alert-history/alert-history.component.ts:48</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="displayedColumns"></a>
+                    <span class="name">
+                        <span ><b>displayedColumns</b></span>
+                        <a href="#displayedColumns"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>string[]</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>[
+    &#x27;createdAt&#x27;,
+    &#x27;severity&#x27;,
+    &#x27;alertType&#x27;,
+    &#x27;description&#x27;,
+    &#x27;cameraId&#x27;,
+    &#x27;address&#x27;,
+    &#x27;snapshotUrl&#x27;,
+    &#x27;acknowledged&#x27;
+  ]</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="54" class="link-to-prism">src/app/features/alert-history/alert-history.component.ts:54</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="isLoading"></a>
+                    <span class="name">
+                        <span ><b>isLoading</b></span>
+                        <a href="#isLoading"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>unknown</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>true</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="67" class="link-to-prism">src/app/features/alert-history/alert-history.component.ts:67</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="paginator"></a>
+                    <span class="name">
+                            <span class="modifier"></span>
+                        <span ><b>paginator</b></span>
+                        <a href="#paginator"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>MatPaginator</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <b>Decorators : </b>
+                        <br />
+                        <code>
+                            @ViewChild(MatPaginator)<br />
+                        </code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="69" class="link-to-prism">src/app/features/alert-history/alert-history.component.ts:69</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="resultsLength"></a>
+                    <span class="name">
+                        <span ><b>resultsLength</b></span>
+                        <a href="#resultsLength"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>0</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="66" class="link-to-prism">src/app/features/alert-history/alert-history.component.ts:66</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="router"></a>
+                    <span class="name">
+                            <span class="modifier">Private</span>
+                        <span ><b>router</b></span>
+                        <a href="#router"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>unknown</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>inject(Router)</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="49" class="link-to-prism">src/app/features/alert-history/alert-history.component.ts:49</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="sort"></a>
+                    <span class="name">
+                            <span class="modifier"></span>
+                        <span ><b>sort</b></span>
+                        <a href="#sort"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>MatSort</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <b>Decorators : </b>
+                        <br />
+                        <code>
+                            @ViewChild(MatSort)<br />
+                        </code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="70" class="link-to-prism">src/app/features/alert-history/alert-history.component.ts:70</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+</section>
+
+</div>
+
+
+    <div class="tab-pane fade  tab-source-code" id="source">
+        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { Component, AfterViewInit, ViewChild, inject, DestroyRef, ChangeDetectorRef } from &#x27;@angular/core&#x27;;
+import { CommonModule } from &#x27;@angular/common&#x27;;
+import { Router } from &#x27;@angular/router&#x27;;
+import { merge, of } from &#x27;rxjs&#x27;;
+import { startWith, switchMap, catchError, map, debounceTime } from &#x27;rxjs/operators&#x27;;
+import { takeUntilDestroyed } from &#x27;@angular/core/rxjs-interop&#x27;;
+
+// Material Imports
+import { MatTableModule } from &#x27;@angular/material/table&#x27;;
+import { MatPaginator, MatPaginatorModule } from &#x27;@angular/material/paginator&#x27;;
+import { MatSort, MatSortModule } from &#x27;@angular/material/sort&#x27;;
+import { MatIconModule } from &#x27;@angular/material/icon&#x27;;
+import { MatButtonModule } from &#x27;@angular/material/button&#x27;;
+import { MatTooltipModule } from &#x27;@angular/material/tooltip&#x27;;
+import { MatProgressSpinnerModule } from &#x27;@angular/material/progress-spinner&#x27;;
+import { MatDialog } from &#x27;@angular/material/dialog&#x27;;
+
+// Custom Imports
+import { HeaderComponent } from &#x27;../../shared/components/header/header.component&#x27;;
+import { AlertService } from &#x27;../../core/services/alert.service&#x27;;
+import { AuthService } from &#x27;../../core/services/auth.service&#x27;;
+import { Alert } from &#x27;../../core/models/app.models&#x27;;
+import { MapDialogComponent } from &#x27;../../shared/components/map_dialog/map-dialog.component&#x27;;
+import { ImagePreviewDialogComponent } from &#x27;../../shared/components/image-preview-dialog/image-preview-dialog.component&#x27;;
+ // Verifique se a pasta é map-dialog ou map_dialog
+
+@Component({
+  selector: &#x27;app-alert-history&#x27;,
+  standalone: true,
+  imports: [
+    CommonModule,
+    HeaderComponent,
+    MatTableModule,
+    MatPaginatorModule,
+    MatSortModule,
+    MatIconModule,
+    MatButtonModule,
+    MatTooltipModule,
+    MatProgressSpinnerModule
+  ],
+  templateUrl: &#x27;./alert-history.component.html&#x27;,
+  styleUrls: [&#x27;./alert-history.component.scss&#x27;]
+})
+export class AlertHistoryComponent implements AfterViewInit {
+
+  private alertService &#x3D; inject(AlertService);
+  private auth &#x3D; inject(AuthService);
+  private dialog &#x3D; inject(MatDialog);
+  private router &#x3D; inject(Router);
+  private destroyRef &#x3D; inject(DestroyRef);
+  private cdr &#x3D; inject(ChangeDetectorRef);
+
+  // ESTA ORDEM DEVE SER EXATAMENTE A MESMA DO HTML
+  displayedColumns: string[] &#x3D; [
+    &#x27;createdAt&#x27;,
+    &#x27;severity&#x27;,
+    &#x27;alertType&#x27;,
+    &#x27;description&#x27;,
+    &#x27;cameraId&#x27;,
+    &#x27;address&#x27;,
+    &#x27;snapshotUrl&#x27;,
+    &#x27;acknowledged&#x27;
+  ];
+
+  dataSource: Alert[] &#x3D; [];
+  resultsLength &#x3D; 0;
+  isLoading &#x3D; true;
+
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
+  @ViewChild(MatSort) sort!: MatSort;
+
+  ngAfterViewInit() {
+      // Reseta paginação ao ordenar
+      this.sort.sortChange.subscribe(() &#x3D;&gt; this.paginator.pageIndex &#x3D; 0);
+
+      merge(this.sort.sortChange, this.paginator.page)
+        .pipe(
+          startWith({}),
+          debounceTime(300), // Evita o erro AbortError e múltiplas chamadas
+          switchMap(() &#x3D;&gt; {
+            this.isLoading &#x3D; true;
+            this.cdr.detectChanges();
+
+            const user &#x3D; this.auth.currentUser();
+
+            // ⚠️ CORREÇÃO CRÍTICA: Se seus alertas no banco têm userId&#x3D;&quot;safe&quot;,
+            // você TEM que buscar por username, não ID.
+            // Se quiser usar ID, terá que apagar o banco e recriar os alertas usando o UUID.
+            const identifier &#x3D; user?.username; // Mudado de user?.id para user?.username para teste
+
+            if (!identifier) return of(null);
+
+            return this.alertService.getAlertHistory(
+              identifier,
+              this.paginator.pageIndex,
+              this.paginator.pageSize,
+              this.sort.active,
+              this.sort.direction
+            ).pipe(catchError((err) &#x3D;&gt; {
+                console.error(&#x27;Erro ao buscar histórico:&#x27;, err);
+                return of(null);
+            }));
+          }),
+          map(data &#x3D;&gt; {
+            this.isLoading &#x3D; false;
+            if (data &#x3D;&#x3D;&#x3D; null) return [];
+
+            // 🛡️ BLINDAGEM DE JSON: Aceita os dois formatos (Novo e Antigo)
+            // Se data.page existir (Novo Spring Boot), usa ele.
+            // Se não, tenta pegar totalElements da raiz (Antigo).
+            if (data.page) {
+                this.resultsLength &#x3D; data.page.totalElements;
+            } else if (&#x27;totalElements&#x27; in data) {
+                // @ts-ignore
+                this.resultsLength &#x3D; data.totalElements;
+            } else {
+                this.resultsLength &#x3D; 0;
+            }
+
+            return data.content || [];
+          }),
+          takeUntilDestroyed(this.destroyRef)
+        )
+        .subscribe(data &#x3D;&gt; {
+          this.dataSource &#x3D; data;
+          this.cdr.detectChanges();
+        });
+    }
+
+  openMap(alert: Alert) {
+    if (!alert.latitude || !alert.longitude) return;
+
+    this.dialog.open(MapDialogComponent, {
+      width: &#x27;800px&#x27;,
+      maxWidth: &#x27;95vw&#x27;,
+      panelClass: &#x27;glass-dialog&#x27;,
+      data: {
+        lat: alert.latitude,
+        lng: alert.longitude,
+        label: alert.alertType,
+        timestamp: alert.createdAt,
+        address: alert.address
+      }
+    });
+  }
+
+  goBack() {
+    this.router.navigate([&#x27;/dashboard&#x27;]);
+  }
+openImage(alert: Alert) {
+    if (!alert.snapshotUrl) return;
+
+    this.dialog.open(ImagePreviewDialogComponent, {
+      maxWidth: &#x27;95vw&#x27;,    // Ocupa quase toda a largura
+      maxHeight: &#x27;95vh&#x27;,   // Ocupa quase toda a altura
+      height: &#x27;auto&#x27;,
+      width: &#x27;auto&#x27;,
+      panelClass: &#x27;fullscreen-dialog&#x27;, // Classe opcional para remover paddings padrões do Material
+      backdropClass: &#x27;blur-backdrop&#x27;,  // Efeito de blur no fundo
+      data: {
+        imageUrl: alert.snapshotUrl,
+        title: &#x60; &#x60;,
+        date: alert.createdAt
+      }
+    });
+  }
+  markAsRead(alert: Alert, event: Event) {
+      // Evita que o clique propague (caso tenhamos clique na linha no futuro)
+      event.stopPropagation();
+
+      // Se já estiver lido, não faz nada
+      if (alert.acknowledged) return;
+
+      // Chama o backend
+      this.alertService.acknowledge(alert.id).subscribe({
+        next: () &#x3D;&gt; {
+          // Atualiza o estado LOCALMENTE para feedback instantâneo
+          alert.acknowledged &#x3D; true;
+          
+          // Força o Angular a redesenhar a tabela para mostrar o ícone verde
+          this.cdr.detectChanges();
+        },
+        error: (err) &#x3D;&gt; console.error(&#x27;Erro ao marcar como lido&#x27;, err)
+      });
+    }
+
+}
+</code></pre>
+    </div>
+
+    <div class="tab-pane fade " id="templateData">
+        <pre class="line-numbers"><code class="language-html">&lt;app-header&gt;&lt;/app-header&gt;
+
+&lt;div class&#x3D;&quot;history-container&quot;&gt;
+
+  &lt;div class&#x3D;&quot;page-header&quot;&gt;
+    &lt;div class&#x3D;&quot;title-group&quot;&gt;
+        &lt;button mat-icon-button (click)&#x3D;&quot;goBack()&quot; matTooltip&#x3D;&quot;Voltar ao Dashboard&quot;&gt;
+            &lt;mat-icon&gt;arrow_back&lt;/mat-icon&gt;
+        &lt;/button&gt;
+        &lt;h1&gt;Histórico de Alertas&lt;/h1&gt;
+    &lt;/div&gt;
+
+    &lt;div class&#x3D;&quot;stats-chip&quot;&gt;
+
+        &lt;span&gt;Total: &lt;strong&gt;{{ resultsLength }}&lt;/strong&gt;&lt;/span&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+
+  &lt;div class&#x3D;&quot;table-wrapper mat-elevation-z8&quot;&gt;
+
+    @if (isLoading) {
+      &lt;div class&#x3D;&quot;loading-shade&quot;&gt;
+        &lt;mat-progress-spinner mode&#x3D;&quot;indeterminate&quot; diameter&#x3D;&quot;40&quot;&gt;&lt;/mat-progress-spinner&gt;
+      &lt;/div&gt;
+    }
+
+    &lt;table mat-table [dataSource]&#x3D;&quot;dataSource&quot; matSort matSortActive&#x3D;&quot;createdAt&quot; matSortDirection&#x3D;&quot;asc&quot; &gt;
+
+      &lt;ng-container matColumnDef&#x3D;&quot;createdAt&quot;&gt;
+        &lt;th mat-header-cell *matHeaderCellDef mat-sort-header&gt; Data/Hora &lt;/th&gt;
+        &lt;td mat-cell *matCellDef&#x3D;&quot;let row&quot;&gt;
+            &lt;span class&#x3D;&quot;text-data&quot;&gt;{{ row.createdAt | date:&#x27;dd/MM/yyyy HH:mm&#x27; }}&lt;/span&gt;
+        &lt;/td&gt;
+      &lt;/ng-container&gt;
+
+      &lt;ng-container matColumnDef&#x3D;&quot;severity&quot;&gt;
+        &lt;th mat-header-cell *matHeaderCellDef mat-sort-header&gt; Nível &lt;/th&gt;
+        &lt;td mat-cell *matCellDef&#x3D;&quot;let row&quot;&gt;
+            &lt;div class&#x3D;&quot;severity-badge&quot; [class]&#x3D;&quot;row.severity.toLowerCase()&quot;&gt;
+                &lt;mat-icon class&#x3D;&quot;badge-icon&quot;&gt;
+                    {{ row.severity &#x3D;&#x3D;&#x3D; &#x27;CRITICAL&#x27; ? &#x27;warning&#x27; : &#x27;info&#x27; }}
+                &lt;/mat-icon&gt;
+                &lt;span&gt;{{ row.severity }}&lt;/span&gt;
+            &lt;/div&gt;
+        &lt;/td&gt;
+      &lt;/ng-container&gt;
+
+      &lt;ng-container matColumnDef&#x3D;&quot;alertType&quot;&gt;
+        &lt;th mat-header-cell *matHeaderCellDef mat-sort-header&gt; Tipo &lt;/th&gt;
+        &lt;td mat-cell *matCellDef&#x3D;&quot;let row&quot;&gt;
+            &lt;span class&#x3D;&quot;type-text&quot;&gt;{{ row.alertType }}&lt;/span&gt;
+        &lt;/td&gt;
+      &lt;/ng-container&gt;
+
+      &lt;ng-container matColumnDef&#x3D;&quot;description&quot;&gt;
+        &lt;th mat-header-cell *matHeaderCellDef mat-sort-header&gt; Descrição &lt;/th&gt;
+        &lt;td mat-cell *matCellDef&#x3D;&quot;let row&quot;&gt;
+            &lt;span class&#x3D;&quot;truncate-text&quot; [matTooltip]&#x3D;&quot;row.description&quot;&gt;
+                {{ row.description }}
+            &lt;/span&gt;
+        &lt;/td&gt;
+      &lt;/ng-container&gt;
+
+      &lt;ng-container matColumnDef&#x3D;&quot;cameraId&quot;&gt;
+        &lt;th mat-header-cell *matHeaderCellDef mat-sort-header&gt; Câmera &lt;/th&gt;
+        &lt;td mat-cell *matCellDef&#x3D;&quot;let row&quot;&gt;
+            &lt;code class&#x3D;&quot;cam-badge&quot;&gt;{{ row.cameraId }}&lt;/code&gt;
+        &lt;/td&gt;
+      &lt;/ng-container&gt;
+
+      &lt;ng-container matColumnDef&#x3D;&quot;address&quot;&gt;
+        &lt;th mat-header-cell *matHeaderCellDef mat-sort-header&gt; Localização &lt;/th&gt;
+        &lt;td mat-cell *matCellDef&#x3D;&quot;let row&quot;&gt;
+            &lt;div class&#x3D;&quot;geo-cell&quot;&gt;
+                @if (row.latitude &amp;&amp; row.longitude) {
+                    &lt;button mat-icon-button class&#x3D;&quot;btn-map-friendly&quot; (click)&#x3D;&quot;openMap(row)&quot; matTooltip&#x3D;&quot;Abrir Mapa&quot;&gt;
+                        &lt;mat-icon&gt;place&lt;/mat-icon&gt;
+                    &lt;/button&gt;
+                    &lt;span class&#x3D;&quot;geo-text&quot; [matTooltip]&#x3D;&quot;row.address&quot;&gt;
+                        {{ row.address || &#x27;Coordenadas GPS&#x27; }}
+                    &lt;/span&gt;
+                } @else {
+                    &lt;mat-icon class&#x3D;&quot;icon-disabled&quot; matTooltip&#x3D;&quot;Sem GPS&quot;&gt;location_off&lt;/mat-icon&gt;
+                    &lt;span class&#x3D;&quot;geo-text disabled&quot;&gt;Sem sinal GPS&lt;/span&gt;
+                }
+            &lt;/div&gt;
+        &lt;/td&gt;
+      &lt;/ng-container&gt;
+
+      &lt;ng-container matColumnDef&#x3D;&quot;snapshotUrl&quot;&gt;
+        &lt;th mat-header-cell *matHeaderCellDef&gt; Evidência &lt;/th&gt;
+        &lt;td mat-cell *matCellDef&#x3D;&quot;let row&quot;&gt;
+            @if (row.snapshotUrl) {
+                &lt;div class&#x3D;&quot;thumb-wrapper&quot; (click)&#x3D;&quot;openImage(row)&quot; matTooltip&#x3D;&quot;Clique para ampliar&quot;&gt;
+                    &lt;img [src]&#x3D;&quot;row.snapshotUrl&quot; alt&#x3D;&quot;Snapshot&quot; loading&#x3D;&quot;lazy&quot;&gt;
+                &lt;/div&gt;
+            } @else {
+                &lt;span class&#x3D;&quot;no-data&quot;&gt;-&lt;/span&gt;
+            }
+        &lt;/td&gt;
+      &lt;/ng-container&gt;
+
+      &lt;ng-container matColumnDef&#x3D;&quot;acknowledged&quot;&gt;
+        &lt;th mat-header-cell *matHeaderCellDef mat-sort-header&gt; Status &lt;/th&gt;
+        &lt;td mat-cell *matCellDef&#x3D;&quot;let row&quot;&gt;
+            @if (row.acknowledged) {
+                &lt;div class&#x3D;&quot;status-indicator success&quot;&gt;
+                    &lt;mat-icon&gt;verified&lt;/mat-icon&gt;
+                    &lt;span&gt;Verificado&lt;/span&gt;
+                &lt;/div&gt;
+            } @else {
+                &lt;div class&#x3D;&quot;status-indicator pending clickable&quot;
+                     (click)&#x3D;&quot;markAsRead(row, $event)&quot;
+                     matTooltip&#x3D;&quot;Clique para marcar como lido&quot;&gt;
+                    &lt;mat-icon&gt;pending&lt;/mat-icon&gt;
+                    &lt;span&gt;Pendente&lt;/span&gt;
+                &lt;/div&gt;
+            }
+        &lt;/td&gt;
+      &lt;/ng-container&gt;
+
+      &lt;tr mat-header-row *matHeaderRowDef&#x3D;&quot;displayedColumns; sticky: true&quot;&gt;&lt;/tr&gt;
+      &lt;tr mat-row *matRowDef&#x3D;&quot;let row; columns: displayedColumns;&quot; class&#x3D;&quot;element-row&quot;&gt;&lt;/tr&gt;
+
+      &lt;tr class&#x3D;&quot;mat-row&quot; *matNoDataRow&gt;
+        &lt;td class&#x3D;&quot;mat-cell&quot; colspan&#x3D;&quot;8&quot;&gt;
+           &lt;div class&#x3D;&quot;empty-state-wrapper&quot;&gt;
+               &lt;mat-icon class&#x3D;&quot;empty-icon&quot;&gt;search_off&lt;/mat-icon&gt;
+               &lt;p&gt;Nenhum registro encontrado no histórico.&lt;/p&gt;
+           &lt;/div&gt;
+        &lt;/td&gt;
+      &lt;/tr&gt;
+
+    &lt;/table&gt;
+
+    &lt;mat-paginator
+        [length]&#x3D;&quot;resultsLength&quot;
+        [pageSize]&#x3D;&quot;10&quot;
+        [pageSizeOptions]&#x3D;&quot;[5, 10, 20, 50]&quot;
+        showFirstLastButtons
+        aria-label&#x3D;&quot;Selecione a página&quot;&gt;
+    &lt;/mat-paginator&gt;
+
+  &lt;/div&gt;
+&lt;/div&gt;
+</code></pre>
+    </div>
+
+    <div class="tab-pane fade " id="styleData">
+                <p class="comment">
+                    <code>./alert-history.component.scss</code>
+                </p>
+                <pre class="line-numbers"><code class="language-scss">/* Variáveis de Cores (Design System) */
+$primary: #d63384;
+$success: #2e7d32;
+$warn: #f44336;
+$info: #0288d1;
+$dark-glass: rgba(30, 30, 30, 0.7);
+
+.history-container {
+    padding: 24px;
+    max-width: 100%;
+    margin: 0 auto;
+    color: #fff;
+    animation: fadeIn 0.4s ease-out;
+
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 24px;
+
+        .title-group {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            h1 { margin: 0; font-size: 1.8rem; font-weight: 300; letter-spacing: 0.5px; }
+        }
+
+        .stats {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+    }
+}
+
+.table-wrapper {
+    position: relative;
+    background: $dark-glass;
+    backdrop-filter: blur(16px);
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+
+table.alert-table {
+    width: 100%;
+    background: transparent;
+
+    th.mat-header-cell {
+        background: rgba(0, 0, 0, 0.5);
+        color: rgba(255, 255, 255, 0.9);
+        font-weight: 600;
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        padding: 16px;
+        white-space: nowrap;
+    }
+
+    td.mat-cell {
+        color: rgba(255, 255, 255, 0.9);
+        border-bottom-color: rgba(255, 255, 255, 0.05);
+        padding: 8px 16px;
+        font-size: 0.9rem;
+        vertical-align: middle;
+    }
+
+    .table-row {
+        transition: background 0.2s;
+        &amp;:hover { background: rgba(255, 255, 255, 0.05); }
+    }
+}
+
+/* --- Colunas Específicas --- */
+
+/* 1. Address Wrapper (Icon + Text) */
+.address-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    max-width: 280px;
+
+    .addr-text {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .text-muted { opacity: 0.5; }
+}
+
+/* 2. Snapshot Image */
+.img-thumb-container {
+    width: 70px;
+    height: 45px;
+    border-radius: 6px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    cursor: pointer;
+    background: #000;
+
+    img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.2s;
+        &amp;:hover { transform: scale(1.1); }
+    }
+}
+
+/* 3. Badges (Severity) */
+.badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    border-radius: 16px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+
+    .badge-icon { font-size: 16px; width: 16px; height: 16px; }
+
+    &amp;.critical { background: rgba($warn, 0.15); color: #ff8a80; border: 1px solid rgba($warn, 0.3); }
+    &amp;.warning { background: rgba(#ff9800, 0.15); color: #ffcc80; border: 1px solid rgba(#ff9800, 0.3); }
+    &amp;.info { background: rgba($info, 0.15); color: #81d4fa; border: 1px solid rgba($info, 0.3); }
+}
+
+/* 4. Status Chips */
+.status-chip {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.85rem;
+
+    mat-icon { font-size: 18px; width: 18px; height: 18px; }
+
+    &amp;.success { color: #69f0ae; }
+    &amp;.pending { color: #ffab40; opacity: 0.8; }
+}
+
+/* Utilitários */
+.truncate-cell { display: block; max-width: 250px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; opacity: 0.8; }
+.cam-code { font-family: &#x27;Roboto Mono&#x27;, monospace; background: rgba(255,255,255,0.1); padding: 2px 6px; border-radius: 4px; font-size: 0.8rem; }
+.bold-text { font-weight: 600; }
+.no-img { opacity: 0.3; font-size: 1.2rem; }
+
+/* Loading &amp; Empty States */
+.loading-shade {
+    position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.4); z-index: 10;
+    display: flex; align-items: center; justify-content: center;
+}
+
+.empty-state {
+    display: flex; flex-direction: column; align-items: center; gap: 12px; opacity: 0.6;
+    mat-icon { font-size: 48px; width: 48px; height: 48px; }
+    p { margin: 0; }
+}
+
+/* Paginator Dark Override */
+::ng-deep .mat-mdc-paginator {
+    background: transparent !important;
+    color: #fff !important;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    .mat-mdc-icon-button { color: rgba(255,255,255,0.9) !important; }
+    .mat-mdc-select-value { color: #fff !important; }
+}
+
+.thumb-wrapper {
+    /* 1. Definimos tamanhos FIXOS para a caixa da imagem */
+    width: 80px;
+    height: 50px;
+
+    /* 2. Estética para ficar bonito na tabela escura */
+    border-radius: 6px;         /* Cantos arredondados */
+    overflow: hidden;           /* Garante que a imagem respeite a borda redonda */
+    border: 1px solid rgba(255, 255, 255, 0.25); /* Borda sutil para definição */
+    cursor: pointer;            /* Mãozinha para indicar clique */
+    background: #1a1a1a;        /* Fundo escuro enquanto carrega */
+    position: relative;         /* Para o alinhamento interno */
+    margin: 4px 0;              /* Um pequeno respiro vertical na célula */
+    box-shadow: 0 2px 5px rgba(0,0,0,0.3); /* Sombra leve */
+
+    /* 3. Comportamento da imagem dentro da caixa */
+    img {
+        width: 100%;
+        height: 100%;
+        /* O SEGREDO: &#x27;cover&#x27; faz a imagem preencher a caixa sem distorcer, cortando excessos se necessário */
+        object-fit: cover;
+        display: block;         /* Remove espaços em branco indesejados abaixo da imagem */
+        transition: transform 0.3s ease; /* Suaviza o efeito de zoom */
+        opacity: 0.9;           /* Leve transparência para integrar melhor */
+    }
+
+    /* 4. Efeito Hover (Zoom suave ao passar o mouse) */
+    &amp;:hover {
+        border-color: rgba(255, 255, 255, 0.5); /* Realça a borda */
+        img {
+            transform: scale(1.1); /* Zoom de 10% */
+            opacity: 1;            /* Fica totalmente nítida */
+        }
+    }
+
+
+    /* --- CORES DE SEVERIDADE (NÍVEL) --- */
+.severity-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+
+    .badge-icon { font-size: 16px; width: 16px; height: 16px; }
+
+    /* 🔴 CRITICAL: Vermelho Alerta Forte */
+    &amp;.critical {
+        background: rgba(211, 47, 47, 0.2);
+        color: #ff5252;
+        border: 1px solid rgba(255, 82, 82, 0.4);
+        box-shadow: 0 0 8px rgba(211, 47, 47, 0.3); /* Efeito de brilho */
+    }
+
+    /* 🟠 WARNING: Laranja */
+    &amp;.warning {
+        background: rgba(255, 152, 0, 0.15);
+        color: #ffb74d;
+        border: 1px solid rgba(255, 152, 0, 0.3);
+    }
+
+    /* 🔵 INFO: Azul */
+    &amp;.info {
+        background: rgba(3, 169, 244, 0.15);
+        color: #4fc3f7;
+        border: 1px solid rgba(3, 169, 244, 0.3);
+    }
+}
+
+/* --- BOTÃO DE MAPA AMIGÁVEL --- */
+.btn-map-friendly {
+    /* Um Azul Turquesa/Ciano é &quot;amigável&quot;, tecnológico e lembra GPS */
+    color: #40c4ff !important;
+
+    &amp;:hover {
+        background-color: rgba(64, 196, 255, 0.15) !important;
+        transform: scale(1.1); /* Leve zoom ao passar o mouse */
+        transition: transform 0.2s ease;
+    }
+
+    mat-icon {
+        font-size: 22px; /* Ícone levemente maior */
+    }
+}
+}
+
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+</code></pre>
+    </div>
+
+    <div class="tab-pane fade " id="tree">
+        <div id="tree-container"></div>
+        <div class="tree-legend">
+            <div class="title">
+                <b>Legend</b>
+            </div>
+            <div>
+                <div class="color htmlelement"></div><span>Html element</span>
+            </div>
+            <div>
+                <div class="color component"></div><span>Component</span>
+            </div>
+            <div>
+                <div class="color directive"></div><span>Html element with directive</span>
+            </div>
+        </div>
+    </div>
+
+    
+</div>
+
+<script src="../js/libs/vis-network.min.js"></script>
+<script src="../js/libs/htmlparser.js"></script>
+<script src="../js/libs/deep-iterator.js"></script>
+<script>
+        var COMPONENT_TEMPLATE = '<div><app-header></app-header><div class="history-container">  <div class="page-header">    <div class="title-group">        <button mat-icon-button (click)="goBack()" matTooltip="Voltar ao Dashboard">            <mat-icon>arrow_back</mat-icon>        </button>        <h1>Histórico de Alertas</h1>    </div>    <div class="stats-chip">        <span>Total: <strong>{{ resultsLength }}</strong></span>    </div>  </div>  <div class="table-wrapper mat-elevation-z8">    @if (isLoading) {      <div class="loading-shade">        <mat-progress-spinner mode="indeterminate" diameter="40"></mat-progress-spinner>      </div>    }    <table mat-table [dataSource]="dataSource" matSort matSortActive="createdAt" matSortDirection="asc" >      <ng-container matColumnDef="createdAt">        <th mat-header-cell *matHeaderCellDef mat-sort-header> Data/Hora </th>        <td mat-cell *matCellDef="let row">            <span class="text-data">{{ row.createdAt | date:\'dd/MM/yyyy HH:mm\' }}</span>        </td>      </ng-container>      <ng-container matColumnDef="severity">        <th mat-header-cell *matHeaderCellDef mat-sort-header> Nível </th>        <td mat-cell *matCellDef="let row">            <div class="severity-badge" [class]="row.severity.toLowerCase()">                <mat-icon class="badge-icon">                    {{ row.severity === \'CRITICAL\' ? \'warning\' : \'info\' }}                </mat-icon>                <span>{{ row.severity }}</span>            </div>        </td>      </ng-container>      <ng-container matColumnDef="alertType">        <th mat-header-cell *matHeaderCellDef mat-sort-header> Tipo </th>        <td mat-cell *matCellDef="let row">            <span class="type-text">{{ row.alertType }}</span>        </td>      </ng-container>      <ng-container matColumnDef="description">        <th mat-header-cell *matHeaderCellDef mat-sort-header> Descrição </th>        <td mat-cell *matCellDef="let row">            <span class="truncate-text" [matTooltip]="row.description">                {{ row.description }}            </span>        </td>      </ng-container>      <ng-container matColumnDef="cameraId">        <th mat-header-cell *matHeaderCellDef mat-sort-header> Câmera </th>        <td mat-cell *matCellDef="let row">            <code class="cam-badge">{{ row.cameraId }}</code>        </td>      </ng-container>      <ng-container matColumnDef="address">        <th mat-header-cell *matHeaderCellDef mat-sort-header> Localização </th>        <td mat-cell *matCellDef="let row">            <div class="geo-cell">                @if (row.latitude && row.longitude) {                    <button mat-icon-button class="btn-map-friendly" (click)="openMap(row)" matTooltip="Abrir Mapa">                        <mat-icon>place</mat-icon>                    </button>                    <span class="geo-text" [matTooltip]="row.address">                        {{ row.address || \'Coordenadas GPS\' }}                    </span>                } @else {                    <mat-icon class="icon-disabled" matTooltip="Sem GPS">location_off</mat-icon>                    <span class="geo-text disabled">Sem sinal GPS</span>                }            </div>        </td>      </ng-container>      <ng-container matColumnDef="snapshotUrl">        <th mat-header-cell *matHeaderCellDef> Evidência </th>        <td mat-cell *matCellDef="let row">            @if (row.snapshotUrl) {                <div class="thumb-wrapper" (click)="openImage(row)" matTooltip="Clique para ampliar">                    <img [src]="row.snapshotUrl" alt="Snapshot" loading="lazy">                </div>            } @else {                <span class="no-data">-</span>            }        </td>      </ng-container>      <ng-container matColumnDef="acknowledged">        <th mat-header-cell *matHeaderCellDef mat-sort-header> Status </th>        <td mat-cell *matCellDef="let row">            @if (row.acknowledged) {                <div class="status-indicator success">                    <mat-icon>verified</mat-icon>                    <span>Verificado</span>                </div>            } @else {                <div class="status-indicator pending clickable"                     (click)="markAsRead(row, $event)"                     matTooltip="Clique para marcar como lido">                    <mat-icon>pending</mat-icon>                    <span>Pendente</span>                </div>            }        </td>      </ng-container>      <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>      <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="element-row"></tr>      <tr class="mat-row" *matNoDataRow>        <td class="mat-cell" colspan="8">           <div class="empty-state-wrapper">               <mat-icon class="empty-icon">search_off</mat-icon>               <p>Nenhum registro encontrado no histórico.</p>           </div>        </td>      </tr>    </table>    <mat-paginator        [length]="resultsLength"        [pageSize]="10"        [pageSizeOptions]="[5, 10, 20, 50]"        showFirstLastButtons        aria-label="Selecione a página">    </mat-paginator>  </div></div></div>'
+    var COMPONENTS = [{'name': 'AlertHistoryComponent', 'selector': 'app-alert-history'},{'name': 'App', 'selector': 'app-root'},{'name': 'DashboardComponent', 'selector': 'app-dashboard'},{'name': 'HeaderComponent', 'selector': 'app-header'},{'name': 'ImagePreviewDialogComponent', 'selector': 'app-image-preview-dialog'},{'name': 'LoginComponent', 'selector': 'app-login'},{'name': 'MapDialogComponent', 'selector': 'app-map-dialog'},{'name': 'RegisterComponent', 'selector': 'app-register'},{'name': 'Settings', 'selector': 'app-settings'},{'name': 'UserProfileDialogComponent', 'selector': 'app-user-profile-dialog'}];
+    var DIRECTIVES = [{'name': 'PhoneMaskDirective', 'selector': '[appPhoneMask]'}];
+    var ACTUAL_COMPONENT = {'name': 'AlertHistoryComponent'};
+</script>
+<script src="../js/tree.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                   </div><div class="search-results">
+    <div class="has-results">
+        <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+        <ul class="search-results-list"></ul>
+    </div>
+    <div class="no-results">
+        <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+    </div>
+</div>
+</div>
+               <!-- END CONTENT -->
+           </div>
+       </div>
+
+          <label class="dark-mode-switch">
+               <input type="checkbox">
+               <span class="slider">
+                    <svg class="slider-icon" viewBox="0 0 24 24" fill="none" height="20" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" width="20" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path>
+                    </svg>
+               </span>
+          </label>
+
+       <script>
+            var COMPODOC_CURRENT_PAGE_DEPTH = 1;
+            var COMPODOC_CURRENT_PAGE_CONTEXT = 'component';
+            var COMPODOC_CURRENT_PAGE_URL = 'AlertHistoryComponent.html';
+            var MAX_SEARCH_RESULTS = 15;
+       </script>
+
+       <script>
+               $darkModeToggleSwitchers = document.querySelectorAll('.dark-mode-switch input');
+               checkToggle(darkModeState);
+               if ($darkModeToggleSwitchers.length > 0) {
+                    for (var i = 0; i < $darkModeToggleSwitchers.length; i++) {
+                         $darkModeToggleSwitchers[i].addEventListener('change', function (event) {
+                              darkModeState = !darkModeState;
+                              toggleDarkMode(darkModeState);
+                         });
+                    }
+               }
+          </script>
+
+       <script src="../js/libs/custom-elements.min.js"></script>
+       <script src="../js/libs/lit-html.js"></script>
+
+       <script src="../js/menu-wc.js" defer></script>
+       <script nomodule src="../js/menu-wc_es5.js" defer></script>
+
+       <script src="../js/libs/bootstrap-native.js"></script>
+
+       <script src="../js/libs/es6-shim.min.js"></script>
+       <script src="../js/libs/EventDispatcher.js"></script>
+       <script src="../js/libs/promise.min.js"></script>
+
+       <script src="../js/compodoc.js"></script>
+
+       <script src="../js/tabs.js"></script>
+       <script src="../js/menu.js"></script>
+       <script src="../js/libs/clipboard.min.js"></script>
+       <script src="../js/libs/prism.js"></script>
+       <script src="../js/sourceCode.js"></script>
+          <script src="../js/search/search.js"></script>
+          <script src="../js/search/lunr.min.js"></script>
+          <script src="../js/search/search-lunr.js"></script>
+          <script src="../js/search/search_index.js"></script>
+       <script src="../js/lazy-load-graphs.js"></script>
+
+
+    </body>
+</html>
