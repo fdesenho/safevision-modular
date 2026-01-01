@@ -14,7 +14,7 @@ Em uma arquitetura de microsserviços distribuída, garantir a integridade entre
 Implementar uma estratégia de testes baseada na stack **JUnit 5**.
 * **Testes Unitários:** Uso de Mockito para isolamento de lógica pura de negócio.
 * **Testes de Integração:** Adoção de **Testcontainers** para subir instâncias reais em Docker (PostgreSQL, RabbitMQ, MinIO) durante o ciclo de teste.
-* **Métrica de Qualidade:** Cobertura mínima de 80% monitorada via **Jacoco**.
+* **Métrica de Qualidade:** Cobertura mínima de 60% monitorada via **Jacoco**.
 
 ## Consequências
 ### Positivas

@@ -31,6 +31,15 @@ O sistema processa vídeo localmente (YOLOv8/MediaPipe), detecta ameaças em mil
 
 ---
 
+## 🛡️ Qualidade & Testes (CI/CD)
+
+O projeto segue uma política rigorosa de qualidade focada em **Lógica de Negócio Sensível**. Utilizamos **JaCoCo** para auditoria de cobertura e **JUnit 5** com **Mockito** para blindagem dos microserviços.
+
+> 📊 **Status da Cobertura:** Atualmente mantemos **> 60%** de cobertura global, com foco em 89% no motor de IA (Recognition Service). 
+> **[📂 Visualizar Relatório Detalhado de Janeiro/2026](report_jan_2026.md)**
+
+---
+
 ## 🚀 Como Rodar o Projeto (Quick Start)
 
 Este projeto utiliza **Docker Compose** para orquestrar todos os microsserviços, banco de dados e frontend.

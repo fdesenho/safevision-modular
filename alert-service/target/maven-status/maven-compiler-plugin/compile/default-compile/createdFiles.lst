@@ -11,7 +11,6 @@ com\safevision\alertservice\model\Alert.class
 com\safevision\alertservice\service\EmailAlertService.class
 com\safevision\alertservice\service\TelegramService$1.class
 com\safevision\alertservice\config\RabbitQueueProperties.class
-com\safevision\alertservice\integration\AlertIntegrationTest.class
 com\safevision\alertservice\config\WebSocketConfig.class
 com\safevision\alertservice\service\TelephonyService.class
 com\safevision\alertservice\client\AlertPreferenceClient.class
