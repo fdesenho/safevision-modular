@@ -1,0 +1,1441 @@
+<!doctype html>
+<html class="no-js" lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>safevision-ui documentation</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="icon" type="image/x-icon" href="../images/favicon.ico">
+	   <link rel="stylesheet" href="../styles/style.css">
+        <link rel="stylesheet" href="../styles/dark.css">
+    </head>
+    <body>
+          <script>
+               // Blocking script to avoid flickering dark mode
+               // Dark mode toggle button
+               var useDark = window.matchMedia('(prefers-color-scheme: dark)');
+               var darkModeState = useDark.matches;
+               var $darkModeToggleSwitchers = document.querySelectorAll('.dark-mode-switch input');
+               var $darkModeToggles = document.querySelectorAll('.dark-mode-switch');
+               var darkModeStateLocal = localStorage.getItem('compodoc_darkmode-state');
+
+               function checkToggle(check) {
+                    for (var i = 0; i < $darkModeToggleSwitchers.length; i++) {
+                         $darkModeToggleSwitchers[i].checked = check;
+                    }
+               }
+
+               function toggleDarkMode(state) {
+                    if (window.localStorage) {
+                         localStorage.setItem('compodoc_darkmode-state', state);
+                    }
+
+                    checkToggle(state);
+
+                    const hasClass = document.body.classList.contains('dark');
+
+                    if (state) {
+                         for (var i = 0; i < $darkModeToggles.length; i++) {
+                              $darkModeToggles[i].classList.add('dark');
+                         }
+                         if (!hasClass) {
+                              document.body.classList.add('dark');
+                         }
+                    } else {
+                         for (var i = 0; i < $darkModeToggles.length; i++) {
+                              $darkModeToggles[i].classList.remove('dark');
+                         }
+                         if (hasClass) {
+                              document.body.classList.remove('dark');
+                         }
+                    }
+               }
+
+               useDark.addEventListener('change', function (evt) {
+                    toggleDarkMode(evt.matches);
+               });
+               if (darkModeStateLocal) {
+                    darkModeState = darkModeStateLocal === 'true';
+               }
+               toggleDarkMode(darkModeState);
+          </script>
+          <script>
+              // --- Iframe navigation tracking for Template Playground ---
+              function sendCurrentUrlToParent() {
+                  if (window.parent && window.parent !== window) {
+                      window.parent.postMessage({
+                          type: 'compodoc-iframe-navigate',
+                          url: window.location.pathname + window.location.hash
+                      }, '*');
+                  }
+              }
+              window.addEventListener('hashchange', sendCurrentUrlToParent, false);
+              window.addEventListener('popstate', sendCurrentUrlToParent, false);
+              window.addEventListener('DOMContentLoaded', sendCurrentUrlToParent, false);
+          </script>
+
+        <div class="navbar navbar-default navbar-fixed-top d-md-none p-0">
+               <div class="d-flex">
+                    <a href="../" class="navbar-brand">safevision-ui documentation</a>
+                    <button type="button" class="btn btn-default btn-menu ion-ios-menu" id="btn-menu"></button>
+               </div>
+        </div>
+
+        <div class="xs-menu menu" id="mobile-menu">
+                <div id="book-search-input" role="search"><input type="text" placeholder="Type to search"></div>            <compodoc-menu></compodoc-menu>
+        </div>
+
+        <div class="container-fluid main">
+           <div class="row main">
+               <div class="d-none d-md-block menu">
+                   <compodoc-menu mode="normal"></compodoc-menu>
+               </div>
+               <!-- START CONTENT -->
+               <div class="content component">
+                   <div class="content-data">
+
+
+
+
+
+
+
+
+<ol class="breadcrumb">
+  <li class="breadcrumb-item">Components</li>
+  <li class="breadcrumb-item"
+  >
+  RegisterComponent</li>
+</ol>
+
+<ul class="nav nav-tabs" role="tablist">
+        <li class="nav-item">
+            <a href="#info" class="nav-link active"
+                role="tab" id="info-tab" data-bs-toggle="tab" data-link="info">Info</a>
+        </li>
+        <li class="nav-item">
+            <a href="#source" class="nav-link"
+                role="tab" id="source-tab" data-bs-toggle="tab" data-link="source">Source</a>
+        </li>
+        <li class="nav-item">
+            <a href="#templateData" class="nav-link"
+                role="tab" id="templateData-tab" data-bs-toggle="tab" data-link="template">Template</a>
+        </li>
+        <li class="nav-item">
+            <a href="#styleData" class="nav-link"
+                role="tab" id="styleData-tab" data-bs-toggle="tab" data-link="style">Styles</a>
+        </li>
+        <li class="nav-item">
+            <a href="#tree" class="nav-link"
+                role="tab" id="tree-tab" data-bs-toggle="tab" data-link="dom-tree">DOM Tree</a>
+        </li>
+</ul>
+
+<div class="tab-content">
+    <div class="tab-pane fade active in" id="info"><p class="comment">
+    <h3>File</h3>
+</p>
+<p class="comment">
+    <code>src/app/features/auth/register/register.component.ts</code>
+</p>
+
+
+
+
+
+
+<section data-compodoc="block-metadata">
+    <h3>Metadata</h3>
+    <table class="table table-sm table-hover metadata">
+        <tbody>
+
+
+
+
+
+
+
+
+
+
+
+
+            <tr>
+                <td class="col-md-3">selector</td>
+                <td class="col-md-9"><code>app-register</code></td>
+            </tr>
+
+            <tr>
+                <td class="col-md-3">standalone</td>
+                <td class="col-md-9"><code>true</code></td>
+            </tr>
+
+            <tr>
+                <td class="col-md-3">imports</td>
+                <td class="col-md-9">
+                            <code>CommonModule</code>
+                            <code>ReactiveFormsModule</code>
+                            <code>RouterLink</code>
+                            <code>MatCardModule</code>
+                            <code>MatInputModule</code>
+                            <code>MatButtonModule</code>
+                            <code>MatIconModule</code>
+                            <code>MatCheckboxModule</code>
+                            <code>MatProgressSpinnerModule</code>
+                            <code>MatSnackBarModule</code>
+                            <code>MatChipsModule</code>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="col-md-3">styleUrls</td>
+                <td class="col-md-9"><code>./register.component.scss</code></td>
+            </tr>
+
+
+
+            <tr>
+                <td class="col-md-3">templateUrl</td>
+                <td class="col-md-9"><code>./register.component.html</code></td>
+            </tr>
+
+
+
+
+
+
+
+
+        </tbody>
+    </table>
+</section>
+
+    <section data-compodoc="block-index">
+    <h3 id="index">Index</h3>
+    <table class="table table-sm table-bordered index-table">
+        <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <h6><b>Properties</b></h6>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <ul class="index-list">
+                            <li>
+                                <a href="#alertOptions" >alertOptions</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Private</span>
+                                <a href="#authService" >authService</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Private</span>
+                                <a href="#fb" >fb</a>
+                            </li>
+                            <li>
+                                <a href="#isLoading" >isLoading</a>
+                            </li>
+                            <li>
+                                <a href="#isRegisterSuccess" >isRegisterSuccess</a>
+                            </li>
+                            <li>
+                                <a href="#registerForm" >registerForm</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Private</span>
+                                <a href="#router" >router</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Private</span>
+                                <a href="#snackBar" >snackBar</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="col-md-4">
+                        <h6><b>Methods</b></h6>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <ul class="index-list">
+                            <li>
+                                <a href="#goToLogin" >goToLogin</a>
+                            </li>
+                            <li>
+                                <a href="#onSubmit" >onSubmit</a>
+                            </li>
+                            <li>
+                                <a href="#passwordMatchValidator" >passwordMatchValidator</a>
+                            </li>
+                            <li>
+                                <a href="#toggleAlert" >toggleAlert</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+
+
+
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <h6><b>Accessors</b></h6>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="col-md-4">
+                            <ul class="index-list">
+                                <li>
+                                    <a href="#alertTypesArray" >alertTypesArray</a>
+                                </li>
+                            </ul>
+                        </td>
+                    </tr>
+        </tbody>
+    </table>
+</section>
+
+
+
+
+
+
+    <section data-compodoc="block-methods">
+    
+    <h3 id="methods">
+        Methods
+    </h3>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="goToLogin"></a>
+                    <span class="name">
+                        <span ><b>goToLogin</b></span>
+                        <a href="#goToLogin"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>goToLogin()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="140"
+                                    class="link-to-prism">src/app/features/auth/register/register.component.ts:140</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="onSubmit"></a>
+                    <span class="name">
+                        <span ><b>onSubmit</b></span>
+                        <a href="#onSubmit"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>onSubmit()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="94"
+                                    class="link-to-prism">src/app/features/auth/register/register.component.ts:94</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="passwordMatchValidator"></a>
+                    <span class="name">
+                        <span ><b>passwordMatchValidator</b></span>
+                        <a href="#passwordMatchValidator"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>passwordMatchValidator(g: FormGroup)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="74"
+                                    class="link-to-prism">src/app/features/auth/register/register.component.ts:74</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>g</td>
+                                            <td>
+                                                        <code>FormGroup</code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>    <code>{ mismatch: boolean; }</code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="toggleAlert"></a>
+                    <span class="name">
+                        <span ><b>toggleAlert</b></span>
+                        <a href="#toggleAlert"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>toggleAlert(value: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>, isChecked: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/boolean" target="_blank">boolean</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="81"
+                                    class="link-to-prism">src/app/features/auth/register/register.component.ts:81</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>value</td>
+                                            <td>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                        <tr>
+                                                <td>isChecked</td>
+                                            <td>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/boolean" target="_blank" >boolean</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</section>
+    <section data-compodoc="block-properties">
+    
+    <h3 id="inputs">
+        Properties
+    </h3>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="alertOptions"></a>
+                    <span class="name">
+                        <span ><b>alertOptions</b></span>
+                        <a href="#alertOptions"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>[]</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>[
+    { label: &#x27;📱 Telegram&#x27;, value: AlertType.TELEGRAM },
+    { label: &#x27;📧 E-mail&#x27;, value: AlertType.EMAIL },
+    { label: &#x27;💬 SMS&#x27;, value: AlertType.SMS }
+  ]</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="50" class="link-to-prism">src/app/features/auth/register/register.component.ts:50</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="authService"></a>
+                    <span class="name">
+                            <span class="modifier">Private</span>
+                        <span ><b>authService</b></span>
+                        <a href="#authService"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>unknown</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>inject(AuthService)</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="37" class="link-to-prism">src/app/features/auth/register/register.component.ts:37</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="fb"></a>
+                    <span class="name">
+                            <span class="modifier">Private</span>
+                        <span ><b>fb</b></span>
+                        <a href="#fb"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>unknown</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>inject(FormBuilder)</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="36" class="link-to-prism">src/app/features/auth/register/register.component.ts:36</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="isLoading"></a>
+                    <span class="name">
+                        <span ><b>isLoading</b></span>
+                        <a href="#isLoading"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>unknown</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>signal&lt;boolean&gt;(false)</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="42" class="link-to-prism">src/app/features/auth/register/register.component.ts:42</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="isRegisterSuccess"></a>
+                    <span class="name">
+                        <span ><b>isRegisterSuccess</b></span>
+                        <a href="#isRegisterSuccess"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>unknown</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>signal&lt;boolean&gt;(false)</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="45" class="link-to-prism">src/app/features/auth/register/register.component.ts:45</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="registerForm"></a>
+                    <span class="name">
+                        <span ><b>registerForm</b></span>
+                        <a href="#registerForm"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>unknown</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>this.fb.group({
+    username: [&#x27;&#x27;, Validators.required],
+    password: [&#x27;&#x27;, [Validators.required, Validators.minLength(6)]],
+    confirmPassword: [&#x27;&#x27;, Validators.required],
+    email: [&#x27;&#x27;, [Validators.required, Validators.email]],
+    phoneNumber: [&#x27;&#x27;, Validators.required],
+    cameraUrl: [&#x27;&#x27;, Validators.required],
+    alertTypes: [[AlertType.EMAIL], Validators.required]
+  }, { validators: this.passwordMatchValidator })</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="57" class="link-to-prism">src/app/features/auth/register/register.component.ts:57</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="router"></a>
+                    <span class="name">
+                            <span class="modifier">Private</span>
+                        <span ><b>router</b></span>
+                        <a href="#router"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>unknown</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>inject(Router)</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="38" class="link-to-prism">src/app/features/auth/register/register.component.ts:38</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="snackBar"></a>
+                    <span class="name">
+                            <span class="modifier">Private</span>
+                        <span ><b>snackBar</b></span>
+                        <a href="#snackBar"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>unknown</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>inject(MatSnackBar)</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="39" class="link-to-prism">src/app/features/auth/register/register.component.ts:39</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+</section>
+
+    <section data-compodoc="block-accessors">
+    <h3 id="accessors">
+        Accessors
+    </h3>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <a name="alertTypesArray"></a>
+                        <span class="name"><b>alertTypesArray</b><a href="#alertTypesArray"><span class="icon ion-ios-link"></span></a></span>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="col-md-4">
+                        <span class="accessor"><b>get</b><code>alertTypesArray()</code></span>
+                    </td>
+                </tr>
+                            <tr>
+                                <td class="col-md-4">
+                                    <div class="io-line">Defined in <a href="" data-line="69" class="link-to-prism">src/app/features/auth/register/register.component.ts:69</a></div>
+                                </td>
+                            </tr>
+
+            </tbody>
+        </table>
+</section>
+</div>
+
+
+    <div class="tab-pane fade  tab-source-code" id="source">
+        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { Component, inject, signal } from &#x27;@angular/core&#x27;;
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators, FormControl } from &#x27;@angular/forms&#x27;;
+import { Router, RouterLink } from &#x27;@angular/router&#x27;;
+import { AuthService } from &#x27;../../../core/services/auth.service&#x27;;
+import { CommonModule } from &#x27;@angular/common&#x27;;
+
+// Imports do Material
+import { MatCardModule } from &#x27;@angular/material/card&#x27;;
+import { MatInputModule } from &#x27;@angular/material/input&#x27;;
+import { MatButtonModule } from &#x27;@angular/material/button&#x27;;
+import { MatIconModule } from &#x27;@angular/material/icon&#x27;;
+import { MatCheckboxModule } from &#x27;@angular/material/checkbox&#x27;;
+import { MatProgressSpinnerModule } from &#x27;@angular/material/progress-spinner&#x27;;
+import { MatSnackBar, MatSnackBarModule } from &#x27;@angular/material/snack-bar&#x27;;
+import { MatChipsModule } from &#x27;@angular/material/chips&#x27;;
+import { AlertType } from &#x27;../../../core/models/app.models&#x27;;
+
+// Enum para tipagem forte
+
+
+@Component({
+  selector: &#x27;app-register&#x27;,
+  standalone: true,
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    RouterLink,
+    MatCardModule, MatInputModule, MatButtonModule, MatIconModule,
+    MatCheckboxModule, MatProgressSpinnerModule, MatSnackBarModule,
+    MatChipsModule
+  ],
+  templateUrl: &#x27;./register.component.html&#x27;,
+  styleUrls: [&#x27;./register.component.scss&#x27;]
+})
+export class RegisterComponent {
+  private fb &#x3D; inject(FormBuilder);
+  private authService &#x3D; inject(AuthService);
+  private router &#x3D; inject(Router);
+  private snackBar &#x3D; inject(MatSnackBar);
+
+  // Controle de Estado da UI
+  isLoading &#x3D; signal&lt;boolean&gt;(false);
+
+  // ✅ NOVO: Controla se mostramos o form ou a tela de &quot;Check&quot; verde
+  isRegisterSuccess &#x3D; signal&lt;boolean&gt;(false);
+
+  // ❌ REMOVIDOS: successMessage e errorMessage (para evitar duplicação visual com o SnackBar)
+
+  // Opções para o *ngFor do HTML
+  alertOptions &#x3D; [
+    { label: &#x27;📱 Telegram&#x27;, value: AlertType.TELEGRAM },
+    { label: &#x27;📧 E-mail&#x27;, value: AlertType.EMAIL },
+    { label: &#x27;💬 SMS&#x27;, value: AlertType.SMS }
+  ];
+
+  // Definição do Formulário
+  registerForm &#x3D; this.fb.group({
+    username: [&#x27;&#x27;, Validators.required],
+    password: [&#x27;&#x27;, [Validators.required, Validators.minLength(6)]],
+    confirmPassword: [&#x27;&#x27;, Validators.required],
+    email: [&#x27;&#x27;, [Validators.required, Validators.email]],
+    phoneNumber: [&#x27;&#x27;, Validators.required],
+    cameraUrl: [&#x27;&#x27;, Validators.required],
+    alertTypes: [[AlertType.EMAIL], Validators.required]
+  }, { validators: this.passwordMatchValidator });
+
+  // --- GETTERS ---
+
+  get alertTypesArray(): FormControl {
+    return this.registerForm.get(&#x27;alertTypes&#x27;) as FormControl;
+  }
+
+  // Validador personalizado de senha
+  passwordMatchValidator(g: FormGroup) {
+    return g.get(&#x27;password&#x27;)?.value &#x3D;&#x3D;&#x3D; g.get(&#x27;confirmPassword&#x27;)?.value
+      ? null : { mismatch: true };
+  }
+
+  // --- LÓGICA DOS CHECKBOXES ---
+
+  toggleAlert(value: string, isChecked: boolean) {
+    const currentValues &#x3D; this.alertTypesArray.value as string[];
+
+    if (isChecked) {
+      this.alertTypesArray.setValue([...currentValues, value]);
+    } else {
+      this.alertTypesArray.setValue(currentValues.filter(item &#x3D;&gt; item !&#x3D;&#x3D; value));
+    }
+    this.alertTypesArray.markAsTouched();
+  }
+
+  // --- SUBMIT ---
+
+  onSubmit() {
+    if (this.registerForm.invalid) return;
+
+    this.isLoading.set(true);
+
+    // Removemos confirmPassword do payload
+    const { confirmPassword, ...registerData } &#x3D; this.registerForm.getRawValue();
+
+    const finalPayload &#x3D; {
+      ...registerData,
+      role: &#x27;USER&#x27;
+    };
+
+    console.log(&#x27;Enviando Payload:&#x27;, finalPayload);
+
+    this.authService.register(finalPayload as any).subscribe({
+      next: () &#x3D;&gt; {
+        this.isLoading.set(false);
+
+        // ✅ SUCESSO:
+        // 1. Muda o estado para mostrar a tela de sucesso (troca o HTML)
+        this.isRegisterSuccess.set(true);
+
+        // 2. Opcional: Mostra um feedback rápido no topo, mas sem texto no card
+        this.snackBar.open(&#x27;Cadastro realizado com sucesso!&#x27;, &#x27;OK&#x27;, {
+          duration: 3000,
+          panelClass: [&#x27;success-snackbar&#x27;] // Use a classe CSS que definimos antes
+        });
+
+        // ❌ REMOVIDO: setTimeout e router.navigate automático
+      },
+      error: (err) &#x3D;&gt; {
+        console.error(err);
+        this.isLoading.set(false);
+
+        // ✅ ERRO:
+        // Mostra APENAS no SnackBar (mais limpo que texto vermelho no card)
+        this.snackBar.open(&#x27;Falha ao registrar. Verifique os dados ou tente outro usuário.&#x27;, &#x27;Fechar&#x27;, {
+          duration: 5000,
+          panelClass: [&#x27;error-snackbar&#x27;] // Use a classe CSS de erro (vermelho)
+        });
+      }
+    });
+  }
+
+  // Ação do botão &quot;IR PARA O LOGIN&quot; na tela de sucesso
+  goToLogin() {
+    this.router.navigate([&#x27;/login&#x27;]);
+  }
+}
+</code></pre>
+    </div>
+
+    <div class="tab-pane fade " id="templateData">
+        <pre class="line-numbers"><code class="language-html">&lt;div class&#x3D;&quot;register-wrapper&quot;&gt;
+  &lt;mat-card class&#x3D;&quot;register-card&quot;&gt;
+    
+    &lt;mat-card-header&gt;
+      &lt;mat-card-title&gt;
+        @if (isRegisterSuccess()) {
+          Tudo pronto! 🎉
+        } @else {
+          📝 Criar Conta
+        }
+      &lt;/mat-card-title&gt;
+      
+      @if (!isRegisterSuccess()) {
+        &lt;mat-card-subtitle&gt;&lt;br /&gt; Junte-se ao SafeVision&lt;/mat-card-subtitle&gt;
+      }
+    &lt;/mat-card-header&gt;
+
+    &lt;mat-card-content&gt;
+      
+      @if (isRegisterSuccess()) {
+        &lt;div class&#x3D;&quot;success-state&quot;&gt;
+          &lt;div class&#x3D;&quot;icon-circle&quot;&gt;
+            &lt;mat-icon&gt;check_circle&lt;/mat-icon&gt;
+          &lt;/div&gt;
+          
+          &lt;h3&gt;Cadastro Realizado!&lt;/h3&gt;
+          &lt;p&gt;Sua conta foi criada com sucesso.&lt;/p&gt;
+          &lt;p class&#x3D;&quot;sub-text&quot;&gt;Agora você já pode acessar o sistema.&lt;/p&gt;
+
+          &lt;button mat-flat-button color&#x3D;&quot;primary&quot; class&#x3D;&quot;login-btn&quot; (click)&#x3D;&quot;goToLogin()&quot;&gt;
+            IR PARA O LOGIN
+          &lt;/button&gt;
+        &lt;/div&gt;
+      } 
+      
+      @else {
+        &lt;form [formGroup]&#x3D;&quot;registerForm&quot; (ngSubmit)&#x3D;&quot;onSubmit()&quot;&gt;
+
+          &lt;mat-form-field appearance&#x3D;&quot;outline&quot; class&#x3D;&quot;full-width&quot;&gt;
+            &lt;mat-label&gt;Usuário&lt;/mat-label&gt;
+            &lt;input matInput formControlName&#x3D;&quot;username&quot; placeholder&#x3D;&quot;Seu usuário único&quot; /&gt;
+            &lt;mat-icon matSuffix&gt;person&lt;/mat-icon&gt;
+            @if (registerForm.get(&#x27;username&#x27;)?.hasError(&#x27;required&#x27;)) {
+              &lt;mat-error&gt;Usuário é obrigatório&lt;/mat-error&gt;
+            }
+          &lt;/mat-form-field&gt;
+
+          &lt;mat-form-field appearance&#x3D;&quot;outline&quot; class&#x3D;&quot;full-width&quot;&gt;
+            &lt;mat-label&gt;Senha&lt;/mat-label&gt;
+            &lt;input matInput type&#x3D;&quot;password&quot; formControlName&#x3D;&quot;password&quot; placeholder&#x3D;&quot;Mínimo 6 caracteres&quot; /&gt;
+            &lt;mat-icon matSuffix&gt;lock&lt;/mat-icon&gt;
+            @if (registerForm.get(&#x27;password&#x27;)?.hasError(&#x27;required&#x27;)) {
+              &lt;mat-error&gt;Senha é obrigatória&lt;/mat-error&gt;
+            }
+            @if (registerForm.get(&#x27;password&#x27;)?.hasError(&#x27;minlength&#x27;)) {
+              &lt;mat-error&gt;Mínimo de 6 caracteres&lt;/mat-error&gt;
+            }
+          &lt;/mat-form-field&gt;
+
+          &lt;mat-form-field appearance&#x3D;&quot;outline&quot; class&#x3D;&quot;full-width&quot;&gt;
+            &lt;mat-label&gt;Confirmar Senha&lt;/mat-label&gt;
+            &lt;input matInput type&#x3D;&quot;password&quot; formControlName&#x3D;&quot;confirmPassword&quot; placeholder&#x3D;&quot;Repita a senha&quot; /&gt;
+            &lt;mat-icon matSuffix&gt;lock&lt;/mat-icon&gt;
+          &lt;/mat-form-field&gt;
+
+          @if (registerForm.hasError(&#x27;mismatch&#x27;) &amp;&amp; registerForm.get(&#x27;confirmPassword&#x27;)?.touched) {
+            &lt;div class&#x3D;&quot;password-error&quot;&gt;
+              &lt;mat-icon&gt;error_outline&lt;/mat-icon&gt;
+              As senhas não coincidem
+            &lt;/div&gt;
+          }
+
+          &lt;mat-form-field appearance&#x3D;&quot;outline&quot; class&#x3D;&quot;full-width&quot;&gt;
+            &lt;mat-label&gt;E-mail&lt;/mat-label&gt;
+            &lt;input matInput type&#x3D;&quot;email&quot; formControlName&#x3D;&quot;email&quot; placeholder&#x3D;&quot;seu@email.com&quot; /&gt;
+            &lt;mat-icon matSuffix&gt;email&lt;/mat-icon&gt;
+            @if (registerForm.get(&#x27;email&#x27;)?.hasError(&#x27;email&#x27;)) {
+              &lt;mat-error&gt;E-mail inválido&lt;/mat-error&gt;
+            }
+            @if (registerForm.get(&#x27;email&#x27;)?.hasError(&#x27;required&#x27;)) {
+              &lt;mat-error&gt;E-mail é obrigatório&lt;/mat-error&gt;
+            }
+          &lt;/mat-form-field&gt;
+
+          &lt;mat-form-field appearance&#x3D;&quot;outline&quot; class&#x3D;&quot;full-width&quot;&gt;
+            &lt;mat-label&gt;Celular (com DDI e DDD)&lt;/mat-label&gt;
+            &lt;input matInput formControlName&#x3D;&quot;phoneNumber&quot; placeholder&#x3D;&quot;+55 11 99999-9999&quot; /&gt;
+            &lt;mat-icon matSuffix&gt;smartphone&lt;/mat-icon&gt;
+            &lt;mat-hint&gt;Para alertas SMS críticos&lt;/mat-hint&gt;
+            @if (registerForm.get(&#x27;phoneNumber&#x27;)?.hasError(&#x27;required&#x27;)) {
+              &lt;mat-error&gt;Telefone é obrigatório&lt;/mat-error&gt;
+            }
+          &lt;/mat-form-field&gt;
+
+          &lt;mat-form-field appearance&#x3D;&quot;outline&quot; class&#x3D;&quot;full-width&quot;&gt;
+            &lt;mat-label&gt;URL da Câmera&lt;/mat-label&gt;
+            &lt;input matInput formControlName&#x3D;&quot;cameraUrl&quot; placeholder&#x3D;&quot;http://192.168.0.15:4747/video&quot; /&gt;
+            &lt;mat-icon matSuffix&gt;videocam&lt;/mat-icon&gt;
+            @if (registerForm.get(&#x27;cameraUrl&#x27;)?.hasError(&#x27;required&#x27;)) {
+              &lt;mat-error&gt;URL é obrigatório&lt;/mat-error&gt;
+            }
+          &lt;/mat-form-field&gt;
+
+          &lt;div class&#x3D;&quot;alert-selection-container&quot;&gt;
+            &lt;label class&#x3D;&quot;mat-subtitle-2 label-header&quot;&gt;Canais de Notificação&lt;/label&gt;
+
+            &lt;mat-chip-listbox aria-label&#x3D;&quot;Seleção de Alertas&quot; multiple&gt;
+              @for (opt of alertOptions; track opt.value) {
+                &lt;mat-chip-option
+                  color&#x3D;&quot;accent&quot;
+                  [selected]&#x3D;&quot;alertTypesArray.value.includes(opt.value)&quot;
+                  (selectionChange)&#x3D;&quot;toggleAlert(opt.value, $event.selected)&quot;&gt;
+                  &lt;mat-icon matChipAvatar&gt;
+                    {{ opt.value &#x3D;&#x3D;&#x3D; &#x27;TELEGRAM&#x27; ? &#x27;send&#x27; : (opt.value &#x3D;&#x3D;&#x3D; &#x27;EMAIL&#x27; ? &#x27;email&#x27; : &#x27;sms&#x27;) }}
+                  &lt;/mat-icon&gt;
+                  {{ opt.label }}
+                &lt;/mat-chip-option&gt;
+              }
+            &lt;/mat-chip-listbox&gt;
+
+            @if (registerForm.get(&#x27;alertTypes&#x27;)?.touched &amp;&amp; registerForm.get(&#x27;alertTypes&#x27;)?.hasError(&#x27;required&#x27;)) {
+              &lt;mat-error class&#x3D;&quot;chip-error&quot;&gt;
+                &lt;mat-icon style&#x3D;&quot;font-size: 12px; height: 12px; width: 12px;&quot;&gt;error&lt;/mat-icon&gt;
+                Escolha pelo menos um canal
+              &lt;/mat-error&gt;
+            }
+          &lt;/div&gt;
+
+          &lt;div class&#x3D;&quot;actions&quot;&gt;
+            &lt;button mat-raised-button color&#x3D;&quot;primary&quot; type&#x3D;&quot;submit&quot; [disabled]&#x3D;&quot;registerForm.invalid || isLoading()&quot;&gt;
+              @if (isLoading()) {
+                &lt;mat-spinner diameter&#x3D;&quot;20&quot;&gt;&lt;/mat-spinner&gt;
+              } @else {
+                &lt;span&gt;Registrar&lt;/span&gt;
+              }
+            &lt;/button&gt;
+          &lt;/div&gt;
+
+        &lt;/form&gt;
+      }
+
+    &lt;/mat-card-content&gt;
+
+    @if (!isRegisterSuccess()) {
+      &lt;mat-card-footer&gt;
+        &lt;p&gt;Já tem conta? &lt;a mat-button color&#x3D;&quot;accent&quot; routerLink&#x3D;&quot;/login&quot;&gt;Faça Login&lt;/a&gt;&lt;/p&gt;
+      &lt;/mat-card-footer&gt;
+    }
+  &lt;/mat-card&gt;
+&lt;/div&gt;</code></pre>
+    </div>
+
+    <div class="tab-pane fade " id="styleData">
+                <p class="comment">
+                    <code>./register.component.scss</code>
+                </p>
+                <pre class="line-numbers"><code class="language-scss">/* &#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;
+   SAFE VISION - REGISTER SCREEN (Premium Edition)
+   Design System + Sass Modules + Modern Effects
+   &#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D; */
+@use &quot;sass:color&quot;;
+
+/* &#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;
+   DESIGN SYSTEM (Shared Variables)
+   &#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D; */
+
+/* Paleta principal */
+$primary: #d63384; // Rose Brand Color
+$primary-hover: color.adjust($primary, $lightness: -10%);
+$accent: #00bcd4; // Cyan (Safe/Active)
+
+/* Estados */
+$error-text: #ff5252;
+$success-text: #69f0ae;
+
+/* Glassmorphism (padrão do sistema) */
+$glass-bg: rgba(23, 23, 23, 0.75); // Fundo mais escuro para contraste
+$glass-border: rgba(255, 255, 255, 0.15);
+$glass-blur: 20px;
+
+/* Sombra padrão */
+$shadow-strong: 0 20px 45px rgba(0, 0, 0, 0.6);
+
+/* Breakpoints */
+$max-mobile: 480px;
+
+/* &#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;
+   WRAPPER &amp; LAYOUT
+   &#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D; */
+
+.register-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 20px;
+  box-sizing: border-box;
+
+  position: relative;
+  z-index: 10;
+}
+
+/* &#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;
+   CARD (Glass style)
+   &#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D; */
+
+.register-card {
+  position: relative;
+  z-index: 10;
+
+  width: 100%;
+  max-width: 480px; // Largura confortável
+  padding: 20px;
+
+  border-radius: 24px;
+
+  /* Glassmorphism */
+  background: $glass-bg !important;
+  backdrop-filter: blur($glass-blur) !important;
+  border: 1px solid $glass-border;
+  box-shadow: $shadow-strong;
+
+  /* Animação de Entrada */
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeInUp 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+@keyframes fadeInUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* &#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;
+   HEADER &amp; TYPOGRAPHY
+   &#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D; */
+
+mat-card-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  margin-bottom: 1.5rem;
+
+  mat-card-title {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 5px;
+    letter-spacing: 0.5px;
+  }
+
+  mat-card-subtitle {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.95rem;
+  }
+}
+
+/* &#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;
+   FORMS &amp; INPUTS (Material Overrides)
+   &#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D; */
+
+.full-width {
+  width: 100%;
+  margin-bottom: 0.8rem;
+}
+
+// Customização profunda do Material Form Field para Dark Theme
+.mat-mdc-form-field {
+  .mdc-text-field--filled {
+    background-color: rgba(255, 255, 255, 0.05) !important;
+    border-radius: 8px;
+  }
+
+  // Cor do Texto
+  .mdc-text-field__input {
+    color: #fff !important;
+    caret-color: $primary !important;
+  }
+
+  // Cor dos Labels
+  .mdc-floating-label {
+    color: rgba(255, 255, 255, 0.6) !important;
+  }
+  .mdc-floating-label--float-above {
+    color: $primary !important;
+  }
+
+  // Ícones
+  .mat-icon {
+    color: rgba(255, 255, 255, 0.7);
+  }
+
+  // Linha inferior e erros
+  .mdc-line-ripple::before {
+    border-bottom-color: rgba(255, 255, 255, 0.3) !important;
+  }
+  .mdc-line-ripple::after {
+    border-bottom-color: $primary !important;
+  }
+}
+
+// Estilo de erro específico
+mat-error {
+  color: $error-text !important;
+  font-size: 0.8rem;
+}
+
+mat-hint {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+// Erro de senha não coincidente
+.password-error {
+  color: $error-text;
+  font-size: 12px;
+  margin-top: -10px;
+  margin-bottom: 15px;
+  margin-left: 4px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255, 82, 82, 0.1);
+  padding: 8px;
+  border-radius: 6px;
+
+  mat-icon {
+    font-size: 16px;
+    height: 16px;
+    width: 16px;
+  }
+}
+
+</code></pre>
+    </div>
+
+    <div class="tab-pane fade " id="tree">
+        <div id="tree-container"></div>
+        <div class="tree-legend">
+            <div class="title">
+                <b>Legend</b>
+            </div>
+            <div>
+                <div class="color htmlelement"></div><span>Html element</span>
+            </div>
+            <div>
+                <div class="color component"></div><span>Component</span>
+            </div>
+            <div>
+                <div class="color directive"></div><span>Html element with directive</span>
+            </div>
+        </div>
+    </div>
+
+    
+</div>
+
+<script src="../js/libs/vis-network.min.js"></script>
+<script src="../js/libs/htmlparser.js"></script>
+<script src="../js/libs/deep-iterator.js"></script>
+<script>
+        var COMPONENT_TEMPLATE = '<div><div class="register-wrapper">  <mat-card class="register-card">        <mat-card-header>      <mat-card-title>        @if (isRegisterSuccess()) {          Tudo pronto! 🎉        } @else {          📝 Criar Conta        }      </mat-card-title>            @if (!isRegisterSuccess()) {        <mat-card-subtitle><br /> Junte-se ao SafeVision</mat-card-subtitle>      }    </mat-card-header>    <mat-card-content>            @if (isRegisterSuccess()) {        <div class="success-state">          <div class="icon-circle">            <mat-icon>check_circle</mat-icon>          </div>                    <h3>Cadastro Realizado!</h3>          <p>Sua conta foi criada com sucesso.</p>          <p class="sub-text">Agora você já pode acessar o sistema.</p>          <button mat-flat-button color="primary" class="login-btn" (click)="goToLogin()">            IR PARA O LOGIN          </button>        </div>      }             @else {        <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">          <mat-form-field appearance="outline" class="full-width">            <mat-label>Usuário</mat-label>            <input matInput formControlName="username" placeholder="Seu usuário único" />            <mat-icon matSuffix>person</mat-icon>            @if (registerForm.get(\'username\')?.hasError(\'required\')) {              <mat-error>Usuário é obrigatório</mat-error>            }          </mat-form-field>          <mat-form-field appearance="outline" class="full-width">            <mat-label>Senha</mat-label>            <input matInput type="password" formControlName="password" placeholder="Mínimo 6 caracteres" />            <mat-icon matSuffix>lock</mat-icon>            @if (registerForm.get(\'password\')?.hasError(\'required\')) {              <mat-error>Senha é obrigatória</mat-error>            }            @if (registerForm.get(\'password\')?.hasError(\'minlength\')) {              <mat-error>Mínimo de 6 caracteres</mat-error>            }          </mat-form-field>          <mat-form-field appearance="outline" class="full-width">            <mat-label>Confirmar Senha</mat-label>            <input matInput type="password" formControlName="confirmPassword" placeholder="Repita a senha" />            <mat-icon matSuffix>lock</mat-icon>          </mat-form-field>          @if (registerForm.hasError(\'mismatch\') && registerForm.get(\'confirmPassword\')?.touched) {            <div class="password-error">              <mat-icon>error_outline</mat-icon>              As senhas não coincidem            </div>          }          <mat-form-field appearance="outline" class="full-width">            <mat-label>E-mail</mat-label>            <input matInput type="email" formControlName="email" placeholder="seu@email.com" />            <mat-icon matSuffix>email</mat-icon>            @if (registerForm.get(\'email\')?.hasError(\'email\')) {              <mat-error>E-mail inválido</mat-error>            }            @if (registerForm.get(\'email\')?.hasError(\'required\')) {              <mat-error>E-mail é obrigatório</mat-error>            }          </mat-form-field>          <mat-form-field appearance="outline" class="full-width">            <mat-label>Celular (com DDI e DDD)</mat-label>            <input matInput formControlName="phoneNumber" placeholder="+55 11 99999-9999" />            <mat-icon matSuffix>smartphone</mat-icon>            <mat-hint>Para alertas SMS críticos</mat-hint>            @if (registerForm.get(\'phoneNumber\')?.hasError(\'required\')) {              <mat-error>Telefone é obrigatório</mat-error>            }          </mat-form-field>          <mat-form-field appearance="outline" class="full-width">            <mat-label>URL da Câmera</mat-label>            <input matInput formControlName="cameraUrl" placeholder="http://192.168.0.15:4747/video" />            <mat-icon matSuffix>videocam</mat-icon>            @if (registerForm.get(\'cameraUrl\')?.hasError(\'required\')) {              <mat-error>URL é obrigatório</mat-error>            }          </mat-form-field>          <div class="alert-selection-container">            <label class="mat-subtitle-2 label-header">Canais de Notificação</label>            <mat-chip-listbox aria-label="Seleção de Alertas" multiple>              @for (opt of alertOptions; track opt.value) {                <mat-chip-option                  color="accent"                  [selected]="alertTypesArray.value.includes(opt.value)"                  (selectionChange)="toggleAlert(opt.value, $event.selected)">                  <mat-icon matChipAvatar>                    {{ opt.value === \'TELEGRAM\' ? \'send\' : (opt.value === \'EMAIL\' ? \'email\' : \'sms\') }}                  </mat-icon>                  {{ opt.label }}                </mat-chip-option>              }            </mat-chip-listbox>            @if (registerForm.get(\'alertTypes\')?.touched && registerForm.get(\'alertTypes\')?.hasError(\'required\')) {              <mat-error class="chip-error">                <mat-icon style="font-size: 12px; height: 12px; width: 12px;">error</mat-icon>                Escolha pelo menos um canal              </mat-error>            }          </div>          <div class="actions">            <button mat-raised-button color="primary" type="submit" [disabled]="registerForm.invalid || isLoading()">              @if (isLoading()) {                <mat-spinner diameter="20"></mat-spinner>              } @else {                <span>Registrar</span>              }            </button>          </div>        </form>      }    </mat-card-content>    @if (!isRegisterSuccess()) {      <mat-card-footer>        <p>Já tem conta? <a mat-button color="accent" routerLink="/login">Faça Login</a></p>      </mat-card-footer>    }  </mat-card></div></div>'
+    var COMPONENTS = [{'name': 'AlertHistoryComponent', 'selector': 'app-alert-history'},{'name': 'App', 'selector': 'app-root'},{'name': 'DashboardComponent', 'selector': 'app-dashboard'},{'name': 'HeaderComponent', 'selector': 'app-header'},{'name': 'ImagePreviewDialogComponent', 'selector': 'app-image-preview-dialog'},{'name': 'LoginComponent', 'selector': 'app-login'},{'name': 'MapDialogComponent', 'selector': 'app-map-dialog'},{'name': 'RegisterComponent', 'selector': 'app-register'},{'name': 'Settings', 'selector': 'app-settings'},{'name': 'UserProfileDialogComponent', 'selector': 'app-user-profile-dialog'}];
+    var DIRECTIVES = [{'name': 'PhoneMaskDirective', 'selector': '[appPhoneMask]'}];
+    var ACTUAL_COMPONENT = {'name': 'RegisterComponent'};
+</script>
+<script src="../js/tree.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                   </div><div class="search-results">
+    <div class="has-results">
+        <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+        <ul class="search-results-list"></ul>
+    </div>
+    <div class="no-results">
+        <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+    </div>
+</div>
+</div>
+               <!-- END CONTENT -->
+           </div>
+       </div>
+
+          <label class="dark-mode-switch">
+               <input type="checkbox">
+               <span class="slider">
+                    <svg class="slider-icon" viewBox="0 0 24 24" fill="none" height="20" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" width="20" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path>
+                    </svg>
+               </span>
+          </label>
+
+       <script>
+            var COMPODOC_CURRENT_PAGE_DEPTH = 1;
+            var COMPODOC_CURRENT_PAGE_CONTEXT = 'component';
+            var COMPODOC_CURRENT_PAGE_URL = 'RegisterComponent.html';
+            var MAX_SEARCH_RESULTS = 15;
+       </script>
+
+       <script>
+               $darkModeToggleSwitchers = document.querySelectorAll('.dark-mode-switch input');
+               checkToggle(darkModeState);
+               if ($darkModeToggleSwitchers.length > 0) {
+                    for (var i = 0; i < $darkModeToggleSwitchers.length; i++) {
+                         $darkModeToggleSwitchers[i].addEventListener('change', function (event) {
+                              darkModeState = !darkModeState;
+                              toggleDarkMode(darkModeState);
+                         });
+                    }
+               }
+          </script>
+
+       <script src="../js/libs/custom-elements.min.js"></script>
+       <script src="../js/libs/lit-html.js"></script>
+
+       <script src="../js/menu-wc.js" defer></script>
+       <script nomodule src="../js/menu-wc_es5.js" defer></script>
+
+       <script src="../js/libs/bootstrap-native.js"></script>
+
+       <script src="../js/libs/es6-shim.min.js"></script>
+       <script src="../js/libs/EventDispatcher.js"></script>
+       <script src="../js/libs/promise.min.js"></script>
+
+       <script src="../js/compodoc.js"></script>
+
+       <script src="../js/tabs.js"></script>
+       <script src="../js/menu.js"></script>
+       <script src="../js/libs/clipboard.min.js"></script>
+       <script src="../js/libs/prism.js"></script>
+       <script src="../js/sourceCode.js"></script>
+          <script src="../js/search/search.js"></script>
+          <script src="../js/search/lunr.min.js"></script>
+          <script src="../js/search/search-lunr.js"></script>
+          <script src="../js/search/search_index.js"></script>
+       <script src="../js/lazy-load-graphs.js"></script>
+
+
+    </body>
+</html>
