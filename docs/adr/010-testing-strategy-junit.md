@@ -18,7 +18,7 @@ Implementar uma estratégia de testes baseada na stack **JUnit 5**.
 
 ## Consequências
 ### Positivas
-* **Ambiente Hermético:** O uso de Testcontainers elimina o problema do "funciona na minha máquina", testando contra versões exatas das dependências de infraestrutura.
+* **Ambiente Hermético:** O uso de Testcontainers elimina o problema do "funciona na minha máquina", testando contra versões exatas das dependências de infraestrutura. 
 * **Confiança em Refatorações:** Alta cobertura automatizada permite evoluir o código com baixo risco de quebra de contrato.
 
 ### Negativas
