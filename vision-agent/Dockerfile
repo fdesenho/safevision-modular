@@ -17,12 +17,14 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 # 2. Dependências Python
-# Removemos conflito do protobuf (hack para MediaPipe + YOLO conviverem)
+# Remove conflito do protobuf (MediaPipe + YOLO)
 RUN pip uninstall -y protobuf && \
     pip install --no-cache-dir protobuf==3.20.3
 
-# Instala o MediaPipe, libs do sistema e DE TESTE
+# Instala libs principais
 RUN pip install --no-cache-dir \
+    python-dotenv \
+    py_eureka_client \
     mediapipe==0.10.9 \
     pika \
     flask \
@@ -34,10 +36,21 @@ RUN pip install --no-cache-dir \
     pytest \
     pytest-mock
 
+# Instala OpenTelemetry (Observabilidade)
+RUN pip install --no-cache-dir \
+    opentelemetry-api \
+    opentelemetry-sdk \
+    opentelemetry-exporter-zipkin \
+    opentelemetry-propagator-b3
+
+# 🟢 NOVO: Dependências para Benchmarking, Segurança e Relatórios (ADR-018)
+RUN pip install --no-cache-dir \
+    PyJWT \
+    pandas \
+    matplotlib
+
 # 3. Cópia dos Arquivos
 COPY . .
 
-# 4. Comando de Execução (MUDANÇA AQUI)
-# Usamos CMD em vez de ENTRYPOINT para permitir sobrescrita
-# Ex: docker-compose run --rm vision-tests
+# 4. Comando de Execução
 CMD ["python", "main.py"]

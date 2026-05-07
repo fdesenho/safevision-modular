@@ -153,6 +153,9 @@ services:
       MINIO_SECRET_KEY: ${MINIO_ROOT_PASSWORD}
       MINIO_BUCKET: ${MINIO_BUCKET_NAME}
       MINIO_EXTERNAL_PREFIX: ${MINIO_EXTERNAL_PREFIX}
+      # 🟢 NOVO: Variáveis para roteamento interno do Docker (Observabilidade ADR-018)
+      ZIPKIN_URL: "http://zipkin:9411"
+      BACKEND_SIMULATE_URL: "http://recognition-service:8080/recognition/simulate"
     depends_on:
       rabbitmq:
         condition: service_healthy
@@ -170,6 +173,7 @@ services:
     environment:
       <<: [*common-env, *python-opts] # Importante para manter compatibilidade
       RABBITMQ_HOST: rabbitmq # Necessário se o teste integrar com fila
+      ZIPKIN_URL: "http://zipkin:9411" # 🟢 Garantindo a mesma injeção para testes isolados
     # Sobrescreve o comando de iniciar o app para rodar os testes
     command: pytest -v 
     depends_on:

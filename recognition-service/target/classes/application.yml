@@ -10,6 +10,12 @@ spring:
     port: 5672
     username: ${RABBITMQ_USERNAME:user}
     password: ${RABBITMQ_PASSWORD:password}
+    # 🟢 NOVO: Habilita a interceptação do Micrometer Tracing no RabbitMQ
+    listener:
+      simple:
+        observation-enabled: true
+    template:
+      observation-enabled: true
     queues:
       raw-tracking: ${VISION_QUEUE_NAME:safevision.vision.raw.tracking} 
       alerts: ${ALERTS_QUEUE_NAME:safevision.alerts}
@@ -23,6 +29,8 @@ management:
   tracing:
     sampling:
       probability: 1.0 
+    propagation:
+      type: B3_MULTI # Fundamental: Lê os headers X-B3-* injetados na mensagem do RabbitMQ pelo Python
   zipkin:
     tracing:
       endpoint: "http://zipkin:9411/api/v2/spans"
@@ -43,6 +51,10 @@ safevision:
 logging:
   file:
     name: /var/logs/${spring.application.name}.log 
+  pattern:
+    # Injeta o traceId e spanId no console e no arquivo para validação visual fim-a-fim
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36}[traceId=%X{traceId:-}, spanId=%X{spanId:-}] - %msg%n"
+    file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36}[traceId=%X{traceId:-}, spanId=%X{spanId:-}] - %msg%n"
   logback:
     rollingpolicy:
       max-file-size: 10MB
