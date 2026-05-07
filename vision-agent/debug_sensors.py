@@ -2,7 +2,7 @@ import requests
 import time
 
 # SEU IP
-IP = "192.168.0.132:4747"
+IP = "192.168.0.18:4747"
 URL_SENSORS = f"http://{IP}/sensors.json"
 URL_ENABLE = f"http://{IP}/enable_sensor?id=gps"
 

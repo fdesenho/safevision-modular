@@ -3,8 +3,11 @@ package com.safevision.recognitionservice.config;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.Queue;
+import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory;
+import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.amqp.support.converter.MessageConverter;
+import org.springframework.boot.autoconfigure.amqp.SimpleRabbitListenerContainerFactoryConfigurer;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,7 +23,6 @@ import org.springframework.context.annotation.Configuration;
 public class RabbitMQConfig {
 
     private final RabbitQueueProperties queueProperties;
-
 
     /**
      * Exposes the raw tracking queue name as a String Bean.
@@ -39,8 +41,6 @@ public class RabbitMQConfig {
     public String alertsQueueName() {
         return queueProperties.alerts();
     }
-
-
 
     /**
      * Declares the Raw Tracking Queue (Input).
@@ -66,5 +66,24 @@ public class RabbitMQConfig {
     @Bean
     public MessageConverter jsonMessageConverter() {
         return new Jackson2JsonMessageConverter();
+    }
+
+    /**
+     * 🔥 CRITICAL FIX: Configures the Listener Container Factory to enable Observability.
+     * This forces Spring AMQP to extract the X-B3-TraceId injected by Python.
+     */
+    @Bean
+    public SimpleRabbitListenerContainerFactory rabbitListenerContainerFactory(
+            SimpleRabbitListenerContainerFactoryConfigurer configurer,
+            ConnectionFactory connectionFactory) {
+        
+        SimpleRabbitListenerContainerFactory factory = new SimpleRabbitListenerContainerFactory();
+        // Applies default Spring Boot settings (like the JSON converter)
+        configurer.configure(factory, connectionFactory);
+        
+        // Turns on Micrometer Tracing to intercept the Zipkin IDs from RabbitMQ headers
+        factory.setObservationEnabled(true); 
+        
+        return factory;
     }
 }
