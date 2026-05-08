@@ -13,9 +13,9 @@ Este documento delineia a visão estratégica para a evolução do **SafeVision*
 - [x] **Edge AI Optimization:** Detecção de armas e análise comportamental local (Edge First). **[[ADR-002](docs/adr/002-edge-computing-strategy.md)]**
 - [x] **Comunicação Assíncrona:** Pipeline de eventos resiliente via RabbitMQ. **[[ADR-003](docs/adr/003-async-communication-rabbitmq.md)]**
 - [x] **Frontend Dashboard:** Interface reativa para monitoramento em tempo real. **[[ADR-009](docs/adr/009-frontend-framework-angular.md)]**
-- [ ] **Performance Benchmark:** Relatório comparativo de latência Cloud vs Edge para validação de KPI. **[[ADR-018](docs/adr/018-performance-benchmarking-strategy.md)]**
-- [ ] **Cobertura de Testes:** Elevar para 80% com JUnit 5 e Testcontainers. **[[ADR-010](docs/adr/010-testing-strategy-junit.md)]**
-- [ ] **Documentação API:** Contrato oficial via OpenAPI 3.0 / Swagger. **[[ADR-011](docs/adr/011-api-documentation-openapi.md)]**
+- [x] **Performance Benchmark:** Relatório comparativo de latência Cloud vs Edge para validação de KPI. **[[ADR-018](docs/adr/018-performance-benchmarking-strategy.md)]**
+- [x] **Cobertura de Testes:** Elevar para 80% com JUnit 5 e Testcontainers. **[[ADR-010](docs/adr/010-testing-strategy-junit.md)]**
+- [x] **Documentação API:** Contrato oficial via OpenAPI 3.0 / Swagger. **[[ADR-011](docs/adr/011-api-documentation-openapi.md)]**
 
 ---
 
@@ -24,7 +24,7 @@ Este documento delineia a visão estratégica para a evolução do **SafeVision*
 
 - [ ] **Gestão de Segredos (Vault):** Migração de segredos para HashiCorp Vault. **[[ADR-004](docs/adr/004-secret-management-vault.md)]**
 - [ ] **Pipeline CI/CD:** Automação completa de build/deploy via GitHub Actions. **[[ADR-012](docs/adr/012-cicd-pipeline-github-actions.md)]**
-- [ ] **Chaos Engineering:** Injeção de falhas controladas para validar failover e resiliência. **[[ADR-019](docs/adr/019-chaos-engineering-strategy.md)]**
+- [x] **Chaos Engineering:** Injeção de falhas controladas para validar failover e resiliência. **[[ADR-019](docs/adr/019-chaos-engineering-strategy.md)]**
 - [ ] **Hardening & DevSecOps:** Scans de vulnerabilidades (Trivy) e análise estática. **[[ADR-020](docs/adr/020-devsecops-hardening-strategy.md)]**
 - [ ] **Migração para Kubernetes:** Orquestração híbrida (K8s Cloud / K3s Edge). **[[ADR-005](docs/adr/005-orchestration-k8s-k3s.md)]**
 - [ ] **Monitoramento Avançado:** Stack de observabilidade total (Prometheus/Loki/Grafana). **[[ADR-007](docs/adr/007-observability-stack.md)]**
