@@ -1,0 +1,11 @@
+# Imagem base com cliente Docker
+FROM docker:24-cli
+
+# Instala o Python 3
+RUN apk add --no-cache python3
+
+# Define o diretório de trabalho
+WORKDIR /app
+
+# Comando padrão
+ENTRYPOINT ["python3"]

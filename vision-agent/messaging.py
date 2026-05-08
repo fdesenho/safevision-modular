@@ -50,7 +50,7 @@ class RabbitMQClient:
         
         # 🟢 NEW: Wrap the publish logic in a Zipkin Span
         with tracer.start_as_current_span("rabbitmq_publish_raw_tracking") as span:
-            max_retries = 3
+            max_retries = 15
             
             # 🟢 NEW: Inject B3 Context (Extracts Trace ID and creates header dictionary)
             headers = {}
@@ -89,7 +89,7 @@ class RabbitMQClient:
                     self.connection = None 
                     time.sleep(1)
             
-            print("❌ [RabbitMQ] ERRO CRÍTICO: Mensagem descartada após várias tentativas.")
+            print("❌ [RabbitMQ] ERRO CRÍTICO: Mensagem descartada após 30 segundos.")
 
     def close(self):
         """Encerra a conexão de forma limpa (útil para o toggle/off)"""
